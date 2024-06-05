@@ -1,0 +1,13 @@
+mat-form-field,
+input {
+  width: 100%;
+}
+form,
+button {
+  text-align: center;
+  margin: 30px;
+}
+
+mat-spinner {
+  margin: auto;
+}

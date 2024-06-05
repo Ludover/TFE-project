@@ -1,0 +1,25 @@
+.search-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+mat-form-field {
+  width: 300px;
+  margin-right: 10px;
+}
+
+button {
+  margin-top: 10px;
+}
+
+.movies {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.movie {
+  width: 300px;
+  margin: 10px;
+}
