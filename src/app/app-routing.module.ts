@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MovieListComponent } from './review/movie-list/movie-list.component';
 import { MovieCreateComponent } from './review/movie-create/movie-create.component';
-import { SignupComponent } from './login/signup/signup.component';
-import { SigninComponent } from './login/signin/signin.component';
+import { SignupComponent } from './Auth/signup/signup.component';
+import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
 
 const routes: Routes = [

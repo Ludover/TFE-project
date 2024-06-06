@@ -16,8 +16,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { MovieListComponent } from './review/movie-list/movie-list.component';
 import { AppRoutingModule } from './app-routing.module';
-import { SignupComponent } from './login/signup/signup.component';
-import { SigninComponent } from './login/signin/signin.component';
+import { SignupComponent } from './Auth/signup/signup.component';
+import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
 
 @NgModule({
