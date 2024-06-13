@@ -10,6 +10,6 @@
                 #passwordInput="ngModel" />
             <mat-error *ngIf="passwordInput.invalid">Veuillez saisir un mot de passe.</mat-error>
         </mat-form-field>
-        <button mat-raised-button color="primary" type="submit">Se connecter</button>
+        <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading">Se connecter</button>
     </form>
 </mat-card>

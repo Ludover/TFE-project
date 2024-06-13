@@ -5,11 +5,12 @@ import { MovieCreateComponent } from './review/movie-create/movie-create.compone
 import { SignupComponent } from './Auth/signup/signup.component';
 import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
+import { AuthGuard } from './Auth/auth.guard';
 
 const routes: Routes = [
   { path: '', component: MovieListComponent },
-  { path: 'create', component: MovieCreateComponent },
-  { path: 'edit/:movieId', component: MovieCreateComponent },
+  { path: 'create', canActivate: [AuthGuard], component: MovieCreateComponent },
+  { path: 'edit/:movieId', canActivate: [AuthGuard], component: MovieCreateComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'signin', component: SigninComponent },
   { path: 'search', component: SearchComponent },

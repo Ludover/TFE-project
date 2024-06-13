@@ -2,19 +2,20 @@
   <span class="toolbar-title"><a routerLink="/">Pipso</a></span>
   <span class="spacer"></span>
   <ul>
-    <li>
-      <a mat-button routerLink="/search" routerLinkActive="mat-accent"
-        >Rechercher un film</a
-      >
-      <a mat-button routerLink="/create" routerLinkActive="mat-accent"
-        >Ajouter un film</a
-      >
-      <a mat-button routerLink="/signin" routerLinkActive="mat-accent"
-        >Se connecter</a
-      >
-      <a mat-button routerLink="/signup" routerLinkActive="mat-accent"
-        >Créer un compte</a
-      >
+    <li *ngIf="userIsAuthenticated">
+    <a mat-button routerLink="/search" routerLinkActive="mat-accent">Rechercher un film</a>
+    </li>
+    <li *ngIf="userIsAuthenticated">
+      <a mat-button routerLink="/create" routerLinkActive="mat-accent">Ajouter un film</a>
+    </li>
+    <li *ngIf="!userIsAuthenticated">
+      <a mat-button routerLink="/signin" routerLinkActive="mat-accent">Se connecter</a>
+    </li>
+    <li *ngIf="!userIsAuthenticated">
+      <a mat-button routerLink="/signup" routerLinkActive="mat-accent">Créer un compte</a>
+    </li>
+    <li *ngIf="userIsAuthenticated">
+      <a mat-button (click)="onLogout()">Se déconnecter</a>
     </li>
   </ul>
 </mat-toolbar>
