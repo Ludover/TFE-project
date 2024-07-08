@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
 import { DateFormatService } from '../date-format.service';
+import { AuthService } from 'src/app/Auth/auth.service';
 
 @Component({
   selector: 'app-movie-list',
@@ -14,10 +15,13 @@ export class MovieListComponent implements OnInit, OnDestroy {
   movies: Movie[] = [];
   isLoading = false;
   private moviesSub?: Subscription;
+  private authStatusSub: Subscription;
+  UserIsAuthenticated = false;
 
   constructor(
     public moviesService: MoviesService,
-    public dateFormat: DateFormatService
+    public dateFormat: DateFormatService, 
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -29,6 +33,10 @@ export class MovieListComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.movies = movies;
       });
+      this.UserIsAuthenticated = this.authService.getIsAuth();
+      this.authStatusSub = this.authService.getAuthStatusListener().subscribe(isAuthenticated => {
+        this.UserIsAuthenticated = isAuthenticated;
+      });
   }
 
   onDelete(movieId: string) {
@@ -37,5 +45,6 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.moviesSub?.unsubscribe();
+    this.authStatusSub.unsubscribe();
   }
 }

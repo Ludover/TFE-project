@@ -13,6 +13,6 @@
         <input matInput type="password" ngModel name="password" required placeholder="Mot de passe" #passwordInput="ngModel" />
         <mat-error *ngIf="passwordInput.invalid">Veuillez saisir un mot de passe</mat-error>
       </mat-form-field>
-      <button mat-raised-button color="primary" type="submit">S'enregistrer</button>
+      <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading">S'enregistrer</button>
     </form>
   </mat-card>

@@ -1,10 +1,11 @@
 const express = require("express");
 
 const Movie = require("../models/movie");
+const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
-router.post("", (req, res, next) => {
+router.post("", checkAuth, (req, res, next) => {
   const movie = new Movie({
     title: req.body.title,
     date: req.body.date,
@@ -17,7 +18,7 @@ router.post("", (req, res, next) => {
   });
 });
 
-router.put("/:id", (req, res, next) => {
+router.put("/:id", checkAuth, (req, res, next) => {
   const movie = new Movie({
     _id: req.body.id,
     title: req.body.title,
@@ -47,7 +48,7 @@ router.get("/:id", (req, res, next) => {
   });
 });
 
-router.delete("/api/movies/:id", (req, res, next) => {
+router.delete("/:id", checkAuth, (req, res, next) => {
   Movie.deleteOne({ _id: req.params.id }).then((result) => {
     console.log(result);
     res.status(200).json({ message: "Movie deleted" });
