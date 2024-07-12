@@ -1,21 +1,33 @@
 <mat-toolbar color="primary">
-  <span class="toolbar-title"><a routerLink="/">Pipso</a></span>
+  <span class="toolbar-title">
+    <a routerLink="/" class="logo-link">Pipso</a>
+  </span>
   <span class="spacer"></span>
-  <ul>
+  <ul class="menu-list">
     <li *ngIf="userIsAuthenticated">
-    <a mat-button routerLink="/search" routerLinkActive="mat-accent">Rechercher un film</a>
+      <a mat-button routerLink="/search" routerLinkActive="mat-accent"
+        ><mat-icon>search</mat-icon> Rechercher un film</a
+      >
     </li>
     <li *ngIf="userIsAuthenticated">
-      <a mat-button routerLink="/create" routerLinkActive="mat-accent">Ajouter un film</a>
+      <a mat-button routerLink="/create" routerLinkActive="mat-accent"
+        ><mat-icon>add</mat-icon> Ajouter un film</a
+      >
     </li>
     <li *ngIf="!userIsAuthenticated">
-      <a mat-button routerLink="/signin" routerLinkActive="mat-accent">Se connecter</a>
+      <a mat-button routerLink="/signin" routerLinkActive="mat-accent"
+        ><mat-icon>login</mat-icon> Se connecter</a
+      >
     </li>
     <li *ngIf="!userIsAuthenticated">
-      <a mat-button routerLink="/signup" routerLinkActive="mat-accent">Créer un compte</a>
+      <a mat-button routerLink="/signup" routerLinkActive="mat-accent"
+        ><mat-icon>person_add</mat-icon> Créer un compte</a
+      >
     </li>
     <li *ngIf="userIsAuthenticated">
-      <a mat-button (click)="onLogout()">Se déconnecter</a>
+      <a mat-button (click)="onLogout()"
+        ><mat-icon>logout</mat-icon> Se déconnecter</a
+      >
     </li>
   </ul>
 </mat-toolbar>

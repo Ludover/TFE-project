@@ -1,22 +1,38 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.css']
+  styleUrls: ['./signin.component.css'],
 })
 export class SigninComponent {
   isLoading = false;
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private snackBar: MatSnackBar) {}
 
   onLogin(form: NgForm) {
     if (form.invalid) {
       return;
     }
     this.isLoading = true;
-    this.authService.login(form.value.email, form.value.password);
+    this.authService.login(form.value.email, form.value.password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.snackBar.open('Connexion réussie', 'Fermer', {
+          duration: 3000,
+          verticalPosition: 'top',
+        });
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.snackBar.open('Identifiant ou mot de passe incorrect', 'Fermer', {
+          duration: 3000,
+          verticalPosition: 'top',
+        });
+      },
+    });
   }
 }

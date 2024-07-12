@@ -1,24 +1,41 @@
-.mat-toolbar {
-  display: flex;
-  justify-content: center;
+.toolbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-ul {
+.logo-link {
+  color: white;
+  text-decoration: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.menu-list {
+  display: flex;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.spacer {
-  flex: 1 1 auto;
+.menu-list li {
+  margin-left: 20px;
 }
 
-a {
+.menu-list a {
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: white;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.toolbar-title {
-  flex-grow: 1;
-  text-align: center;
+.menu-list a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffcc00;
+}
+
+mat-icon {
+  margin-right: 8px;
 }

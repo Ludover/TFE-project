@@ -1,18 +1,44 @@
-<mat-card>
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <form
-      (submit)="onSignup(signupForm)"
-      #signupForm="ngForm"
-      *ngIf="!isLoading"
+<mat-card class="signup-card">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onSignup(signupForm)" #signupForm="ngForm" *ngIf="!isLoading">
+    <h2>Créer un compte</h2>
+    <mat-form-field appearance="fill">
+      <mat-label>E-Mail</mat-label>
+      <input
+        matInput
+        type="email"
+        ngModel
+        name="email"
+        required
+        placeholder="E-Mail"
+        #emailInput="ngModel"
+      />
+      <mat-error *ngIf="emailInput.invalid && emailInput.touched">
+        Veuillez saisir un email valide.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Mot de passe</mat-label>
+      <input
+        matInput
+        type="password"
+        ngModel
+        name="password"
+        required
+        placeholder="Mot de passe"
+        #passwordInput="ngModel"
+      />
+      <mat-error *ngIf="passwordInput.invalid && passwordInput.touched">
+        Veuillez saisir un mot de passe.
+      </mat-error>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="signupForm.invalid || isLoading"
     >
-      <mat-form-field>
-        <input matInput type="email" ngModel name="email" required placeholder="E-Mail" #emailInput="ngModel" />
-        <mat-error *ngIf="emailInput.invalid">Veuillez saisir un email valide.</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="password" ngModel name="password" required placeholder="Mot de passe" #passwordInput="ngModel" />
-        <mat-error *ngIf="passwordInput.invalid">Veuillez saisir un mot de passe</mat-error>
-      </mat-form-field>
-      <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading">S'enregistrer</button>
-    </form>
-  </mat-card>
+      S'enregistrer
+    </button>
+  </form>
+</mat-card>
