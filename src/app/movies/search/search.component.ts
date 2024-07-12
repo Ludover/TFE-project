@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { OmdbService } from 'src/app/omdb.service';
+import { MoviesService } from 'src/app/review/movies.service';
 
 @Component({
   selector: 'app-search',
@@ -11,7 +12,10 @@ export class SearchComponent {
   movies: any[] = [];
   isLoading: boolean = false;
 
-  constructor(private omdbService: OmdbService) {}
+  constructor(
+    private omdbService: OmdbService,
+    public moviesService: MoviesService
+  ) {}
 
   searchMovies() {
     if (this.title) {
@@ -21,5 +25,14 @@ export class SearchComponent {
         this.isLoading = false;
       });
     }
+  }
+
+  onSelectMovie(movie: any) {
+    const movieToAdd = {
+      id: '',
+      title: movie.Title,
+      date: new Date(),
+    };
+    this.moviesService.addMovie(movieToAdd);
   }
 }

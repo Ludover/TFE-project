@@ -7,7 +7,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { Observable } from 'rxjs';
- 
+
 @Injectable({ providedIn: 'root' })
 class PermissionsService {
   constructor(private authService: AuthService, private router: Router) {}
@@ -17,12 +17,12 @@ class PermissionsService {
   ): boolean | Observable<boolean> | Promise<boolean> {
     const isAuth = this.authService.getIsAuth();
     if (!isAuth) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/signin']);
     }
     return isAuth;
   }
 }
- 
+
 export const AuthGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot

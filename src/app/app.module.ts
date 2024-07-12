@@ -15,6 +15,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { AppComponent } from './app.component';
 import { MovieCreateComponent } from './review/movie-create/movie-create.component';
@@ -52,6 +53,7 @@ import { AuthInterceptor } from './Auth/auth-interceptor';
     MatProgressSpinnerModule,
     MatIconModule,
     MatSnackBarModule,
+    MatMenuModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

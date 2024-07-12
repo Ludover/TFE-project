@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, throwError, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Subject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthData } from './auth-data.model';
 import { Router } from '@angular/router';
+import { AuthDataLogin } from './auth-data-login.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -25,21 +26,25 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
-  createUser(email: string, password: string) {
-    const AuthData: AuthData = { email, password };
+  createUser(email: string, password: string, pseudo: string) {
+    const authData: AuthData = { email, password, pseudo };
     this.http
-      .post('http://localhost:3000/api/user/signup', AuthData)
+      .post<{ message: string; result: any }>(
+        'http://localhost:3000/api/user/signup',
+        authData
+      )
       .subscribe((response) => {
         console.log(response);
+        return response;
       });
   }
 
   login(email: string, password: string): Observable<void> {
-    const AuthData: AuthData = { email, password };
+    const AuthDataLogin: AuthDataLogin = { email, password };
     return this.http
       .post<{ token: string; expiresIn: number }>(
         'http://localhost:3000/api/user/login',
-        AuthData
+        AuthDataLogin
       )
       .pipe(
         map((response) => {
@@ -47,6 +52,7 @@ export class AuthService {
           this.token = token;
           if (token) {
             const expiresInDuration = response.expiresIn;
+            this.setAuthTimer(expiresInDuration);
             this.tokenTimer = setTimeout(() => {
               this.logout();
             }, expiresInDuration * 1000);
@@ -59,11 +65,23 @@ export class AuthService {
             this.saveAuthData(token, expirationDate);
             this.router.navigate(['/']);
           }
-        }),
-        catchError((error) => {
-          return throwError(error);
         })
       );
+  }
+
+  autoAuthUser() {
+    const authInformation = this.getAuthData();
+    if (!authInformation) {
+      return;
+    }
+    const now = new Date();
+    const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
+    if (expiresIn > 0) {
+      this.token = authInformation.token;
+      this.isAuthenticated = true;
+      this.setAuthTimer(expiresIn / 1000);
+      this.authStatusListener.next(true);
+    }
   }
 
   logout() {
@@ -75,6 +93,12 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
+  private setAuthTimer(duration: number) {
+    this.tokenTimer = setTimeout(() => {
+      this.logout();
+    }, duration * 1000);
+  }
+
   private saveAuthData(token: string, expirationDate: Date) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
@@ -83,5 +107,17 @@ export class AuthService {
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
+  }
+
+  private getAuthData() {
+    const token = localStorage.getItem('token');
+    const expirationDate = localStorage.getItem('expiration');
+    if (!token || !expirationDate) {
+      return null;
+    }
+    return {
+      token: token,
+      expirationDate: new Date(expirationDate),
+    };
   }
 }

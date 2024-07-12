@@ -32,6 +32,21 @@
         Veuillez saisir un mot de passe.
       </mat-error>
     </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Pseudo</mat-label>
+      <input
+        matInput
+        type="string"
+        ngModel
+        name="pseudo"
+        required
+        placeholder="Pseudo"
+        #pseudoInput="ngModel"
+      />
+      <mat-error *ngIf="pseudoInput.invalid && pseudoInput.touched">
+        Veuillez saisir un pseudo
+      </mat-error>
+    </mat-form-field>
     <button
       mat-raised-button
       color="primary"

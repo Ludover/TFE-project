@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -13,6 +13,7 @@ export class OmdbService {
 
   searchMovie(title: string): Observable<any> {
     const url = `${this.apiUrl}s=${title}`;
-    return this.http.get<any>(url);
+    const headers = new HttpHeaders();
+    return this.http.get<any>(url, { headers });
   }
 }

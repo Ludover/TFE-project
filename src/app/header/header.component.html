@@ -4,30 +4,32 @@
   </span>
   <span class="spacer"></span>
   <ul class="menu-list">
+    <li>
+      <a mat-button routerLink="/search" routerLinkActive="mat-accent">
+        <mat-icon>search</mat-icon> Rechercher un film
+      </a>
+    </li>
+    <li *ngIf="userIsAuthenticated" [matMenuTriggerFor]="filmMenu">
+      <button mat-button><mat-icon>list</mat-icon> Mes films</button>
+      <mat-menu #filmMenu="matMenu">
+        <button mat-menu-item routerLink="/listVoir">A voir</button>
+        <button mat-menu-item routerLink="/listVu">Vu</button>
+      </mat-menu>
+    </li>
     <li *ngIf="!userIsAuthenticated">
-      <a mat-button routerLink="/search" routerLinkActive="mat-accent"
-        ><mat-icon>search</mat-icon> Rechercher un film</a
-      >
+      <a mat-button routerLink="/signin" routerLinkActive="mat-accent">
+        <mat-icon>login</mat-icon> Se connecter
+      </a>
+    </li>
+    <li *ngIf="!userIsAuthenticated">
+      <a mat-button routerLink="/signup" routerLinkActive="mat-accent">
+        <mat-icon>person_add</mat-icon> Créer un compte
+      </a>
     </li>
     <li *ngIf="userIsAuthenticated">
-      <a mat-button routerLink="/create" routerLinkActive="mat-accent"
-        ><mat-icon>add</mat-icon> Ajouter un film</a
-      >
-    </li>
-    <li *ngIf="!userIsAuthenticated">
-      <a mat-button routerLink="/signin" routerLinkActive="mat-accent"
-        ><mat-icon>login</mat-icon> Se connecter</a
-      >
-    </li>
-    <li *ngIf="!userIsAuthenticated">
-      <a mat-button routerLink="/signup" routerLinkActive="mat-accent"
-        ><mat-icon>person_add</mat-icon> Créer un compte</a
-      >
-    </li>
-    <li *ngIf="userIsAuthenticated">
-      <a mat-button (click)="onLogout()"
-        ><mat-icon>logout</mat-icon> Se déconnecter</a
-      >
+      <a mat-button (click)="onLogout()">
+        <mat-icon>logout</mat-icon> Se déconnecter
+      </a>
     </li>
   </ul>
 </mat-toolbar>
