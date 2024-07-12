@@ -9,13 +9,16 @@ import { OmdbService } from 'src/app/omdb.service';
 export class SearchComponent {
   title: string = '';
   movies: any[] = [];
+  isLoading: boolean = false;
 
   constructor(private omdbService: OmdbService) {}
 
   searchMovies() {
     if (this.title) {
+      this.isLoading = true;
       this.omdbService.searchMovie(this.title).subscribe((response) => {
         this.movies = response.Search || [];
+        this.isLoading = false;
       });
     }
   }

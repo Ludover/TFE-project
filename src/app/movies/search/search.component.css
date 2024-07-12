@@ -1,25 +1,30 @@
 .search-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
   text-align: center;
-  margin-top: 20px;
 }
 
-mat-form-field {
-  width: 300px;
-  margin-right: 10px;
+.search-container h1 {
+  margin-bottom: 20px;
 }
 
-button {
-  margin-top: 10px;
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .movies {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
+  justify-content: space-around;
 }
 
 .movie {
-  width: 300px;
-  margin: 10px;
+  width: 200px;
+  margin: 20px;
+}
+
+.loading-spinner {
+  margin: 20px auto;
 }

@@ -4,9 +4,13 @@
     <mat-label>Titre du film</mat-label>
     <input matInput [(ngModel)]="title" placeholder="Entrez le titre du film" />
   </mat-form-field>
-  <button mat-raised-button color="primary" (click)="searchMovies()">
-    Rechercher
-  </button>
+  <div class="search-button">
+    <button mat-raised-button color="primary" (click)="searchMovies()">
+      Rechercher
+    </button>
+  </div>
+
+  <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
   <div class="movies" *ngIf="movies.length > 0">
     <mat-card class="movie" *ngFor="let movie of movies">
