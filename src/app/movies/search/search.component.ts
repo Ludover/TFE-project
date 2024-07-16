@@ -32,6 +32,7 @@ export class SearchComponent {
       id: '',
       title: movie.Title,
       date: new Date(),
+      list: 'tosee',
     };
     this.moviesService.addMovie(movieToAdd);
   }

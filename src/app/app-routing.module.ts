@@ -5,6 +5,7 @@ import { MovieCreateComponent } from './review/movie-create/movie-create.compone
 import { SignupComponent } from './Auth/signup/signup.component';
 import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
+import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done.component';
 import { AuthGuard } from './Auth/auth.guard';
 
 const routes: Routes = [
@@ -18,8 +19,12 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'signin', component: SigninComponent },
   { path: 'search', component: SearchComponent },
-  { path: 'listVoir', component: MovieListComponent },
-  { path: 'listVu', component: MovieListComponent },
+  { path: 'listVoir', canActivate: [AuthGuard], component: MovieListComponent },
+  {
+    path: 'listVu',
+    canActivate: [AuthGuard],
+    component: MovieListDoneComponent,
+  },
 ];
 
 @NgModule({

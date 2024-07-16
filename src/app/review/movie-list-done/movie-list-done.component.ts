@@ -7,11 +7,11 @@ import { DateFormatService } from '../date-format.service';
 import { AuthService } from 'src/app/Auth/auth.service';
 
 @Component({
-  selector: 'app-movie-list',
-  templateUrl: './movie-list.component.html',
-  styleUrls: ['./movie-list.component.css'],
+  selector: 'app-movie-list-done',
+  templateUrl: './movie-list-done.component.html',
+  styleUrls: ['./movie-list-done.component.css'],
 })
-export class MovieListComponent implements OnInit, OnDestroy {
+export class MovieListDoneComponent implements OnInit, OnDestroy {
   movies: Movie[] = [];
   isLoading = false;
   private moviesSub?: Subscription;
@@ -26,14 +26,12 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.moviesService.getMoviesByListType('tosee');
+    this.moviesService.getMovies();
     this.moviesSub = this.moviesService
       .getMovieUpdateListener()
       .subscribe((movies: Movie[]) => {
         this.isLoading = false;
-        console.log('Received movies: ', movies); // Vérifiez les données ici
-        this.movies.push(...movies.filter((movie) => movie.list === 'tosee')); // Assurez-vous que c'est bien un tableau
-        console.log(this.movies); // Vérifiez les données filtrées
+        this.movies = movies.filter((movie) => movie.list === 'saw');
       });
     this.UserIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService

@@ -35,6 +35,15 @@ export class MoviesService {
       });
   }
 
+  getMoviesByListType(listType: string) {
+    this.http
+      .get<Movie[]>(`http://localhost:3000/api/movies/list/${listType}`)
+      .subscribe((movies) => {
+        this.movies = movies;
+        this.moviesUpdated.next([...this.movies]);
+      });
+  }
+
   getMovieUpdateListener() {
     return this.moviesUpdated.asObservable();
   }
@@ -60,8 +69,8 @@ export class MoviesService {
       });
   }
 
-  updatePost(id: string, title: string, date: Date) {
-    const movie: Movie = { id: id, title: title, date: date };
+  updatePost(id: string, title: string, date: Date, list: string) {
+    const movie: Movie = { id: id, title: title, date: date, list: list };
     this.http
       .put('http://localhost:3000/api/movies/' + id, movie)
       .subscribe((response) => {

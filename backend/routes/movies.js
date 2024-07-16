@@ -9,6 +9,7 @@ router.post("", checkAuth, (req, res, next) => {
   const movie = new Movie({
     title: req.body.title,
     date: req.body.date,
+    list: req.body.list,
   });
   movie.save().then((createdMovie) => {
     res.status(201).json({
@@ -33,6 +34,15 @@ router.get("", (req, res, next) => {
   Movie.find().then((documents) => {
     res.status(200).json({
       message: "Movie fetched successfully",
+      movies: documents,
+    });
+  });
+});
+
+router.get("/list/:listType", (req, res, next) => {
+  Movie.find({ list: req.params.listType }).then((documents) => {
+    res.status(200).json({
+      message: "Films récupérés avec succès",
       movies: documents,
     });
   });

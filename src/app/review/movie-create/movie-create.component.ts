@@ -33,6 +33,7 @@ export class MovieCreateComponent implements OnInit {
             id: movieData._id,
             title: movieData.title,
             date: movieData.date,
+            list: 'tosee',
           };
         });
       } else {
@@ -48,12 +49,18 @@ export class MovieCreateComponent implements OnInit {
       id: '',
       title: form.value.title,
       date: new Date(),
+      list: 'tosee',
     };
     this.isLoading = true;
     if (this.mode === 'create') {
       this.moviesService.addMovie(movie);
     } else {
-      this.moviesService.updatePost(this.movieId, movie.title, movie.date);
+      this.moviesService.updatePost(
+        this.movieId,
+        movie.title,
+        movie.date,
+        movie.list
+      );
     }
 
     form.resetForm();

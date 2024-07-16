@@ -27,6 +27,7 @@ import { SignupComponent } from './Auth/signup/signup.component';
 import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
 import { AuthInterceptor } from './Auth/auth-interceptor';
+import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { AuthInterceptor } from './Auth/auth-interceptor';
     MovieCreateComponent,
     HeaderComponent,
     MovieListComponent,
+    MovieListDoneComponent,
     SignupComponent,
     SigninComponent,
     SearchComponent,

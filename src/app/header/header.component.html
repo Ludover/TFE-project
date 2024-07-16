@@ -4,7 +4,7 @@
   </span>
   <span class="spacer"></span>
   <ul class="menu-list">
-    <li>
+    <li *ngIf="userIsAuthenticated">
       <a mat-button routerLink="/search" routerLinkActive="mat-accent">
         <mat-icon>search</mat-icon> Rechercher un film
       </a>
