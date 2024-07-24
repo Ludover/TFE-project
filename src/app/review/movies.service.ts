@@ -19,13 +19,14 @@ export class MoviesService {
       .pipe(
         map((movieData) => {
           return movieData.movies.map(
-            (movie: { title: any; date: any; _id: any }) => {
+            (movie => {
               return {
                 title: movie.title,
                 date: movie.date,
                 id: movie._id,
+                creator: movie.creator
               };
-            }
+            })
           );
         })
       )

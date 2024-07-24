@@ -10,6 +10,7 @@ router.post("", checkAuth, (req, res, next) => {
     title: req.body.title,
     date: req.body.date,
     list: req.body.list,
+    creator: req.userData.userId
   });
   movie.save().then((createdMovie) => {
     res.status(201).json({
