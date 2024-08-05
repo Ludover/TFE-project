@@ -1,0 +1,34 @@
+<mat-toolbar>
+  <span>Liste des Amis</span>
+  <span class="spacer"></span>
+  <button mat-button color="primary" routerLink="/addfriend">
+    Ajouter un ami
+  </button>
+</mat-toolbar>
+
+<div *ngIf="friends.length > 0">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Liste des Amis</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item *ngFor="let friend of friends">
+          <mat-icon mat-list-icon>person</mat-icon>
+          <h4 mat-line>{{ friend.pseudo }}</h4>
+          <button
+            mat-button
+            mat-icon-button
+            color="warn"
+            (click)="removeFriend(friend.pseudo)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>
+<p class="info-text" *ngIf="friends.length === 0">
+  Vous n'avez pas encore d'amis.
+</p>

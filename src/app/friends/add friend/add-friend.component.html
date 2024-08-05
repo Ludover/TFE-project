@@ -1,0 +1,12 @@
+<form #form="ngForm" (ngSubmit)="onAddFriend(form)">
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Pseudo de l'ami"
+      name="pseudo"
+      ngModel
+      required
+    />
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit">Ajouter</button>
+</form>

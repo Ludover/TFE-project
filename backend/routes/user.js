@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
+const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
@@ -62,6 +63,41 @@ router.post("/login", (req, res, next) => {
         message: "L'authentification a échoué",
       });
     });
+});
+
+// Ajouter un ami
+router.post("/add-friend/:pseudo", checkAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userData.userId);
+    const friend = await User.findOne({ pseudo: req.params.pseudo });
+
+    if (!friend) {
+      return res.status(404).json({ message: "Ami non trouvé" });
+    }
+
+    if (user.friends.includes(friend._id)) {
+      return res.status(400).json({ message: "Vous êtes déjà amis" });
+    }
+
+    user.friends.push(friend._id);
+    await user.save();
+
+    res.status(200).json({ message: "Ami ajouté avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de l'ajout de l'ami" });
+  }
+});
+
+// Récupérer la liste des amis
+router.get("/friends", checkAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userData.userId).populate("friends");
+    res.status(200).json(user.friends);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération des amis" });
+  }
 });
 
 module.exports = router;

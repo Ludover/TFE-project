@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
 
 import { AppComponent } from './app.component';
 import { MovieCreateComponent } from './review/movie-create/movie-create.component';
@@ -28,6 +29,8 @@ import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
 import { AuthInterceptor } from './Auth/auth-interceptor';
 import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done.component';
+import { AddFriendComponent } from './friends/add friend/add-friend.component';
+import { FriendListComponent } from './friends/list/friend-list.component';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -43,6 +46,8 @@ registerLocaleData(localeFr);
     SignupComponent,
     SigninComponent,
     SearchComponent,
+    AddFriendComponent,
+    FriendListComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +65,7 @@ registerLocaleData(localeFr);
     MatIconModule,
     MatSnackBarModule,
     MatMenuModule,
+    MatListModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

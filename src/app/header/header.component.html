@@ -16,6 +16,11 @@
         <button mat-menu-item routerLink="/listVu">Vu</button>
       </mat-menu>
     </li>
+    <li *ngIf="userIsAuthenticated">
+      <a mat-button routerLink="/friendlist" routerLinkActive="mat-accent">
+        <mat-icon>person</mat-icon> Amis
+      </a>
+    </li>
     <li *ngIf="!userIsAuthenticated">
       <a mat-button routerLink="/signin" routerLinkActive="mat-accent">
         <mat-icon>login</mat-icon> Se connecter

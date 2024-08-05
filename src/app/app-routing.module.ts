@@ -7,6 +7,8 @@ import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
 import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done.component';
 import { AuthGuard } from './Auth/auth.guard';
+import { FriendListComponent } from './friends/list/friend-list.component';
+import { AddFriendComponent } from './friends/add friend/add-friend.component';
 
 const routes: Routes = [
   { path: '', canActivate: [AuthGuard], component: MovieListComponent },
@@ -24,6 +26,16 @@ const routes: Routes = [
     path: 'listVu',
     canActivate: [AuthGuard],
     component: MovieListDoneComponent,
+  },
+  {
+    path: 'friendlist',
+    canActivate: [AuthGuard],
+    component: FriendListComponent,
+  },
+  {
+    path: 'addfriend',
+    canActivate: [AuthGuard],
+    component: AddFriendComponent,
   },
 ];
 
