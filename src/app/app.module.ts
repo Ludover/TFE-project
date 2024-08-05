@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import {
@@ -28,6 +28,10 @@ import { SigninComponent } from './Auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
 import { AuthInterceptor } from './Auth/auth-interceptor';
 import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done.component';
+import { DatePipe, registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
+registerLocaleData(localeFr);
 
 @NgModule({
   declarations: [
@@ -59,6 +63,8 @@ import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    DatePipe,
+    { provide: LOCALE_ID, useValue: 'fr-BE' },
   ],
   bootstrap: [AppComponent],
 })

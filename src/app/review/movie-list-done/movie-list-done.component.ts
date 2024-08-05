@@ -3,8 +3,8 @@ import { Subscription } from 'rxjs';
 
 import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
-import { DateFormatService } from '../date-format.service';
 import { AuthService } from 'src/app/Auth/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-movie-list-done',
@@ -20,18 +20,18 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
 
   constructor(
     public moviesService: MoviesService,
-    public dateFormat: DateFormatService,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
     this.isLoading = true;
-    this.moviesService.getMovies();
+    this.moviesService.getMoviesByListType('saw');
     this.moviesSub = this.moviesService
       .getMovieUpdateListener()
       .subscribe((movies: Movie[]) => {
         this.isLoading = false;
-        this.movies = movies.filter((movie) => movie.list === 'saw');
+        this.movies = movies;
       });
     this.UserIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService
@@ -42,7 +42,22 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
   }
 
   onDelete(movieId: string) {
-    this.moviesService.deleteMovie(movieId);
+    const snackBarRef = this.snackBar.open(
+      'Êtes-vous sûr de vouloir supprimer ce film ?',
+      'Oui',
+      {
+        duration: 5000,
+        verticalPosition: 'top',
+      }
+    );
+
+    snackBarRef.onAction().subscribe(() => {
+      this.moviesService.deleteMovie(movieId);
+      this.snackBar.open('Film supprimé avec succès', 'Fermer', {
+        duration: 3000,
+        verticalPosition: 'top',
+      });
+    });
   }
 
   ngOnDestroy() {

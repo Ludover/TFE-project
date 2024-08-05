@@ -18,16 +18,14 @@ export class MoviesService {
       .get<{ message: string; movies: any }>('http://localhost:3000/api/movies')
       .pipe(
         map((movieData) => {
-          return movieData.movies.map(
-            (movie => {
-              return {
-                title: movie.title,
-                date: movie.date,
-                id: movie._id,
-                creator: movie.creator
-              };
-            })
-          );
+          return movieData.movies.map((movie) => {
+            return {
+              title: movie.title,
+              date: movie.date,
+              id: movie._id,
+              creator: movie.creator,
+            };
+          });
         })
       )
       .subscribe((transformedmovies) => {
@@ -38,9 +36,23 @@ export class MoviesService {
 
   getMoviesByListType(listType: string) {
     this.http
-      .get<Movie[]>(`http://localhost:3000/api/movies/list/${listType}`)
-      .subscribe((movies) => {
-        this.movies = movies;
+      .get<{ message: string; movies: any[] }>(
+        `http://localhost:3000/api/movies/list/${listType}`
+      )
+      .pipe(
+        map((responseData) => {
+          return responseData.movies.map((movie) => {
+            return {
+              id: movie._id,
+              title: movie.title,
+              date: movie.date,
+              list: movie.list,
+            };
+          });
+        })
+      )
+      .subscribe((mappedMovies) => {
+        this.movies = mappedMovies;
         this.moviesUpdated.next([...this.movies]);
       });
   }
@@ -70,17 +82,24 @@ export class MoviesService {
       });
   }
 
-  updatePost(id: string, title: string, date: Date, list: string) {
-    const movie: Movie = { id: id, title: title, date: date, list: list };
+  updateMovie(id: string, title: string, date: Date, list: string) {
+    const updateData = { title, date, list };
+
     this.http
-      .put('http://localhost:3000/api/movies/' + id, movie)
+      .put(`http://localhost:3000/api/movies/${id}`, updateData)
       .subscribe((response) => {
         const updatedMovies = [...this.movies];
-        const oldMovieIndex = updatedMovies.findIndex((m) => m.id === movie.id);
-        updatedMovies[oldMovieIndex] = movie;
-        this.movies = updatedMovies;
-        this.moviesUpdated.next([...this.movies]);
-        this.router.navigate(['/']);
+        const oldMovieIndex = updatedMovies.findIndex((m) => m.id === id);
+        if (oldMovieIndex > -1) {
+          updatedMovies[oldMovieIndex] = {
+            ...updatedMovies[oldMovieIndex],
+            title,
+            date,
+            list,
+          };
+          this.movies = updatedMovies;
+          this.moviesUpdated.next([...this.movies]);
+        }
       });
   }
 

@@ -10,7 +10,7 @@ router.post("", checkAuth, (req, res, next) => {
     title: req.body.title,
     date: req.body.date,
     list: req.body.list,
-    creator: req.userData.userId
+    creator: req.userData.userId,
   });
   movie.save().then((createdMovie) => {
     res.status(201).json({
@@ -21,14 +21,22 @@ router.post("", checkAuth, (req, res, next) => {
 });
 
 router.put("/:id", checkAuth, (req, res, next) => {
-  const movie = new Movie({
-    _id: req.body.id,
+  const updateData = {
     title: req.body.title,
     date: new Date(),
-  });
-  Movie.updateOne({ _id: req.params.id }, movie).then((result) => {
-    res.status(200).json({ message: "Update successful!" });
-  });
+    list: req.body.list,
+  };
+  Movie.updateOne({ _id: req.params.id }, updateData)
+    .then((result) => {
+      if (result.modifiedCount > 0) {
+        res.status(200).json({ message: "Update successful!" });
+      } else {
+        res.status(404).json({ message: "Film not found!" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Updating film failed!" });
+    });
 });
 
 router.get("", (req, res, next) => {
@@ -60,10 +68,16 @@ router.get("/:id", (req, res, next) => {
 });
 
 router.delete("/:id", checkAuth, (req, res, next) => {
-  Movie.deleteOne({ _id: req.params.id }).then((result) => {
-    console.log(result);
-    res.status(200).json({ message: "Movie deleted" });
-  });
+  Movie.deleteOne({ _id: req.params.id })
+    .then((result) => {
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ message: "Movie not found" });
+      }
+      res.status(200).json({ message: "Movie deleted" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Deleting movie failed", error: error });
+    });
 });
 
 module.exports = router;

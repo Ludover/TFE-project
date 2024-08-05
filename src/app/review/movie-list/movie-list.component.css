@@ -1,6 +1,9 @@
-:host {
-  display: block;
-  margin-top: 20px;
+.movie-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
 mat-spinner {

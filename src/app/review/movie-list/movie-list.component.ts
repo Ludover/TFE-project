@@ -3,8 +3,8 @@ import { Subscription } from 'rxjs';
 
 import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
-import { DateFormatService } from '../date-format.service';
 import { AuthService } from 'src/app/Auth/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-movie-list',
@@ -20,8 +20,8 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   constructor(
     public moviesService: MoviesService,
-    public dateFormat: DateFormatService,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -31,9 +31,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
       .getMovieUpdateListener()
       .subscribe((movies: Movie[]) => {
         this.isLoading = false;
-        console.log('Received movies: ', movies); // Vérifiez les données ici
-        this.movies.push(...movies.filter((movie) => movie.list === 'tosee')); // Assurez-vous que c'est bien un tableau
-        console.log(this.movies); // Vérifiez les données filtrées
+        this.movies = movies;
       });
     this.UserIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService
@@ -44,7 +42,47 @@ export class MovieListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(movieId: string) {
-    this.moviesService.deleteMovie(movieId);
+    const snackBarRef = this.snackBar.open(
+      'Êtes-vous sûr de vouloir supprimer ce film ?',
+      'Oui',
+      {
+        duration: 5000,
+        verticalPosition: 'top',
+      }
+    );
+
+    snackBarRef.onAction().subscribe(() => {
+      this.moviesService.deleteMovie(movieId);
+      this.snackBar.open('Film supprimé avec succès', 'Fermer', {
+        duration: 3000,
+        verticalPosition: 'top',
+      });
+    });
+  }
+
+  updateAsSeen(id: string, title: string, date: Date) {
+    const snackBarRef = this.snackBar.open(
+      `Êtes-vous sûr de vouloir marquer "${title}" comme vu ?`,
+      'Oui',
+      {
+        duration: 5000,
+        verticalPosition: 'top',
+        panelClass: ['mat-toolbar', 'mat-primary'],
+      }
+    );
+
+    snackBarRef.onAction().subscribe(() => {
+      // Appeler le service pour mettre à jour le film
+      this.moviesService.updateMovie(id, title, date, 'saw');
+
+      // Recharger les films après la mise à jour
+      this.moviesService.getMoviesByListType('tosee');
+
+      this.snackBar.open('Film marqué comme vu', 'Fermer', {
+        duration: 3000,
+        verticalPosition: 'top',
+      });
+    });
   }
 
   ngOnDestroy() {

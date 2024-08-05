@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subject, Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AuthData } from './auth-data.model';
 import { Router } from '@angular/router';
 import { AuthDataLogin } from './auth-data-login.model';
@@ -26,17 +26,29 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
-  createUser(email: string, password: string, pseudo: string) {
+  createUser(
+    email: string,
+    password: string,
+    pseudo: string
+  ): Observable<void> {
     const authData: AuthData = { email, password, pseudo };
-    this.http
+    return this.http
       .post<{ message: string; result: any }>(
         'http://localhost:3000/api/user/signup',
         authData
       )
-      .subscribe((response) => {
-        console.log(response);
-        return response;
-      });
+      .pipe(
+        map((response) => {
+          console.log(response);
+          this.router.navigate(['/signin']);
+        }),
+        catchError((error) => {
+          console.error(error);
+          return throwError(
+            () => new Error("Une erreur est survenue lors de l'inscription.")
+          );
+        })
+      );
   }
 
   login(email: string, password: string): Observable<void> {

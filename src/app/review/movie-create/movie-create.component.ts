@@ -55,7 +55,7 @@ export class MovieCreateComponent implements OnInit {
     if (this.mode === 'create') {
       this.moviesService.addMovie(movie);
     } else {
-      this.moviesService.updatePost(
+      this.moviesService.updateMovie(
         this.movieId,
         movie.title,
         movie.date,
