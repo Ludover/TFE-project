@@ -34,24 +34,36 @@ export class FriendListComponent implements OnInit, OnDestroy {
   }
 
   removeFriend(friendId: string) {
-    this.friendsService.removeFriend(friendId).subscribe({
-      next: () => {
-        this.friends = this.friends.filter((friend) => friend._id !== friendId);
-        this.snackBar.open('Ami supprimé avec succès', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
-      },
-      error: () => {
-        this.snackBar.open(
-          "Erreur lors de la suppression de l'ami. Réessayez plus tard.",
-          'Fermer',
-          {
+    const snackBarRef = this.snackBar.open(
+      'Voulez-vous vraiment supprimer cet ami ?',
+      'Supprimer',
+      {
+        duration: 5000, // Durée avant que le snack-bar disparaisse
+        verticalPosition: 'top',
+      }
+    );
+    snackBarRef.onAction().subscribe(() => {
+      this.friendsService.removeFriend(friendId).subscribe({
+        next: () => {
+          this.friends = this.friends.filter(
+            (friend) => friend._id !== friendId
+          );
+          this.snackBar.open('Ami supprimé avec succès', 'Fermer', {
             duration: 3000,
             verticalPosition: 'top',
-          }
-        );
-      },
+          });
+        },
+        error: () => {
+          this.snackBar.open(
+            "Erreur lors de la suppression de l'ami. Réessayez plus tard.",
+            'Fermer',
+            {
+              duration: 3000,
+              verticalPosition: 'top',
+            }
+          );
+        },
+      });
     });
   }
 

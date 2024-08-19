@@ -52,4 +52,9 @@ export class FriendsService {
   removeFriend(friendId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/remove-friend/${friendId}`);
   }
+
+  // Méthode pour vérifier si un utilisateur est déjà dans la liste d'amis
+  isFriend(userId: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/is-friend/${userId}`);
+  }
 }

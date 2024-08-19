@@ -342,4 +342,24 @@ router.delete("/remove-friend/:friendId", checkAuth, async (req, res) => {
   }
 });
 
+// Vérifie si un utilisateur est déjà dans la liste des amis
+router.get("/is-friend/:userId", checkAuth, async (req, res) => {
+  try {
+    const userId = req.userData.userId;
+    const friendId = req.params.userId;
+
+    // Trouver l'utilisateur actuel
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Vérifier si friendId est dans la liste des amis de l'utilisateur
+    const isFriend = user.friends.includes(friendId);
+    res.status(200).json(isFriend);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
 module.exports = router;

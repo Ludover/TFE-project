@@ -1,12 +1,17 @@
-.search-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+mat-card {
+  margin: 20px;
+  border-bottom: 50px;
   text-align: center;
 }
 
-.search-container h1 {
-  margin-bottom: 20px;
+mat-card-header {
+  margin-bottom: 40px;
+}
+mat-card-title h1 {
+  font-size: 2rem;
+  color: blueviolet;
+  margin: 0;
+  text-align: center;
 }
 
 .mat-form-field {
