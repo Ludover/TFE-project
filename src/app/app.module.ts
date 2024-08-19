@@ -31,6 +31,8 @@ import { AuthInterceptor } from './Auth/auth-interceptor';
 import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done.component';
 import { AddFriendComponent } from './friends/add friend/add-friend.component';
 import { FriendListComponent } from './friends/list/friend-list.component';
+import { FriendListRequestSentComponent } from './friends/listFriendRequestSent/friend-list-request-sent.component';
+import { FriendListRequestReceivedComponent } from './friends/listFriendRequestReceived/friend-list-request-received.component';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -48,6 +50,8 @@ registerLocaleData(localeFr);
     SearchComponent,
     AddFriendComponent,
     FriendListComponent,
+    FriendListRequestSentComponent,
+    FriendListRequestReceivedComponent,
   ],
   imports: [
     BrowserModule,

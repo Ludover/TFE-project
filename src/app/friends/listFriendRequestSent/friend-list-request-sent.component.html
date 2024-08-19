@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      <h1>Mes amis</h1>
+      <h1>Mes invitations envoyées</h1>
     </mat-card-title>
   </mat-card-header>
   <mat-accordion multi="true" *ngIf="friends.length > 0">
@@ -10,14 +10,17 @@
         {{ friend.pseudo }}
       </mat-expansion-panel-header>
       <mat-action-row>
-        <button mat-icon-button color="warn" (click)="removeFriend(friend._id)">
-          Supprimer
+        <button
+          mat-button
+          color="warn"
+          (click)="cancelFriendRequest(friend._id)"
+        >
+          Annuler
         </button>
       </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
-
   <p class="info-text" *ngIf="friends.length === 0">
-    Vous n'avez pas encore d'amis.
+    Vous n'avez pas d'invitations envoyées.
   </p>
 </mat-card>

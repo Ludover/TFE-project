@@ -1,12 +1,38 @@
-<form #form="ngForm" (ngSubmit)="onAddFriend(form)">
-  <mat-form-field>
-    <input
-      matInput
-      placeholder="Pseudo de l'ami"
-      name="pseudo"
-      ngModel
-      required
-    />
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <h1>Rechercher un ami</h1>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-form-field appearance="fill">
+    <mat-label>pseudo de l'ami recherché</mat-label>
+    <input matInput [(ngModel)]="pseudo" placeholder="Entrez le pseudo" />
   </mat-form-field>
-  <button mat-raised-button color="primary" type="submit">Ajouter</button>
-</form>
+  <div class="search-button">
+    <button mat-raised-button color="primary" (click)="onSearchFriend()">
+      Rechercher
+    </button>
+  </div>
+
+  <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
+
+  <div *ngIf="!isLoading && searchPerformed">
+    <div *ngIf="friends.length > 0" class="friends-list">
+      <mat-card class="friend-card" *ngFor="let friend of friends">
+        <mat-card-header>
+          <mat-card-title>{{ friend.pseudo }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+          <button mat-button color="accent" (click)="onAddFriend(friend._id)">
+            Ajouter à ma liste d'amis
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <div *ngIf="friends.length === 0">
+      <br />
+      <p>Aucun utilisateur trouvé avec ce pseudo.</p>
+    </div>
+  </div>
+</mat-card>

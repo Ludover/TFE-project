@@ -1,0 +1,33 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <h1>Mes demandes d'amis reçues</h1>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-accordion multi="true" *ngIf="friends.length > 0">
+    <mat-expansion-panel *ngFor="let friend of friends">
+      <mat-expansion-panel-header>
+        {{ friend.pseudo }}
+      </mat-expansion-panel-header>
+      <mat-action-row>
+        <button
+          mat-button
+          color="primary"
+          (click)="acceptFriendRequest(friend._id)"
+        >
+          Accepter
+        </button>
+        <button
+          mat-button
+          color="warn"
+          (click)="rejectFriendRequest(friend._id)"
+        >
+          Rejeter
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <mat-card-footer *ngIf="friends.length === 0">
+    <p class="info-text">Vous n'avez pas de demandes d'amis.</p>
+  </mat-card-footer>
+</mat-card>

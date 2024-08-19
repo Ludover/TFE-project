@@ -105,6 +105,10 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
+  getUserPseudo(): Observable<any> {
+    return this.http.get<any>('http://localhost:3000/api/user/pseudo');
+  }
+
   private setAuthTimer(duration: number) {
     this.tokenTimer = setTimeout(() => {
       this.logout();

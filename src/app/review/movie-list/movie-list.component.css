@@ -1,9 +1,17 @@
-.movie-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
+mat-card {
+  margin: 20px;
+  border-bottom: 50px;
+}
+
+mat-card-title h1 {
+  font-size: 2rem;
+  color: blueviolet;
+  margin: 0;
+  text-align: center;
+}
+
+mat-accordion {
+  margin-top: 40px;
 }
 
 mat-spinner {
@@ -11,5 +19,6 @@ mat-spinner {
 }
 
 .info-text {
+  margin-top: 40px;
   text-align: center;
 }

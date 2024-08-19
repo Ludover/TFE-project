@@ -6,11 +6,11 @@ import { AuthService } from 'src/app/Auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-friend-list',
-  templateUrl: './friend-list.component.html',
-  styleUrls: ['./friend-list.component.css'],
+  selector: 'app-friend-list-request-sent',
+  templateUrl: './friend-list-request-sent.component.html',
+  styleUrls: ['./friend-list-request-sent.component.css'],
 })
-export class FriendListComponent implements OnInit, OnDestroy {
+export class FriendListRequestSentComponent implements OnInit, OnDestroy {
   friends: User[] = [];
   private authStatusSub: Subscription;
   UserIsAuthenticated = false;
@@ -22,7 +22,7 @@ export class FriendListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.friendsService.getFriends().subscribe((friends) => {
+    this.friendsService.getFriendsRequestSent().subscribe((friends) => {
       this.friends = friends;
     });
     this.UserIsAuthenticated = this.authService.getIsAuth();
@@ -33,18 +33,19 @@ export class FriendListComponent implements OnInit, OnDestroy {
       });
   }
 
-  removeFriend(friendId: string) {
-    this.friendsService.removeFriend(friendId).subscribe({
+  // Méthode pour annuler une demande d'ami
+  cancelFriendRequest(friendId: string) {
+    this.friendsService.cancelFriendRequest(friendId).subscribe({
       next: () => {
-        this.friends = this.friends.filter((friend) => friend._id !== friendId);
-        this.snackBar.open('Ami supprimé avec succès', 'Fermer', {
+        this.snackBar.open("Demande d'ami annulée", 'Fermer', {
           duration: 3000,
           verticalPosition: 'top',
         });
+        this.removeFriendFromList(friendId);
       },
-      error: () => {
+      error: (error) => {
         this.snackBar.open(
-          "Erreur lors de la suppression de l'ami. Réessayez plus tard.",
+          "Erreur lors de l'annulation de la demande",
           'Fermer',
           {
             duration: 3000,
@@ -53,6 +54,11 @@ export class FriendListComponent implements OnInit, OnDestroy {
         );
       },
     });
+  }
+
+  // Méthode pour supprimer une demande d'ami de la liste affichée
+  removeFriendFromList(friendId: string) {
+    this.friends = this.friends.filter((friend) => friend._id !== friendId);
   }
 
   ngOnDestroy() {

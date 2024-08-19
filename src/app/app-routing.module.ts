@@ -9,6 +9,8 @@ import { MovieListDoneComponent } from './review/movie-list-done/movie-list-done
 import { AuthGuard } from './Auth/auth.guard';
 import { FriendListComponent } from './friends/list/friend-list.component';
 import { AddFriendComponent } from './friends/add friend/add-friend.component';
+import { FriendListRequestSentComponent } from './friends/listFriendRequestSent/friend-list-request-sent.component';
+import { FriendListRequestReceivedComponent } from './friends/listFriendRequestReceived/friend-list-request-received.component';
 
 const routes: Routes = [
   { path: '', canActivate: [AuthGuard], component: MovieListComponent },
@@ -36,6 +38,16 @@ const routes: Routes = [
     path: 'addfriend',
     canActivate: [AuthGuard],
     component: AddFriendComponent,
+  },
+  {
+    path: 'friendrequestSent',
+    canActivate: [AuthGuard],
+    component: FriendListRequestSentComponent,
+  },
+  {
+    path: 'friendrequestReceived',
+    canActivate: [AuthGuard],
+    component: FriendListRequestReceivedComponent,
   },
 ];
 

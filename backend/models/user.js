@@ -6,6 +6,10 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: true },
   pseudo: { type: String, required: true, unique: true },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  friendRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  friendRequestsReceived: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  ],
 });
 
 userSchema.plugin(uniqueValidator);

@@ -3,6 +3,9 @@
     <a routerLink="/" class="logo-link">Pipso</a>
   </span>
   <span class="spacer"></span>
+  <span *ngIf="userIsAuthenticated" class="welcome-message">
+    Bonjour, {{ userPseudo }}
+  </span>
   <ul class="menu-list">
     <li *ngIf="userIsAuthenticated">
       <a mat-button routerLink="/search" routerLinkActive="mat-accent">
@@ -16,10 +19,18 @@
         <button mat-menu-item routerLink="/listVu">Vu</button>
       </mat-menu>
     </li>
-    <li *ngIf="userIsAuthenticated">
-      <a mat-button routerLink="/friendlist" routerLinkActive="mat-accent">
-        <mat-icon>person</mat-icon> Amis
-      </a>
+    <li *ngIf="userIsAuthenticated" [matMenuTriggerFor]="friendMenu">
+      <button mat-button><mat-icon>person</mat-icon> Amis</button>
+      <mat-menu #friendMenu="matMenu">
+        <button mat-menu-item routerLink="/friendlist">Ma liste d'amis</button>
+        <button mat-menu-item routerLink="/addfriend">Ajouter un ami</button>
+        <button mat-menu-item routerLink="/friendrequestReceived">
+          Invitations reçues
+        </button>
+        <button mat-menu-item routerLink="/friendrequestSent">
+          Invitations envoyées
+        </button>
+      </mat-menu>
     </li>
     <li *ngIf="!userIsAuthenticated">
       <a mat-button routerLink="/signin" routerLinkActive="mat-accent">
