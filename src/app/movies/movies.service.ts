@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
-import { Movie } from './movie.model';
+import { Movie } from '../movies/movie.model';
 
 @Injectable({ providedIn: 'root' })
 export class MoviesService {

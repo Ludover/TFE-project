@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { OmdbService } from 'src/app/omdb.service';
-import { MoviesService } from 'src/app/review/movies.service';
+import { MoviesService } from '../movies.service';
 
 @Component({
   selector: 'app-search',

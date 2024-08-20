@@ -26,7 +26,7 @@ router.put("/:id", checkAuth, (req, res, next) => {
     date: new Date(),
     list: req.body.list,
   };
-  Movie.updateOne({ _id: req.params.id }, updateData)
+  Movie.updateOne({ _id: req.params.id, creator: req.userData.userId }, updateData)
     .then((result) => {
       if (result.modifiedCount > 0) {
         res.status(200).json({ message: "Update successful!" });
@@ -68,7 +68,7 @@ router.get("/:id", (req, res, next) => {
 });
 
 router.delete("/:id", checkAuth, (req, res, next) => {
-  Movie.deleteOne({ _id: req.params.id })
+  Movie.deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then((result) => {
       if (result.deletedCount === 0) {
         return res.status(404).json({ message: "Movie not found" });
