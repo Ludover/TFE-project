@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      <h1>Ma Liste de Films à voir</h1>
+      <h1>Ma liste de films conseillés</h1>
     </mat-card-title>
   </mat-card-header>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
@@ -10,20 +10,13 @@
       <mat-expansion-panel-header>
         {{ movie.title }}
       </mat-expansion-panel-header>
-      <p>Ajouté le: {{ movie.date | date : " d MMMM y" }}</p>
-      <p *ngIf="movie.creator">
-        Conseillé par: <b>{{ movie.creator }}</b>
+      <p>
+        Proposé par: <b>{{ movie.creator }}</b> le
+        {{ movie.date | date : " d MMMM y" }}
       </p>
       <mat-action-row>
-        <button
-          mat-button
-          color="accent"
-          (click)="updateAsSeen(movie.title, movie.date)"
-        >
-          J'ai vu
-        </button>
-        <button mat-button color="primary" (click)="onShare(movie)">
-          Partager
+        <button mat-button color="accent" (click)="updateAsToSee(movie)">
+          Ajouter à ma liste à voir
         </button>
         <button mat-button color="warn" (click)="onDelete(movie.title)">
           Supprimer

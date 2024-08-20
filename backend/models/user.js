@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
+const movieSchema = mongoose.Schema({
+  title: { type: String, required: true },
+  date: { type: String, required: true },
+  list: { type: String, required: true }, // "a voir" ou "vu"
+  creator: { type: String },
+});
+
 const userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -10,6 +17,8 @@ const userSchema = mongoose.Schema({
   friendRequestsReceived: [
     { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   ],
+  movies: [movieSchema],
+  moviesRecommended: [movieSchema],
 });
 
 userSchema.plugin(uniqueValidator);

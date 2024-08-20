@@ -17,9 +17,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppComponent } from './app.component';
-import { MovieCreateComponent } from './movies/movie-create/movie-create.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { MovieListComponent } from './movies/movie-list/movie-list.component';
@@ -33,6 +34,8 @@ import { AddFriendComponent } from './friends/add friend/add-friend.component';
 import { FriendListComponent } from './friends/list/friend-list.component';
 import { FriendListRequestSentComponent } from './friends/listFriendRequestSent/friend-list-request-sent.component';
 import { FriendListRequestReceivedComponent } from './friends/listFriendRequestReceived/friend-list-request-received.component';
+import { ShareMovieDialogComponent } from './movies/share-movie-dialog/share-movie-dialog.component';
+import { MovieListRecommendedComponent } from './movies/movie-list-recommended/movie-list-recommended.component';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -41,7 +44,6 @@ registerLocaleData(localeFr);
 @NgModule({
   declarations: [
     AppComponent,
-    MovieCreateComponent,
     HeaderComponent,
     MovieListComponent,
     MovieListDoneComponent,
@@ -52,6 +54,8 @@ registerLocaleData(localeFr);
     FriendListComponent,
     FriendListRequestSentComponent,
     FriendListRequestReceivedComponent,
+    ShareMovieDialogComponent,
+    MovieListRecommendedComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +74,8 @@ registerLocaleData(localeFr);
     MatSnackBarModule,
     MatMenuModule,
     MatListModule,
+    MatSelectModule,
+    MatDialogModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

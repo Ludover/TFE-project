@@ -5,6 +5,8 @@ import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
 import { AuthService } from 'src/app/Auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
 
 @Component({
   selector: 'app-movie-list',
@@ -21,7 +23,8 @@ export class MovieListComponent implements OnInit, OnDestroy {
   constructor(
     public moviesService: MoviesService,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -41,7 +44,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDelete(movieId: string) {
+  onDelete(movieTitle: string) {
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Oui',
@@ -52,7 +55,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.deleteMovie(movieId);
+      this.moviesService.deleteMovie(movieTitle);
       this.snackBar.open('Film supprimé avec succès', 'Fermer', {
         duration: 3000,
         verticalPosition: 'top',
@@ -60,7 +63,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateAsSeen(id: string, title: string, date: Date) {
+  updateAsSeen(title: string, date: Date) {
     const snackBarRef = this.snackBar.open(
       `Êtes-vous sûr de vouloir marquer "${title}" comme vu ?`,
       'Oui',
@@ -73,7 +76,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
     snackBarRef.onAction().subscribe(() => {
       // Appeler le service pour mettre à jour le film
-      this.moviesService.updateMovie(id, title, date, 'saw');
+      this.moviesService.updateMovie(title, date, 'seen');
 
       // Recharger les films après la mise à jour
       this.moviesService.getMoviesByListType('tosee');
@@ -82,6 +85,51 @@ export class MovieListComponent implements OnInit, OnDestroy {
         duration: 3000,
         verticalPosition: 'top',
       });
+    });
+  }
+
+  onShare(movie: Movie) {
+    const dialogRef = this.dialog.open(ShareMovieDialogComponent, {
+      width: '250px',
+      data: { movie: movie },
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result) {
+          this.moviesService
+            .shareMovie(result.friendId, result.movieTitle, result.date)
+            .subscribe({
+              next: () => {
+                this.snackBar.open('Film partagé avec succès', 'Fermer', {
+                  duration: 3000,
+                  verticalPosition: 'top',
+                });
+              },
+              error: (error) => {
+                // Vérifier si le message d'erreur est celui attendu
+                const errorMessage =
+                  error.error.message || 'Erreur lors du partage du film';
+                if (
+                  errorMessage === 'Ce film a déjà été conseillé à cet ami.'
+                ) {
+                  this.snackBar.open(errorMessage, 'Fermer', {
+                    duration: 3000,
+                    verticalPosition: 'top',
+                  });
+                } else {
+                  this.snackBar.open('Une erreur est survenue', 'Fermer', {
+                    duration: 3000,
+                    verticalPosition: 'top',
+                  });
+                }
+              },
+            });
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la fermeture du dialog:', err);
+      },
     });
   }
 

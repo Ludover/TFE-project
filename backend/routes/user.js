@@ -30,39 +30,50 @@ router.post("/signup", (req, res, next) => {
   });
 });
 
-router.post("/login", (req, res, next) => {
-  let fetchedUser;
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (!user) {
-        return res.status(401).json({
-          message: "L'authentification a échoué",
-        });
-      }
-      fetchedUser = user;
-      return bcrypt.compare(req.body.password, user.password);
-    })
-    .then((result) => {
-      if (!result) {
-        return res.status(401).json({
-          message: "L'authentification a échoué",
-        });
-      }
-      const token = jwt.sign(
-        { email: fetchedUser.email, userId: fetchedUser._id },
-        "secret_this_is_long",
-        { expiresIn: "1h" }
-      );
-      res.status(200).json({
-        token: token,
-        expiresIn: 3600,
-      });
-    })
-    .catch((err) => {
-      return res.status(401).json({
-        message: "L'authentification a échoué",
-      });
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Vérifiez que les données sont présentes
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ message: "Email et mot de passe sont requis" });
+  }
+
+  try {
+    // Cherchez l'utilisateur dans la base de données
+    const user = await User.findOne({ email: email });
+
+    // Si l'utilisateur n'existe pas, renvoyez une erreur
+    if (!user) {
+      return res.status(401).json({ message: "L'authentification a échoué" });
+    }
+
+    // Comparez le mot de passe avec le hash enregistré
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    // Si le mot de passe est incorrect, renvoyez une erreur
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "L'authentification a échoué" });
+    }
+
+    // Génération du token
+    const token = jwt.sign(
+      { email: user.email, userId: user._id },
+      "secret_this_is_long",
+      { expiresIn: "1h" }
+    );
+
+    // Réponse avec le token et la durée d'expiration
+    res.status(200).json({
+      token: token,
+      expiresIn: 3600,
     });
+  } catch (error) {
+    // Gestion des erreurs inattendues
+    console.error("Erreur lors de la connexion :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
 });
 
 router.get("/pseudo", checkAuth, async (req, res) => {
@@ -357,6 +368,276 @@ router.get("/is-friend/:userId", checkAuth, async (req, res) => {
     // Vérifier si friendId est dans la liste des amis de l'utilisateur
     const isFriend = user.friends.includes(friendId);
     res.status(200).json(isFriend);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
+router.post("/add-movie", checkAuth, async (req, res, next) => {
+  try {
+    const userId = req.userData.userId;
+    const { title } = req.body;
+
+    // Trouver l'utilisateur
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Vérifier si le film existe déjà dans la liste "tosee"
+    const movieExists = user.movies.some(
+      (movie) => movie.title === title && movie.list === "tosee"
+    );
+
+    if (movieExists) {
+      return res
+        .status(400)
+        .json({ message: "Ce film est déjà dans votre liste à voir." });
+    }
+
+    // Ajouter le film à la liste "tosee"
+    user.movies.push({ title, date: new Date(), list: "tosee" });
+    await user.save();
+
+    res.status(201).json({ message: "Film ajouté avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
+router.delete("/delete-movie/:title", checkAuth, async (req, res, next) => {
+  try {
+    const userId = req.userData.userId;
+    const movieTitle = req.params.title;
+
+    // Trouver l'utilisateur
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Filtrer la liste des films pour supprimer celui avec le titre donné
+    user.movies = user.movies.filter((movie) => movie.title !== movieTitle);
+    await user.save();
+
+    res.status(200).json({ message: "Film supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
+// Mettre à jour la liste d'un film (de 'tosee' à 'seen')
+router.put("/update-movie/:title", checkAuth, (req, res) => {
+  const userId = req.userData.userId;
+  const movieTitle = req.params.title;
+
+  User.findOne({ _id: userId, "movies.title": movieTitle })
+    .then((user) => {
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "Film non trouvé dans la liste." });
+      }
+
+      const movieIndex = user.movies.findIndex(
+        (movie) => movie.title === movieTitle
+      );
+      if (movieIndex > -1) {
+        user.movies[movieIndex].list = "seen";
+        return user.save();
+      }
+    })
+    .then((result) => {
+      res.status(200).json({
+        message: "Film mis à jour avec succès.",
+        movie: result.movies,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "La mise à jour du film a échoué." });
+    });
+});
+
+router.put("/update-movie/:title", checkAuth, async (req, res, next) => {
+  const userId = req.userData.userId;
+  const movieTitle = req.params.title;
+  const { newList } = req.body;
+
+  try {
+    // Trouver l'utilisateur actuel
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Trouver le film dans la liste 'tosee'
+    const movieIndex = user.movies.findIndex(
+      (movie) => movie.title === movieTitle && movie.list === "tosee"
+    );
+    if (movieIndex === -1) {
+      return res
+        .status(404)
+        .json({ message: 'Film non trouvé dans la liste "tosee".' });
+    }
+
+    // Mettre à jour la liste du film
+    user.movies[movieIndex].list = newList;
+    await user.save();
+
+    res.status(200).json({
+      message: "Film mis à jour avec succès.",
+      movie: user.movies[movieIndex],
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur.", error });
+  }
+});
+
+router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
+  const userId = req.userData.userId;
+  const listType = req.params.listType;
+
+  try {
+    // Trouver l'utilisateur actuel
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Filtrer les films selon le type de liste
+    const movies = user.movies.filter((movie) => movie.list === listType);
+
+    res.status(200).json({ message: "Films récupérés avec succès.", movies });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur.", error });
+  }
+});
+
+// Route pour partager un film
+router.post("/share-movie", checkAuth, async (req, res, next) => {
+  const { friendId, movieTitle, date } = req.body;
+  const userId = req.userData.userId;
+
+  try {
+    // Trouver l'utilisateur actuel
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Trouver l'ami avec lequel partager le film
+    const friend = await User.findById(friendId);
+    if (!friend) {
+      return res.status(404).json({ message: "Ami non trouvé." });
+    }
+
+    // Vérifier si le film est déjà recommandé à l'ami
+    const isAlreadyRecommended = friend.moviesRecommended.some(
+      (movie) => movie.title === movieTitle
+    );
+    if (isAlreadyRecommended) {
+      return res
+        .status(400)
+        .json({ message: "Ce film a déjà été conseillé à cet ami." });
+    }
+
+    // Créer le film à recommander
+    const recommendedMovie = {
+      title: movieTitle,
+      date: date,
+      list: "tosee",
+      creator: user.pseudo, // ou user._id selon ce que vous préférez
+    };
+
+    // Ajouter le film recommandé à la liste de l'ami
+    friend.moviesRecommended.push(recommendedMovie);
+    await friend.save();
+
+    res.status(200).json({ message: "Film partagé avec succès." });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur.", error });
+  }
+});
+
+router.get("/movies-recommended", checkAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userData.userId).select(
+      "moviesRecommended"
+    );
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+    res.status(200).json({
+      movies: user.moviesRecommended,
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des films recommandés :",
+      error
+    );
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+router.delete(
+  "/delete-movie-recommended/:title",
+  checkAuth,
+  async (req, res, next) => {
+    try {
+      const userId = req.userData.userId;
+      const movieTitle = req.params.title;
+
+      // Trouver l'utilisateur
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
+
+      // Filtrer la liste des films pour supprimer celui avec le titre donné
+      user.moviesRecommended = user.moviesRecommended.filter(
+        (movie) => movie.title !== movieTitle
+      );
+      await user.save();
+
+      res.status(200).json({ message: "Film supprimé avec succès" });
+    } catch (error) {
+      res.status(500).json({ message: "Erreur serveur", error });
+    }
+  }
+);
+
+router.post("/move-movie-to-normal-list", checkAuth, async (req, res, next) => {
+  const { title } = req.body;
+  const userId = req.userData.userId;
+  try {
+    // Trouver l'utilisateur
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // Trouver le film recommandé à déplacer
+    const movieIndex = user.moviesRecommended.findIndex(
+      (movie) => movie.title === title
+    );
+    if (movieIndex === -1) {
+      return res.status(404).json({ message: "Film recommandé non trouvé" });
+    }
+
+    // Récupérer le film recommandé à partir de la liste recommandée
+    const movieToMove = user.moviesRecommended[movieIndex];
+
+    // Ajouter le film à la liste normale
+    user.movies.push(movieToMove);
+
+    // Supprimer le film de la liste recommandée
+    user.moviesRecommended.splice(movieIndex, 1);
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Film déplacé avec succès vers la liste normale" });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }

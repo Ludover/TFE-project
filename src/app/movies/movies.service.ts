@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { Movie } from '../movies/movie.model';
@@ -10,43 +10,23 @@ import { Movie } from '../movies/movie.model';
 export class MoviesService {
   private movies: Movie[] = [];
   private moviesUpdated = new Subject<Movie[]>();
+  private moviesRecommendedUpdated = new Subject<Movie[]>();
 
   constructor(private http: HttpClient, private router: Router) {}
-
-  getMovies() {
-    this.http
-      .get<{ message: string; movies: any }>('http://localhost:3000/api/movies')
-      .pipe(
-        map((movieData) => {
-          return movieData.movies.map((movie) => {
-            return {
-              title: movie.title,
-              date: movie.date,
-              id: movie._id,
-              creator: movie.creator,
-            };
-          });
-        })
-      )
-      .subscribe((transformedmovies) => {
-        this.movies = transformedmovies;
-        this.moviesUpdated.next([...this.movies]);
-      });
-  }
 
   getMoviesByListType(listType: string) {
     this.http
       .get<{ message: string; movies: any[] }>(
-        `http://localhost:3000/api/movies/list/${listType}`
+        `http://localhost:3000/api/user/movies/list/${listType}`
       )
       .pipe(
         map((responseData) => {
           return responseData.movies.map((movie) => {
             return {
-              id: movie._id,
               title: movie.title,
               date: movie.date,
               list: movie.list,
+              creator: movie.creator,
             };
           });
         })
@@ -61,35 +41,37 @@ export class MoviesService {
     return this.moviesUpdated.asObservable();
   }
 
-  getMovie(id: string) {
-    return this.http.get<{ _id: string; title: string; date: Date }>(
-      'http://localhost:3000/api/movies/' + id
-    );
+  addMovie(movie: Movie): Observable<{ message: string; movie: Movie }> {
+    return new Observable((observer) => {
+      this.http
+        .post<{ message: string; movie: Movie }>(
+          'http://localhost:3000/api/user/add-movie',
+          movie
+        )
+        .subscribe({
+          next: (responseData) => {
+            const newMovie = responseData.movie;
+            this.movies.push(newMovie);
+            this.moviesUpdated.next([...this.movies]);
+            this.router.navigate(['/']);
+            observer.next(responseData);
+            observer.complete();
+          },
+          error: (error) => {
+            observer.error(error);
+          },
+        });
+    });
   }
 
-  addMovie(movie: Movie) {
-    this.http
-      .post<{ message: string; movieId: string }>(
-        'http://localhost:3000/api/movies',
-        movie
-      )
-      .subscribe((responseData) => {
-        const id = responseData.movieId;
-        movie.id = id;
-        this.movies.push(movie);
-        this.moviesUpdated.next([...this.movies]);
-        this.router.navigate(['/']);
-      });
-  }
-
-  updateMovie(id: string, title: string, date: Date, list: string) {
+  updateMovie(title: string, date: Date, list: string) {
     const updateData = { title, date, list };
 
     this.http
-      .put(`http://localhost:3000/api/movies/${id}`, updateData)
+      .put(`http://localhost:3000/api/user/update-movie/${title}`, updateData)
       .subscribe((response) => {
         const updatedMovies = [...this.movies];
-        const oldMovieIndex = updatedMovies.findIndex((m) => m.id === id);
+        const oldMovieIndex = updatedMovies.findIndex((m) => m.title === title);
         if (oldMovieIndex > -1) {
           updatedMovies[oldMovieIndex] = {
             ...updatedMovies[oldMovieIndex],
@@ -103,16 +85,85 @@ export class MoviesService {
       });
   }
 
-  deleteMovie(movieId: string | null) {
+  deleteMovie(movieTitle: string) {
     this.http
-      .delete('http://localhost:3000/api/movies/' + movieId)
+      .delete(`http://localhost:3000/api/user/delete-movie/${movieTitle}`)
       .subscribe(() => {
-        const updatedMovies = this.movies.filter(
-          //Sert à actualiser la page automatiquement pour ne plus afficher les films supprimés.
-          (movie) => movie.id !== movieId
-        );
-        this.movies = updatedMovies;
+        this.movies = this.movies.filter((movie) => movie.title !== movieTitle);
         this.moviesUpdated.next([...this.movies]);
       });
+  }
+
+  deleteMovieRecommended(movieTitle: string) {
+    this.http
+      .delete(
+        `http://localhost:3000/api/user/delete-movie-recommended/${movieTitle}`
+      )
+      .subscribe(() => {
+        this.movies = this.movies.filter((movie) => movie.title !== movieTitle);
+        this.moviesUpdated.next([...this.movies]);
+      });
+  }
+
+  shareMovie(
+    friendId: string,
+    movieTitle: string,
+    date: Date
+  ): Observable<any> {
+    return this.http
+      .post<{ message: string }>('http://localhost:3000/api/user/share-movie', {
+        friendId,
+        movieTitle,
+        date,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Erreur lors du partage du film :', error);
+          throw error;
+        })
+      );
+  }
+
+  // Méthode pour récupérer les films recommandés
+  getMoviesRecommended(): void {
+    this.http
+      .get<{ movies: any[] }>(
+        'http://localhost:3000/api/user/movies-recommended'
+      )
+      .pipe(
+        map((responseData) => {
+          return responseData.movies.map((movie) => ({
+            id: movie._id,
+            title: movie.title,
+            date: movie.date,
+            list: movie.list,
+            creator: movie.creator,
+          }));
+        }),
+        catchError((error) => {
+          console.error(
+            'Erreur lors de la récupération des films recommandés :',
+            error
+          );
+          throw error; // Propager l'erreur pour qu'elle soit gérée par le composant appelant
+        })
+      )
+      .subscribe((movies) => {
+        this.moviesRecommendedUpdated.next(movies);
+      });
+  }
+
+  // Méthode pour écouter les mises à jour des films recommandés
+  getMoviesRecommendedUpdateListener(): Observable<Movie[]> {
+    return this.moviesRecommendedUpdated.asObservable();
+  }
+
+  moveMovieToNormalList(movieTitle: string) {
+    const updateData = { title: movieTitle };
+
+    return this.http.post<{ message: string }>(
+      'http://localhost:3000/api/user/move-movie-to-normal-list',
+      updateData
+    );
   }
 }

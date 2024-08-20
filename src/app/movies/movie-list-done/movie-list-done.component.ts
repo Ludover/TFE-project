@@ -26,7 +26,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.moviesService.getMoviesByListType('saw');
+    this.moviesService.getMoviesByListType('seen');
     this.moviesSub = this.moviesService
       .getMovieUpdateListener()
       .subscribe((movies: Movie[]) => {
@@ -41,7 +41,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDelete(movieId: string) {
+  onDelete(movieTitle: string) {
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Oui',
@@ -52,7 +52,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.deleteMovie(movieId);
+      this.moviesService.deleteMovie(movieTitle);
       this.snackBar.open('Film supprimé avec succès', 'Fermer', {
         duration: 3000,
         verticalPosition: 'top',

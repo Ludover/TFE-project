@@ -13,7 +13,7 @@
       <p>Ajouté le: {{ movie.date | date : " d MMMM y" }}</p>
       <mat-action-row>
         <button mat-button color="primary">Partager</button>
-        <button mat-button color="warn" (click)="onDelete(movie.id)">
+        <button mat-button color="warn" (click)="onDelete(movie.title)">
           Supprimer
         </button>
       </mat-action-row>
