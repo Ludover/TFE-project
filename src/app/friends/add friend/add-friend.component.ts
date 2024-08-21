@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FriendsService } from '../friends.service';
-import { AuthService } from 'src/app/Auth/auth.service';
+import { AuthService } from 'src/app/auth/auth.service';
 import { response } from 'express';
 
 @Component({

@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
-import { AuthService } from 'src/app/Auth/auth.service';
+import { AuthService } from 'src/app/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 

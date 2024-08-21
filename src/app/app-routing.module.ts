@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MovieListComponent } from './movies/movie-list/movie-list.component';
-import { SignupComponent } from './Auth/signup/signup.component';
-import { SigninComponent } from './Auth/signin/signin.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { SigninComponent } from './auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
 import { MovieListDoneComponent } from './movies/movie-list-done/movie-list-done.component';
-import { AuthGuard } from './Auth/auth.guard';
+import { AuthGuard } from './auth/auth.guard';
 import { FriendListComponent } from './friends/list/friend-list.component';
 import { AddFriendComponent } from './friends/add friend/add-friend.component';
 import { FriendListRequestSentComponent } from './friends/listFriendRequestSent/friend-list-request-sent.component';
