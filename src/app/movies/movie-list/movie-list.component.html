@@ -25,12 +25,13 @@
         <button mat-button color="primary" (click)="onShare(movie)">
           Partager
         </button>
-        <button mat-button color="warn" (click)="onDelete(movie.title)">
+        <button mat-button color="warn" (click)="onDelete(movie.id)">
           Supprimer
         </button>
       </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
+  <mat-paginator [length]="totalMovies" [pageSize]="moviesPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onChangedPage($event)" *ngIf="movies.length > 0"></mat-paginator>
   <p class="info-text mat-body-1" *ngIf="movies.length <= 0 && !isLoading">
     Votre liste est vide
   </p>

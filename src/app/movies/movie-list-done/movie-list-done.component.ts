@@ -17,6 +17,10 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
   private moviesSub?: Subscription;
   private authStatusSub: Subscription;
   UserIsAuthenticated = false;
+  totalMovies = 0;
+  moviesPerPage = 10;
+  currentPage = 1;
+  pageSizeOptions = [5, 10, 20];
 
   constructor(
     public moviesService: MoviesService,
@@ -26,12 +30,12 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.moviesService.getMoviesByListType('seen');
+    this.moviesService.getMoviesByListType('seen', this.moviesPerPage, this.currentPage);
     this.moviesSub = this.moviesService
       .getMovieUpdateListener()
-      .subscribe((movies: Movie[]) => {
+      .subscribe((movieData: {movies: Movie[], movieCount:number}) => {
         this.isLoading = false;
-        this.movies = movies;
+        this.movies = movieData.movies;
       });
     this.UserIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService
@@ -41,7 +45,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDelete(movieTitle: string) {
+  onDelete(movieId: string) {
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Oui',
@@ -52,7 +56,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.deleteMovie(movieTitle);
+      this.moviesService.deleteMovie(movieId);
       this.snackBar.open('Film supprimé avec succès', 'Fermer', {
         duration: 3000,
         verticalPosition: 'top',

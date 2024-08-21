@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-movie-list',
@@ -19,6 +20,10 @@ export class MovieListComponent implements OnInit, OnDestroy {
   private moviesSub?: Subscription;
   private authStatusSub: Subscription;
   UserIsAuthenticated = false;
+  totalMovies = 0;
+  moviesPerPage = 10;
+  currentPage = 1;
+  pageSizeOptions = [5, 10, 20];
 
   constructor(
     public moviesService: MoviesService,
@@ -29,12 +34,13 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.moviesService.getMoviesByListType('tosee');
+    this.moviesService.getMoviesByListType('tosee', this.moviesPerPage, this.currentPage);
     this.moviesSub = this.moviesService
       .getMovieUpdateListener()
-      .subscribe((movies: Movie[]) => {
+      .subscribe((movieData: {movies: Movie[], movieCount: number}) => {
         this.isLoading = false;
-        this.movies = movies;
+        this.totalMovies = movieData.movieCount;
+        this.movies = movieData.movies;
       });
     this.UserIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService
@@ -44,7 +50,14 @@ export class MovieListComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDelete(movieTitle: string) {
+  onChangedPage(pageData: PageEvent) {
+    this.isLoading = true;
+    this.currentPage = pageData.pageIndex + 1;
+    this.moviesPerPage = pageData.pageSize;
+    this.moviesService.getMoviesByListType('tosee', this.moviesPerPage, this.currentPage);
+  }
+
+  onDelete(movieId: string) {
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Oui',
@@ -55,7 +68,9 @@ export class MovieListComponent implements OnInit, OnDestroy {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.deleteMovie(movieTitle);
+      this.moviesService.deleteMovie(movieId).subscribe(() => {
+        this.moviesService.getMoviesByListType("tosee", this.moviesPerPage,this.currentPage )
+      });
       this.snackBar.open('Film supprimé avec succès', 'Fermer', {
         duration: 3000,
         verticalPosition: 'top',
@@ -79,7 +94,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
       this.moviesService.updateMovie(title, date, 'seen');
 
       // Recharger les films après la mise à jour
-      this.moviesService.getMoviesByListType('tosee');
+      this.moviesService.getMoviesByListType('tosee', this.moviesPerPage, this.currentPage);
 
       this.snackBar.open('Film marqué comme vu', 'Fermer', {
         duration: 3000,

@@ -18,6 +18,10 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
   private moviesSub?: Subscription;
   private authStatusSub: Subscription;
   UserIsAuthenticated = false;
+  totalMovies = 0;
+  moviesPerPage = 10;
+  currentPage = 1;
+  pageSizeOptions = [5, 10, 20];
 
   constructor(
     public moviesService: MoviesService,
@@ -28,12 +32,13 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.moviesService.getMoviesRecommended();
+    this.moviesService.getMoviesByListType('recommended', this.moviesPerPage, this.currentPage);
     this.moviesSub = this.moviesService
-      .getMoviesRecommendedUpdateListener()
-      .subscribe((movies: Movie[]) => {
+      .getMovieUpdateListener()
+      .subscribe((movieData: {movies: Movie[], movieCount: number}) => {
         this.isLoading = false;
-        this.movies = movies;
+        this.totalMovies = movieData.movieCount;
+        this.movies = movieData.movies;
       });
     this.UserIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService
@@ -43,7 +48,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDelete(movieTitle: string) {
+  onDelete(movieId: string) {
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Oui',
@@ -54,19 +59,21 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.deleteMovieRecommended(movieTitle);
+      this.moviesService.deleteMovie(movieId).subscribe(() => {
+        this.moviesService.getMoviesByListType("tosee", this.moviesPerPage,this.currentPage )
+      });
       this.snackBar.open('Film supprimé avec succès', 'Fermer', {
         duration: 3000,
         verticalPosition: 'top',
       });
     });
-    this.moviesService.getMoviesRecommended();
-    this.moviesSub = this.moviesService
-      .getMoviesRecommendedUpdateListener()
-      .subscribe((movies: Movie[]) => {
-        this.isLoading = false;
-        this.movies = movies;
-      });
+    // this.moviesService.getMoviesRecommended();
+    // this.moviesSub = this.moviesService
+    //   .getMoviesRecommendedUpdateListener()
+    //   .subscribe((movies: Movie[]) => {
+    //     this.isLoading = false;
+    //     this.movies = movies;
+    //   });
   }
 
   updateAsToSee(movie: Movie) {

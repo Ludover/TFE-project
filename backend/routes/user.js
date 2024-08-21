@@ -7,6 +7,8 @@ const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
+//#region Authentification
+
 router.post("/signup", (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
@@ -75,6 +77,10 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
+
+//#endregion
+
+//#region Friends
 
 router.get("/pseudo", checkAuth, async (req, res) => {
   try {
@@ -295,7 +301,7 @@ router.get("/friends", checkAuth, async (req, res) => {
   }
 });
 
-// Récupérer la liste des amis
+// Récupérer la liste des demandes d'amis envoyées.
 router.get("/friendRequestsSent", checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.userData.userId).populate(
@@ -309,7 +315,7 @@ router.get("/friendRequestsSent", checkAuth, async (req, res) => {
   }
 });
 
-// Récupérer la liste des amis
+// Récupérer la liste des demandes d'amis reçues.
 router.get("/friendRequestsReceived", checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.userData.userId).populate(
@@ -373,6 +379,10 @@ router.get("/is-friend/:userId", checkAuth, async (req, res) => {
   }
 });
 
+//#endregion
+
+//#region Movies
+
 router.post("/add-movie", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
@@ -405,10 +415,10 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
   }
 });
 
-router.delete("/delete-movie/:title", checkAuth, async (req, res, next) => {
+router.delete("/delete-movie/:id", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
-    const movieTitle = req.params.title;
+    const movieId = req.params._id;
 
     // Trouver l'utilisateur
     const user = await User.findById(userId);
@@ -417,7 +427,7 @@ router.delete("/delete-movie/:title", checkAuth, async (req, res, next) => {
     }
 
     // Filtrer la liste des films pour supprimer celui avec le titre donné
-    user.movies = user.movies.filter((movie) => movie.title !== movieTitle);
+    user.movies = user.movies.filter((movie) => movie._id !== movieId);
     await user.save();
 
     res.status(200).json({ message: "Film supprimé avec succès" });
@@ -430,6 +440,7 @@ router.delete("/delete-movie/:title", checkAuth, async (req, res, next) => {
 router.put("/update-movie/:title", checkAuth, (req, res) => {
   const userId = req.userData.userId;
   const movieTitle = req.params.title;
+  //TODO console.log(req.query ou pa)
 
   User.findOne({ _id: userId, "movies.title": movieTitle })
     .then((user) => {
@@ -458,44 +469,47 @@ router.put("/update-movie/:title", checkAuth, (req, res) => {
     });
 });
 
-router.put("/update-movie/:title", checkAuth, async (req, res, next) => {
-  const userId = req.userData.userId;
-  const movieTitle = req.params.title;
-  const { newList } = req.body;
+// router.put("/update-movie/:title", checkAuth, async (req, res, next) => {
+//   const userId = req.userData.userId;
+//   const movieTitle = req.params.title;
+//   const { newList } = req.body;
 
-  try {
-    // Trouver l'utilisateur actuel
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé." });
-    }
+//   try {
+//     // Trouver l'utilisateur actuel
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ message: "Utilisateur non trouvé." });
+//     }
 
-    // Trouver le film dans la liste 'tosee'
-    const movieIndex = user.movies.findIndex(
-      (movie) => movie.title === movieTitle && movie.list === "tosee"
-    );
-    if (movieIndex === -1) {
-      return res
-        .status(404)
-        .json({ message: 'Film non trouvé dans la liste "tosee".' });
-    }
+//     // Trouver le film dans la liste 'tosee'
+//     const movieIndex = user.movies.findIndex(
+//       (movie) => movie.title === movieTitle && movie.list === "tosee"
+//     );
+//     if (movieIndex === -1) {
+//       return res
+//         .status(404)
+//         .json({ message: 'Film non trouvé dans la liste "tosee".' });
+//     }
 
-    // Mettre à jour la liste du film
-    user.movies[movieIndex].list = newList;
-    await user.save();
+//     // Mettre à jour la liste du film
+//     user.movies[movieIndex].list = newList;
+//     await user.save();
 
-    res.status(200).json({
-      message: "Film mis à jour avec succès.",
-      movie: user.movies[movieIndex],
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Erreur serveur.", error });
-  }
-});
+//     res.status(200).json({
+//       message: "Film mis à jour avec succès.",
+//       movie: user.movies[movieIndex],
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Erreur serveur.", error });
+//   }
+// });
 
 router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
   const userId = req.userData.userId;
   const listType = req.params.listType;
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  let fetchedMovies;
 
   try {
     // Trouver l'utilisateur actuel
@@ -507,7 +521,18 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
     // Filtrer les films selon le type de liste
     const movies = user.movies.filter((movie) => movie.list === listType);
 
-    res.status(200).json({ message: "Films récupérés avec succès.", movies });
+    if (pageSize && currentPage) {
+      movies.skip(pageSize * (currentPage - 1)).limit(pageSize);
+    }
+
+    movies.then(movie => {
+      fetchedMovies = movie;
+      return movies.count();
+    }).then(count => {
+      res.status(200).json({ message: "Films récupérés avec succès.", movies: fetchedMovies, maxMovies: count });
+    })
+
+    
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur.", error });
   }
@@ -532,8 +557,8 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
     }
 
     // Vérifier si le film est déjà recommandé à l'ami
-    const isAlreadyRecommended = friend.moviesRecommended.some(
-      (movie) => movie.title === movieTitle
+    const isAlreadyRecommended = friend.movies.some(
+      (movie) => movie.title === movieTitle && movie.list === "recommended"
     );
     if (isAlreadyRecommended) {
       return res
@@ -545,12 +570,12 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
     const recommendedMovie = {
       title: movieTitle,
       date: date,
-      list: "tosee",
-      creator: user.pseudo, // ou user._id selon ce que vous préférez
+      list: "recommended",
+      creator: user.pseudo, 
     };
 
     // Ajouter le film recommandé à la liste de l'ami
-    friend.moviesRecommended.push(recommendedMovie);
+    friend.movies.push(recommendedMovie);
     await friend.save();
 
     res.status(200).json({ message: "Film partagé avec succès." });
@@ -559,52 +584,52 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
   }
 });
 
-router.get("/movies-recommended", checkAuth, async (req, res) => {
-  try {
-    const user = await User.findById(req.userData.userId).select(
-      "moviesRecommended"
-    );
-    if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-    res.status(200).json({
-      movies: user.moviesRecommended,
-    });
-  } catch (error) {
-    console.error(
-      "Erreur lors de la récupération des films recommandés :",
-      error
-    );
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-});
+// router.get("/movies-recommended", checkAuth, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.userData.userId).select(
+//       "moviesRecommended"
+//     );
+//     if (!user) {
+//       return res.status(404).json({ message: "Utilisateur non trouvé" });
+//     }
+//     res.status(200).json({
+//       movies: user.moviesRecommended,
+//     });
+//   } catch (error) {
+//     console.error(
+//       "Erreur lors de la récupération des films recommandés :",
+//       error
+//     );
+//     res.status(500).json({ message: "Erreur serveur" });
+//   }
+// });
 
-router.delete(
-  "/delete-movie-recommended/:title",
-  checkAuth,
-  async (req, res, next) => {
-    try {
-      const userId = req.userData.userId;
-      const movieTitle = req.params.title;
+// router.delete(
+//   "/delete-movie-recommended/:title",
+//   checkAuth,
+//   async (req, res, next) => {
+//     try {
+//       const userId = req.userData.userId;
+//       const movieTitle = req.params.title;
 
-      // Trouver l'utilisateur
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: "Utilisateur non trouvé" });
-      }
+//       // Trouver l'utilisateur
+//       const user = await User.findById(userId);
+//       if (!user) {
+//         return res.status(404).json({ message: "Utilisateur non trouvé" });
+//       }
 
-      // Filtrer la liste des films pour supprimer celui avec le titre donné
-      user.moviesRecommended = user.moviesRecommended.filter(
-        (movie) => movie.title !== movieTitle
-      );
-      await user.save();
+//       // Filtrer la liste des films pour supprimer celui avec le titre donné
+//       user.moviesRecommended = user.moviesRecommended.filter(
+//         (movie) => movie.title !== movieTitle
+//       );
+//       await user.save();
 
-      res.status(200).json({ message: "Film supprimé avec succès" });
-    } catch (error) {
-      res.status(500).json({ message: "Erreur serveur", error });
-    }
-  }
-);
+//       res.status(200).json({ message: "Film supprimé avec succès" });
+//     } catch (error) {
+//       res.status(500).json({ message: "Erreur serveur", error });
+//     }
+//   }
+// );
 
 router.post("/move-movie-to-normal-list", checkAuth, async (req, res, next) => {
   const { title } = req.body;
@@ -642,5 +667,7 @@ router.post("/move-movie-to-normal-list", checkAuth, async (req, res, next) => {
     res.status(500).json({ message: "Erreur serveur", error });
   }
 });
+
+//#endregion
 
 module.exports = router;
