@@ -6,6 +6,7 @@ const movieSchema = mongoose.Schema({
   date: { type: String, required: true },
   list: { type: String, required: true }, // "a voir" ou "vu"
   creator: { type: String },
+  imdbId: { type: String, required: true },
 });
 
 const userSchema = mongoose.Schema({
@@ -18,7 +19,6 @@ const userSchema = mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   ],
   movies: [movieSchema],
-  moviesRecommended: [movieSchema],
 });
 
 userSchema.plugin(uniqueValidator);

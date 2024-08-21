@@ -15,15 +15,29 @@
         {{ movie.date | date : " d MMMM y" }}
       </p>
       <mat-action-row>
-        <button mat-button color="accent" (click)="updateAsToSee(movie)">
+        <button
+          mat-flat-button
+          color="basic"
+          (click)="searchMovieById(movie.imdbId)"
+        >
+          Plus d'info
+        </button>
+        <button mat-flat-button color="accent" (click)="updateAsToSee(movie)">
           Ajouter à ma liste à voir
         </button>
-        <button mat-button color="warn" (click)="onDelete(movie.id)">
+        <button mat-flat-button color="warn" (click)="onDelete(movie.id)">
           Supprimer
         </button>
       </mat-action-row>
     </mat-expansion-panel>
   </mat-accordion>
+  <mat-paginator
+    [length]="totalMovies"
+    [pageSize]="moviesPerPage"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="onChangedPage($event)"
+    *ngIf="movies.length > 0"
+  ></mat-paginator>
   <p class="info-text mat-body-1" *ngIf="movies.length <= 0 && !isLoading">
     Votre liste est vide
   </p>

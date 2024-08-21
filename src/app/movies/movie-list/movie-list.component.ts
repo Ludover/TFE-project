@@ -8,6 +8,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
+import { OmdbService } from 'src/app/omdb.service';
+import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
 
 @Component({
   selector: 'app-movie-list',
@@ -29,15 +31,20 @@ export class MovieListComponent implements OnInit, OnDestroy {
     public moviesService: MoviesService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    public dialog: MatDialog
+    private dialog: MatDialog,
+    private omdbService: OmdbService
   ) {}
 
   ngOnInit() {
     this.isLoading = true;
-    this.moviesService.getMoviesByListType('tosee', this.moviesPerPage, this.currentPage);
+    this.moviesService.getMoviesByListType(
+      'tosee',
+      this.moviesPerPage,
+      this.currentPage
+    );
     this.moviesSub = this.moviesService
       .getMovieUpdateListener()
-      .subscribe((movieData: {movies: Movie[], movieCount: number}) => {
+      .subscribe((movieData: { movies: Movie[]; movieCount: number }) => {
         this.isLoading = false;
         this.totalMovies = movieData.movieCount;
         this.movies = movieData.movies;
@@ -54,7 +61,11 @@ export class MovieListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.currentPage = pageData.pageIndex + 1;
     this.moviesPerPage = pageData.pageSize;
-    this.moviesService.getMoviesByListType('tosee', this.moviesPerPage, this.currentPage);
+    this.moviesService.getMoviesByListType(
+      'tosee',
+      this.moviesPerPage,
+      this.currentPage
+    );
   }
 
   onDelete(movieId: string) {
@@ -69,7 +80,11 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
     snackBarRef.onAction().subscribe(() => {
       this.moviesService.deleteMovie(movieId).subscribe(() => {
-        this.moviesService.getMoviesByListType("tosee", this.moviesPerPage,this.currentPage )
+        this.moviesService.getMoviesByListType(
+          'tosee',
+          this.moviesPerPage,
+          this.currentPage
+        );
       });
       this.snackBar.open('Film supprimé avec succès', 'Fermer', {
         duration: 3000,
@@ -91,29 +106,66 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
     snackBarRef.onAction().subscribe(() => {
       // Appeler le service pour mettre à jour le film
-      this.moviesService.updateMovie(title, date, 'seen');
-
-      // Recharger les films après la mise à jour
-      this.moviesService.getMoviesByListType('tosee', this.moviesPerPage, this.currentPage);
-
-      this.snackBar.open('Film marqué comme vu', 'Fermer', {
-        duration: 3000,
-        verticalPosition: 'top',
+      this.moviesService.updateMovie(title, date, 'seen').subscribe({
+        next: () => {
+          // Rafraîchir la liste des films après la mise à jour réussie
+          this.moviesService.getMoviesByListType(
+            'tosee',
+            this.moviesPerPage,
+            this.currentPage
+          );
+          this.snackBar.open('Film marqué comme vu', 'Fermer', {
+            duration: 3000,
+            verticalPosition: 'top',
+          });
+        },
+        error: (error) => {
+          if (
+            error.status === 400 &&
+            error.error.message === 'Ce film est déjà dans votre liste à voir.'
+          ) {
+            this.snackBar.open(
+              'Ce film est déjà dans votre liste à voir.',
+              'Fermer',
+              {
+                duration: 3000,
+                verticalPosition: 'top',
+                panelClass: ['mat-toolbar', 'mat-warn'],
+              }
+            );
+          } else {
+            this.snackBar.open(
+              'Erreur lors de la mise à jour du film',
+              'Fermer',
+              {
+                duration: 3000,
+                verticalPosition: 'top',
+                panelClass: ['mat-toolbar', 'mat-warn'],
+              }
+            );
+          }
+        },
       });
     });
   }
 
   onShare(movie: Movie) {
     const dialogRef = this.dialog.open(ShareMovieDialogComponent, {
-      width: '250px',
+      width: '400px',
       data: { movie: movie },
     });
-
+    console.log(movie);
+    console.log(dialogRef);
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
           this.moviesService
-            .shareMovie(result.friendId, result.movieTitle, result.date)
+            .shareMovie(
+              result.friendId,
+              result.movieTitle,
+              result.date,
+              result.imdbId
+            )
             .subscribe({
               next: () => {
                 this.snackBar.open('Film partagé avec succès', 'Fermer', {
@@ -148,6 +200,18 @@ export class MovieListComponent implements OnInit, OnDestroy {
     });
   }
 
+  searchMovieById(id: string) {
+    this.omdbService.searchMovieById(id).subscribe((response) => {
+      if (response && response.Response !== 'False') {
+        this.dialog.open(MovieDetailsDialogComponent, {
+          width: '600px',
+          data: { movie: response },
+        });
+      } else {
+        console.error('Aucun film trouvé avec cet ID.');
+      }
+    });
+  }
   ngOnDestroy() {
     this.moviesSub?.unsubscribe();
     this.authStatusSub.unsubscribe();

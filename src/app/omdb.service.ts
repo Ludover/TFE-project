@@ -16,4 +16,10 @@ export class OmdbService {
     const headers = new HttpHeaders();
     return this.http.get<any>(url, { headers });
   }
+
+  searchMovieById(id: string): Observable<any> {
+    const url = `${this.apiUrl}i=${id}`;
+    const headers = new HttpHeaders();
+    return this.http.get<any>(url, { headers });
+  }
 }

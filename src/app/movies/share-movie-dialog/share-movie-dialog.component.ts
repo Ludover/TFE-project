@@ -26,6 +26,7 @@ export class ShareMovieDialogComponent {
       friendId: this.selectedFriendId,
       movieTitle: this.data.movie.title,
       date: new Date(),
+      imdbId: this.data.movie.imdbId,
     });
   }
 

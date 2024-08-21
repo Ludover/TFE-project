@@ -37,6 +37,7 @@ import { FriendListRequestSentComponent } from './friends/listFriendRequestSent/
 import { FriendListRequestReceivedComponent } from './friends/listFriendRequestReceived/friend-list-request-received.component';
 import { ShareMovieDialogComponent } from './movies/share-movie-dialog/share-movie-dialog.component';
 import { MovieListRecommendedComponent } from './movies/movie-list-recommended/movie-list-recommended.component';
+import { MovieDetailsDialogComponent } from './movies/movie-details-dialog/movie-details-dialog.component';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -57,6 +58,7 @@ registerLocaleData(localeFr);
     FriendListRequestReceivedComponent,
     ShareMovieDialogComponent,
     MovieListRecommendedComponent,
+    MovieDetailsDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,7 +79,7 @@ registerLocaleData(localeFr);
     MatListModule,
     MatSelectModule,
     MatDialogModule,
-    MatPaginatorModule
+    MatPaginatorModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

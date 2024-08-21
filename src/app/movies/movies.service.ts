@@ -9,33 +9,47 @@ import { Movie } from '../movies/movie.model';
 @Injectable({ providedIn: 'root' })
 export class MoviesService {
   private movies: Movie[] = [];
-  private moviesUpdated = new Subject<{movies: Movie[], movieCount:number}>();
+  private moviesUpdated = new Subject<{
+    movies: Movie[];
+    movieCount: number;
+  }>();
   private moviesRecommendedUpdated = new Subject<Movie[]>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getMoviesByListType(listType: string, moviesPerPage: number, currentPage: number) {
+  getMoviesByListType(
+    listType: string,
+    moviesPerPage: number,
+    currentPage: number
+  ) {
     const queryParams = `?pagesize=${moviesPerPage}&page=${currentPage}`;
     this.http
-      .get<{ message: string; movies: any[], maxMovies: number }>(
+      .get<{ message: string; movies: any[]; maxMovies: number }>(
         `http://localhost:3000/api/user/movies/list/${listType}` + queryParams
       )
       .pipe(
         map((responseData) => {
-          return { movies: responseData.movies.map((movie) => {
-            return {
-              id: movie._id,
-              title: movie.title,
-              date: movie.date,
-              list: movie.list,
-              creator: movie.creator,
-            };
-          }), maxMovie:  responseData.maxMovies};
+          return {
+            movies: responseData.movies.map((movie) => {
+              return {
+                id: movie._id,
+                title: movie.title,
+                date: movie.date,
+                list: movie.list,
+                creator: movie.creator,
+                imdbId: movie.imdbId,
+              };
+            }),
+            maxMovie: responseData.maxMovies,
+          };
         })
       )
       .subscribe((mappedMoviesData) => {
         this.movies = mappedMoviesData.movies;
-        this.moviesUpdated.next({ movies: [...this.movies], movieCount: mappedMoviesData.maxMovie });
+        this.moviesUpdated.next({
+          movies: [...this.movies],
+          movieCount: mappedMoviesData.maxMovie,
+        });
       });
   }
 
@@ -69,32 +83,20 @@ export class MoviesService {
   updateMovie(title: string, date: Date, list: string) {
     const updateData = { title, date, list };
 
-    this.http
-      .put(`http://localhost:3000/api/user/update-movie/${title}`, updateData)
-      .subscribe((response) => {
-        // const updatedMovies = [...this.movies];
-        // const oldMovieIndex = updatedMovies.findIndex((m) => m.title === title);
-        // if (oldMovieIndex > -1) {
-        //   updatedMovies[oldMovieIndex] = {
-        //     ...updatedMovies[oldMovieIndex],
-        //     title,
-        //     date,
-        //     list,
-        //   };
-        //   this.movies = updatedMovies;
-        // this.moviesUpdated.next([...this.movies]);
-        //}
-        this.router.navigate(['/']);
-      });
+    return this.http.put(
+      `http://localhost:3000/api/user/update-movie/${title}`,
+      updateData
+    );
   }
 
   deleteMovie(movieId: string) {
-    return this.http
-      .delete(`http://localhost:3000/api/user/delete-movie/${movieId}`)
-      // .subscribe(() => {
-      //   this.movies = this.movies.filter((movie) => movie.title !== movieTitle);
-      //   this.moviesUpdated.next([...this.movies]);
-      // });
+    return this.http.delete(
+      `http://localhost:3000/api/user/delete-movie/${movieId}`
+    );
+    // .subscribe(() => {
+    //   this.movies = this.movies.filter((movie) => movie.title !== movieTitle);
+    //   this.moviesUpdated.next([...this.movies]);
+    // });
   }
 
   // deleteMovieRecommended(movieTitle: string) {
@@ -111,13 +113,15 @@ export class MoviesService {
   shareMovie(
     friendId: string,
     movieTitle: string,
-    date: Date
+    date: Date,
+    imdbId: string
   ): Observable<any> {
     return this.http
       .post<{ message: string }>('http://localhost:3000/api/user/share-movie', {
         friendId,
         movieTitle,
         date,
+        imdbId,
       })
       .pipe(
         catchError((error) => {
@@ -161,12 +165,12 @@ export class MoviesService {
   //   return this.moviesRecommendedUpdated.asObservable();
   // }
 
-  moveMovieToNormalList(movieTitle: string) {
-    const updateData = { title: movieTitle };
+  // moveMovieToNormalList(movieTitle: string) {
+  //   const updateData = { title: movieTitle };
 
-    return this.http.post<{ message: string }>(
-      'http://localhost:3000/api/user/move-movie-to-normal-list',
-      updateData
-    );
-  }
+  //   return this.http.post<{ message: string }>(
+  //     'http://localhost:3000/api/user/move-movie-to-normal-list',
+  //     updateData
+  //   );
+  // }
 }

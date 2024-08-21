@@ -1,0 +1,37 @@
+h1[mat-dialog-title] {
+  font-size: 1.8rem;
+  color: blueviolet;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+mat-dialog-content p {
+  font-size: 1.2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+mat-dialog-actions button {
+  font-weight: bold;
+}
+
+mat-dialog-actions button:first-child {
+  color: #ff4081;
+}
+
+mat-dialog-actions button:last-child {
+  background-color: blueviolet;
+  color: white;
+}

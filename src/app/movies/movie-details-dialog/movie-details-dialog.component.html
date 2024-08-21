@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Détails du film</h1>
+<div mat-dialog-content>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ data.movie.Title }}</mat-card-title>
+      <mat-card-subtitle>{{ data.movie.Year }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Synopsis:</strong> {{ data.movie.Plot }}</p>
+      <p><strong>Genre:</strong> {{ data.movie.Genre }}</p>
+      <p><strong>Réalisateur:</strong> {{ data.movie.Director }}</p>
+      <p><strong>Acteurs:</strong> {{ data.movie.Actors }}</p>
+      <p><strong>Durée:</strong> {{ data.movie.Runtime }}</p>
+      <p><strong>Langue:</strong> {{ data.movie.Language }}</p>
+    </mat-card-content>
+    <img
+      mat-card-image
+      [src]="data.movie.Poster"
+      alt="{{ data.movie.Title }}"
+    />
+  </mat-card>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Fermer</button>
+</div>

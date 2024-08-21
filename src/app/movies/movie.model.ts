@@ -4,4 +4,5 @@ export interface Movie {
   date: Date;
   list?: string;
   creator?: string;
+  imdbId: string;
 }

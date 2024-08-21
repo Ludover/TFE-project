@@ -386,8 +386,8 @@ router.get("/is-friend/:userId", checkAuth, async (req, res) => {
 router.post("/add-movie", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
-    const { title } = req.body;
-
+    const { Title, imdbID } = req.body;
+    console.log(req.body);
     // Trouver l'utilisateur
     const user = await User.findById(userId);
     if (!user) {
@@ -396,7 +396,7 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
 
     // Vérifier si le film existe déjà dans la liste "tosee"
     const movieExists = user.movies.some(
-      (movie) => movie.title === title && movie.list === "tosee"
+      (movie) => movie.title === Title && movie.list === "tosee"
     );
 
     if (movieExists) {
@@ -406,7 +406,12 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
     }
 
     // Ajouter le film à la liste "tosee"
-    user.movies.push({ title, date: new Date(), list: "tosee" });
+    user.movies.push({
+      title: Title,
+      date: new Date(),
+      list: "tosee",
+      imdbId: imdbID,
+    });
     await user.save();
 
     res.status(201).json({ message: "Film ajouté avec succès" });
@@ -418,7 +423,7 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
 router.delete("/delete-movie/:id", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
-    const movieId = req.params._id;
+    const movieId = req.params.id;
 
     // Trouver l'utilisateur
     const user = await User.findById(userId);
@@ -426,8 +431,17 @@ router.delete("/delete-movie/:id", checkAuth, async (req, res, next) => {
       return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Filtrer la liste des films pour supprimer celui avec le titre donné
-    user.movies = user.movies.filter((movie) => movie._id !== movieId);
+    // Filtrer la liste des films pour supprimer celui avec l'ID donné
+    const updatedMovies = user.movies.filter(
+      (movie) => movie._id.toString() !== movieId
+    );
+
+    // Vérifier si un film a été supprimé
+    if (updatedMovies.length === user.movies.length) {
+      return res.status(404).json({ message: "Film non trouvé" });
+    }
+
+    user.movies = updatedMovies;
     await user.save();
 
     res.status(200).json({ message: "Film supprimé avec succès" });
@@ -439,10 +453,11 @@ router.delete("/delete-movie/:id", checkAuth, async (req, res, next) => {
 // Mettre à jour la liste d'un film (de 'tosee' à 'seen')
 router.put("/update-movie/:title", checkAuth, (req, res) => {
   const userId = req.userData.userId;
-  const movieTitle = req.params.title;
-  //TODO console.log(req.query ou pa)
+  const title = req.body.title;
+  const list = req.body.list;
+  const date = req.body.date;
 
-  User.findOne({ _id: userId, "movies.title": movieTitle })
+  User.findOne({ _id: userId, "movies.title": title })
     .then((user) => {
       if (!user) {
         return res
@@ -450,19 +465,32 @@ router.put("/update-movie/:title", checkAuth, (req, res) => {
           .json({ message: "Film non trouvé dans la liste." });
       }
 
+      // Vérifier si le film existe déjà dans la liste "tosee"
+      const movieExists = user.movies.some(
+        (movie) => movie.title === title && movie.list === list
+      );
+
+      if (movieExists) {
+        return res
+          .status(400)
+          .json({ message: "Ce film est déjà dans votre liste à voir." });
+      }
+
       const movieIndex = user.movies.findIndex(
-        (movie) => movie.title === movieTitle
+        (movie) => movie.title === title
       );
       if (movieIndex > -1) {
-        user.movies[movieIndex].list = "seen";
-        return user.save();
+        user.movies[movieIndex].list = list;
+        user.movies[movieIndex].date = date;
+        return user.save().then((result) => {
+          res.status(200).json({
+            message: "Film mis à jour avec succès.",
+            movie: result.movies,
+          });
+        });
+      } else {
+        return res.status(404).json({ message: "Film non trouvé." });
       }
-    })
-    .then((result) => {
-      res.status(200).json({
-        message: "Film mis à jour avec succès.",
-        movie: result.movies,
-      });
     })
     .catch((error) => {
       res.status(500).json({ message: "La mise à jour du film a échoué." });
@@ -509,7 +537,6 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
   const listType = req.params.listType;
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
-  let fetchedMovies;
 
   try {
     // Trouver l'utilisateur actuel
@@ -519,20 +546,21 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
     }
 
     // Filtrer les films selon le type de liste
-    const movies = user.movies.filter((movie) => movie.list === listType);
+    let movies = user.movies.filter((movie) => movie.list === listType);
+    const maxMovies = movies.length;
 
+    // Appliquer la pagination
     if (pageSize && currentPage) {
-      movies.skip(pageSize * (currentPage - 1)).limit(pageSize);
+      const startIndex = pageSize * (currentPage - 1);
+      movies = movies.slice(startIndex, startIndex + pageSize);
     }
 
-    movies.then(movie => {
-      fetchedMovies = movie;
-      return movies.count();
-    }).then(count => {
-      res.status(200).json({ message: "Films récupérés avec succès.", movies: fetchedMovies, maxMovies: count });
-    })
-
-    
+    // Envoyer la réponse avec les films paginés et le nombre total de films
+    res.status(200).json({
+      message: "Films récupérés avec succès.",
+      movies: movies,
+      maxMovies: maxMovies,
+    });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur.", error });
   }
@@ -540,9 +568,9 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
 
 // Route pour partager un film
 router.post("/share-movie", checkAuth, async (req, res, next) => {
-  const { friendId, movieTitle, date } = req.body;
+  const { friendId, movieTitle, date, imdbId } = req.body;
   const userId = req.userData.userId;
-
+  console.log(req.body);
   try {
     // Trouver l'utilisateur actuel
     const user = await User.findById(userId);
@@ -571,7 +599,8 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
       title: movieTitle,
       date: date,
       list: "recommended",
-      creator: user.pseudo, 
+      creator: user.pseudo,
+      imdbId: imdbId,
     };
 
     // Ajouter le film recommandé à la liste de l'ami
