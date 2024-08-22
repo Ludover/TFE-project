@@ -20,6 +20,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatBadgeModule } from '@angular/material/badge';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -40,6 +41,7 @@ import { MovieListRecommendedComponent } from './movies/movie-list-recommended/m
 import { MovieDetailsDialogComponent } from './movies/movie-details-dialog/movie-details-dialog.component';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import { ErrorInterceptor } from './error-interceptor';
 
 registerLocaleData(localeFr);
 
@@ -80,9 +82,11 @@ registerLocaleData(localeFr);
     MatSelectModule,
     MatDialogModule,
     MatPaginatorModule,
+    MatBadgeModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     DatePipe,
     { provide: LOCALE_ID, useValue: 'fr-BE' },
   ],

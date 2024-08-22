@@ -105,6 +105,10 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
+  getUserId(): Observable<{ id: string }> {
+    return this.http.get<{ id: string }>('http://localhost:3000/api/user/id');
+  }
+
   getUserPseudo(): Observable<any> {
     return this.http.get<any>('http://localhost:3000/api/user/pseudo');
   }

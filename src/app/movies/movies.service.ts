@@ -21,9 +21,9 @@ export class MoviesService {
     listType: string,
     moviesPerPage: number,
     currentPage: number
-  ) {
+  ): Observable<{ movies: any[]; maxMovie: number }> {
     const queryParams = `?pagesize=${moviesPerPage}&page=${currentPage}`;
-    this.http
+    return this.http
       .get<{ message: string; movies: any[]; maxMovies: number }>(
         `http://localhost:3000/api/user/movies/list/${listType}` + queryParams
       )
@@ -44,13 +44,19 @@ export class MoviesService {
           };
         })
       )
-      .subscribe((mappedMoviesData) => {
-        this.movies = mappedMoviesData.movies;
-        this.moviesUpdated.next({
-          movies: [...this.movies],
-          movieCount: mappedMoviesData.maxMovie,
-        });
-      });
+      // .subscribe((mappedMoviesData) => {
+      //   this.movies = mappedMoviesData.movies;
+      //   this.moviesUpdated.next({
+      //     movies: [...this.movies],
+      //     movieCount: mappedMoviesData.maxMovie,
+      //   });
+      // });
+  }
+
+  getRecommendedMoviesCount(): Observable<number> {
+    return this.getMoviesByListType('recommended', 1, 1).pipe(
+      map((responseData) => responseData.maxMovie)
+    );
   }
 
   getMovieUpdateListener() {
@@ -66,12 +72,7 @@ export class MoviesService {
         )
         .subscribe({
           next: (responseData) => {
-            // const newMovie = responseData.movie;
-            // this.movies.push(newMovie);
-            // this.moviesUpdated.next([...this.movies]);
             this.router.navigate(['/']);
-            // observer.next(responseData);
-            // observer.complete();
           },
           error: (error) => {
             observer.error(error);
@@ -93,22 +94,8 @@ export class MoviesService {
     return this.http.delete(
       `http://localhost:3000/api/user/delete-movie/${movieId}`
     );
-    // .subscribe(() => {
-    //   this.movies = this.movies.filter((movie) => movie.title !== movieTitle);
-    //   this.moviesUpdated.next([...this.movies]);
-    // });
   }
 
-  // deleteMovieRecommended(movieTitle: string) {
-  //   this.http
-  //     .delete(
-  //       `http://localhost:3000/api/user/delete-movie-recommended/${movieTitle}`
-  //     )
-  //     // .subscribe(() => {
-  //     //   this.movies = this.movies.filter((movie) => movie.title !== movieTitle);
-  //     //   this.moviesUpdated.next([...this.movies]);
-  //     // });
-  // }
 
   shareMovie(
     friendId: string,
@@ -130,47 +117,4 @@ export class MoviesService {
         })
       );
   }
-
-  // // Méthode pour récupérer les films recommandés
-  // getMoviesRecommended(): void {
-  //   this.http
-  //     .get<{ movies: any[] }>(
-  //       'http://localhost:3000/api/user/movies-recommended'
-  //     )
-  //     .pipe(
-  //       map((responseData) => {
-  //         return responseData.movies.map((movie) => ({
-  //           id: movie._id,
-  //           title: movie.title,
-  //           date: movie.date,
-  //           list: movie.list,
-  //           creator: movie.creator,
-  //         }));
-  //       }),
-  //       catchError((error) => {
-  //         console.error(
-  //           'Erreur lors de la récupération des films recommandés :',
-  //           error
-  //         );
-  //         throw error; // Propager l'erreur pour qu'elle soit gérée par le composant appelant
-  //       })
-  //     )
-  //     .subscribe((movies) => {
-  //       this.moviesRecommendedUpdated.next(movies);
-  //     });
-  // }
-
-  // // Méthode pour écouter les mises à jour des films recommandés
-  // getMoviesRecommendedUpdateListener(): Observable<Movie[]> {
-  //   return this.moviesRecommendedUpdated.asObservable();
-  // }
-
-  // moveMovieToNormalList(movieTitle: string) {
-  //   const updateData = { title: movieTitle };
-
-  //   return this.http.post<{ message: string }>(
-  //     'http://localhost:3000/api/user/move-movie-to-normal-list',
-  //     updateData
-  //   );
-  // }
 }

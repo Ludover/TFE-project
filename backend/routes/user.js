@@ -9,6 +9,7 @@ const router = express.Router();
 
 //#region Authentification
 
+// Route pour créer un nouvel utilisateur.
 router.post("/signup", (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
@@ -26,8 +27,8 @@ router.post("/signup", (req, res, next) => {
       })
       .catch((err) => {
         res.status(500).json({
-          error: err,
-        });
+            message: "Les données ne sont pas valides!"
+          });
       });
   });
 });
@@ -82,6 +83,23 @@ router.post("/login", async (req, res) => {
 
 //#region Friends
 
+// Route pour récupérer le pseudo.
+router.get("/id", checkAuth, async (req, res) => {
+  try {
+    const userId = req.userData.userId;
+    const user = await User.findById(userId).select("_id"); // Récupère uniquement le champ id
+
+    if (user) {
+      res.status(200).json({ id: user._id });
+    } else {
+      res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération du pseudo." });
+  }
+});
+
+// Route pour récupérer le pseudo.
 router.get("/pseudo", checkAuth, async (req, res) => {
   try {
     const userId = req.userData.userId;
@@ -93,11 +111,11 @@ router.get("/pseudo", checkAuth, async (req, res) => {
       res.status(404).json({ message: "Utilisateur non trouvé." });
     }
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    res.status(500).json({ message: "Erreur lors de la récupération du pseudo." });
   }
 });
 
-// Rechercher un utilisateur par pseudo
+// Rechercher un utilisateur par pseudo.
 router.get("/search/:pseudo", checkAuth, async (req, res, next) => {
   try {
     const authUserId = req.userData.userId;
@@ -119,14 +137,17 @@ router.get("/search/:pseudo", checkAuth, async (req, res, next) => {
         .json({ message: "Aucun utilisateur trouvé avec ce pseudo." });
     }
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur." });
   }
 });
 
+// Route pour envoyer une demande d'ami.
 router.post("/send-friend-request/:friendId", checkAuth, async (req, res) => {
   try {
     const userId = req.userData.userId;
     const friendId = req.params.friendId;
+
+    const friendRequest = { from: userId, to: friendId };
 
     if (userId === friendId) {
       return res.status(400).json({
@@ -150,6 +171,8 @@ router.post("/send-friend-request/:friendId", checkAuth, async (req, res) => {
 
     await user.save();
     await friend.save();
+
+    req.io.emit('friendRequestReceived', friendRequest);
 
     res.status(200).json({ message: "Demande d'ami envoyée." });
   } catch (error) {
@@ -199,6 +222,7 @@ router.post("/accept-friend-request/:userId", checkAuth, async (req, res) => {
   }
 });
 
+// Route pour refuser une demande d'ami.
 router.post("/reject-friend-request/:userId", checkAuth, async (req, res) => {
   try {
     const currentUserId = req.userData.userId;
@@ -238,7 +262,7 @@ router.post("/reject-friend-request/:userId", checkAuth, async (req, res) => {
   }
 });
 
-// Route pour annuler une demande d'ami
+// Route pour annuler une demande d'ami.
 router.post(
   "/cancel-friend-request/:friendId",
   checkAuth,
@@ -289,7 +313,7 @@ router.post(
   }
 );
 
-// Récupérer la liste des amis
+// Route pour récupérer la liste des amis.
 router.get("/friends", checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.userData.userId).populate("friends");
@@ -297,11 +321,11 @@ router.get("/friends", checkAuth, async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Erreur lors de la récupération des amis" });
+      .json({ message: "Erreur lors de la récupération des amis." });
   }
 });
 
-// Récupérer la liste des demandes d'amis envoyées.
+// Route pour récupérer la liste des demandes d'amis envoyées.
 router.get("/friendRequestsSent", checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.userData.userId).populate(
@@ -311,11 +335,11 @@ router.get("/friendRequestsSent", checkAuth, async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Erreur lors de la récupération des amis" });
+      .json({ message: "Erreur lors de la récupération des amis." });
   }
 });
 
-// Récupérer la liste des demandes d'amis reçues.
+// Route pour récupérer la liste des demandes d'amis reçues.
 router.get("/friendRequestsReceived", checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.userData.userId).populate(
@@ -325,11 +349,11 @@ router.get("/friendRequestsReceived", checkAuth, async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Erreur lors de la récupération des amis" });
+      .json({ message: "Erreur lors de la récupération des amis." });
   }
 });
 
-// Route pour supprimer un ami
+// Route pour supprimer un ami.
 router.delete("/remove-friend/:friendId", checkAuth, async (req, res) => {
   try {
     const userId = req.userData.userId;
@@ -383,6 +407,7 @@ router.get("/is-friend/:userId", checkAuth, async (req, res) => {
 
 //#region Movies
 
+// Route pour ajouter un film via la recherche de film.
 router.post("/add-movie", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
@@ -414,12 +439,13 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
     });
     await user.save();
 
-    res.status(201).json({ message: "Film ajouté avec succès" });
+    res.status(201).json({ message: "Film ajouté avec succès"});
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    res.status(500).json({ message: "L'ajout du film a échoué"});
   }
 });
 
+// Route pour supprimer un film via l'id.
 router.delete("/delete-movie/:id", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
@@ -446,11 +472,11 @@ router.delete("/delete-movie/:id", checkAuth, async (req, res, next) => {
 
     res.status(200).json({ message: "Film supprimé avec succès" });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    res.status(500).json({ message: "Erreur lors de la suppression du film" });
   }
 });
 
-// Mettre à jour la liste d'un film (de 'tosee' à 'seen')
+// Route pour mettre à jour la liste d'un film (de 'tosee' à 'seen' ou de 'recommended' à 'tosee').
 router.put("/update-movie/:title", checkAuth, (req, res) => {
   const userId = req.userData.userId;
   const title = req.body.title;
@@ -497,41 +523,7 @@ router.put("/update-movie/:title", checkAuth, (req, res) => {
     });
 });
 
-// router.put("/update-movie/:title", checkAuth, async (req, res, next) => {
-//   const userId = req.userData.userId;
-//   const movieTitle = req.params.title;
-//   const { newList } = req.body;
-
-//   try {
-//     // Trouver l'utilisateur actuel
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).json({ message: "Utilisateur non trouvé." });
-//     }
-
-//     // Trouver le film dans la liste 'tosee'
-//     const movieIndex = user.movies.findIndex(
-//       (movie) => movie.title === movieTitle && movie.list === "tosee"
-//     );
-//     if (movieIndex === -1) {
-//       return res
-//         .status(404)
-//         .json({ message: 'Film non trouvé dans la liste "tosee".' });
-//     }
-
-//     // Mettre à jour la liste du film
-//     user.movies[movieIndex].list = newList;
-//     await user.save();
-
-//     res.status(200).json({
-//       message: "Film mis à jour avec succès.",
-//       movie: user.movies[movieIndex],
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: "Erreur serveur.", error });
-//   }
-// });
-
+// Route pour récupérer les films en fonction de la liste.
 router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
   const userId = req.userData.userId;
   const listType = req.params.listType;
@@ -562,7 +554,7 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
       maxMovies: maxMovies,
     });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur.", error });
+    res.status(500).json({ message: "Erreur lors de la récupération des films"});
   }
 });
 
@@ -570,7 +562,9 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
 router.post("/share-movie", checkAuth, async (req, res, next) => {
   const { friendId, movieTitle, date, imdbId } = req.body;
   const userId = req.userData.userId;
-  console.log(req.body);
+
+  const friendRequest = { from: userId, to: friendId };
+    
   try {
     // Trouver l'utilisateur actuel
     const user = await User.findById(userId);
@@ -607,9 +601,11 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
     friend.movies.push(recommendedMovie);
     await friend.save();
 
+    req.io.emit('movieReceived', friendRequest);
+
     res.status(200).json({ message: "Film partagé avec succès." });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur.", error });
+    res.status(500).json({ message: "Erreur lors du partage de film" });
   }
 });
 

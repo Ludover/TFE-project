@@ -13,19 +13,23 @@
       </a>
     </li>
     <li *ngIf="userIsAuthenticated" [matMenuTriggerFor]="filmMenu">
-      <button mat-button><mat-icon>list</mat-icon> Mes films</button>
+      <button mat-button matBadge="{{ recommendedMoviesCount }}" 
+      matBadgeColor="warn" 
+      [matBadgeHidden]="recommendedMoviesCount === 0"><mat-icon>list</mat-icon> Mes films</button>
       <mat-menu #filmMenu="matMenu">
         <button mat-menu-item routerLink="/listtosee">A voir</button>
         <button mat-menu-item routerLink="/listseen">Vu</button>
-        <button mat-menu-item routerLink="/recommendedlist">Conseillé</button>
+        <button mat-menu-item routerLink="/recommendedlist" matBadge="{{ recommendedMoviesCount }}" 
+        matBadgeColor="warn" 
+        [matBadgeHidden]="recommendedMoviesCount === 0">Conseillé</button>
       </mat-menu>
     </li>
     <li *ngIf="userIsAuthenticated" [matMenuTriggerFor]="friendMenu">
-      <button mat-button><mat-icon>person</mat-icon> Amis</button>
+      <button mat-button matBadge="{{ friendRequestsCount }}" matBadgeColor="primary" [matBadgeHidden]="friendRequestsCount === 0"><mat-icon>person</mat-icon> Amis</button>
       <mat-menu #friendMenu="matMenu">
         <button mat-menu-item routerLink="/friendlist">Ma liste d'amis</button>
         <button mat-menu-item routerLink="/addfriend">Ajouter un ami</button>
-        <button mat-menu-item routerLink="/friendrequestReceived">
+        <button mat-menu-item routerLink="/friendrequestReceived" matBadge="{{ friendRequestsCount }}" matBadgeColor="primary" [matBadgeHidden]="friendRequestsCount === 0">
           Invitations reçues
         </button>
         <button mat-menu-item routerLink="/friendrequestSent">

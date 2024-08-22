@@ -91,13 +91,6 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
         verticalPosition: 'top',
       });
     });
-    // this.moviesService.getMoviesRecommended();
-    // this.moviesSub = this.moviesService
-    //   .getMoviesRecommendedUpdateListener()
-    //   .subscribe((movies: Movie[]) => {
-    //     this.isLoading = false;
-    //     this.movies = movies;
-    //   });
   }
 
   updateAsToSee(movie: Movie) {
