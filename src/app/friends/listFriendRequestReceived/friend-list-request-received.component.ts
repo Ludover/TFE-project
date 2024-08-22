@@ -35,43 +35,23 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
 
   // Méthode pour accepter une demande d'ami
   acceptFriendRequest(friendId: string) {
-    this.friendsService.acceptFriendRequest(friendId).subscribe({
-      next: () => {
-        this.snackBar.open("Demande d'ami acceptée", 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
-        this.removeFriendFromList(friendId);
-      },
-      error: (error) => {
-        this.snackBar.open(
-          "Erreur lors de l'acceptation de la demande",
-          'Fermer',
-          {
-            duration: 3000,
-            verticalPosition: 'top',
-          }
-        );
-      },
+    this.friendsService.acceptFriendRequest(friendId).subscribe(() => {
+      this.snackBar.open("Demande d'ami acceptée", 'Fermer', {
+        duration: 3000,
+        verticalPosition: 'top',
+      });
+      this.removeFriendFromList(friendId);
     });
   }
 
   // Méthode pour rejeter une demande d'ami
   rejectFriendRequest(friendId: string) {
-    this.friendsService.rejectFriendRequest(friendId).subscribe({
-      next: () => {
-        this.snackBar.open("Demande d'ami rejetée", 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
-        this.removeFriendFromList(friendId);
-      },
-      error: (error) => {
-        this.snackBar.open('Erreur lors du rejet de la demande', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
-      },
+    this.friendsService.rejectFriendRequest(friendId).subscribe(() => {
+      this.snackBar.open("Demande d'ami rejetée", 'Fermer', {
+        duration: 3000,
+        verticalPosition: 'top',
+      });
+      this.removeFriendFromList(friendId);
     });
   }
 

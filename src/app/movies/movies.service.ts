@@ -21,9 +21,9 @@ export class MoviesService {
     listType: string,
     moviesPerPage: number,
     currentPage: number
-  ): Observable<{ movies: any[]; maxMovie: number }> {
+  ) {
     const queryParams = `?pagesize=${moviesPerPage}&page=${currentPage}`;
-    return this.http
+    this.http
       .get<{ message: string; movies: any[]; maxMovies: number }>(
         `http://localhost:3000/api/user/movies/list/${listType}` + queryParams
       )
@@ -44,20 +44,20 @@ export class MoviesService {
           };
         })
       )
-      // .subscribe((mappedMoviesData) => {
-      //   this.movies = mappedMoviesData.movies;
-      //   this.moviesUpdated.next({
-      //     movies: [...this.movies],
-      //     movieCount: mappedMoviesData.maxMovie,
-      //   });
-      // });
+      .subscribe((mappedMoviesData) => {
+        this.movies = mappedMoviesData.movies;
+        this.moviesUpdated.next({
+          movies: [...this.movies],
+          movieCount: mappedMoviesData.maxMovie,
+        });
+      });
   }
 
-  getRecommendedMoviesCount(): Observable<number> {
-    return this.getMoviesByListType('recommended', 1, 1).pipe(
-      map((responseData) => responseData.maxMovie)
-    );
-  }
+  // getRecommendedMoviesCount(): Observable<number> {
+  //   return this.getMoviesByListType('recommended', 1, 1).pipe(
+  //     map((responseData) => responseData.maxMovie)
+  //   );
+  // }
 
   getMovieUpdateListener() {
     return this.moviesUpdated.asObservable();
@@ -95,7 +95,6 @@ export class MoviesService {
       `http://localhost:3000/api/user/delete-movie/${movieId}`
     );
   }
-
 
   shareMovie(
     friendId: string,

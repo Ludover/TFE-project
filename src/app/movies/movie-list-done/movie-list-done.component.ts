@@ -110,30 +110,30 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
               result.imdbId
             )
             .subscribe({
-              next: () => {
-                this.snackBar.open('Film partagé avec succès', 'Fermer', {
-                  duration: 3000,
-                  verticalPosition: 'top',
-                });
-              },
-              error: (error) => {
-                // Vérifier si le message d'erreur est celui attendu
-                const errorMessage =
-                  error.error.message || 'Erreur lors du partage du film';
-                if (
-                  errorMessage === 'Ce film a déjà été conseillé à cet ami.'
-                ) {
-                  this.snackBar.open(errorMessage, 'Fermer', {
-                    duration: 3000,
-                    verticalPosition: 'top',
-                  });
-                } else {
-                  this.snackBar.open('Une erreur est survenue', 'Fermer', {
-                    duration: 3000,
-                    verticalPosition: 'top',
-                  });
-                }
-              },
+              //       next: () => {
+              //         this.snackBar.open('Film partagé avec succès', 'Fermer', {
+              //           duration: 3000,
+              //           verticalPosition: 'top',
+              //         });
+              //       },
+              //       error: (error) => {
+              //         // Vérifier si le message d'erreur est celui attendu
+              //         const errorMessage =
+              //           error.error.message || 'Erreur lors du partage du film';
+              //         if (
+              //           errorMessage === 'Ce film a déjà été conseillé à cet ami.'
+              //         ) {
+              //           this.snackBar.open(errorMessage, 'Fermer', {
+              //             duration: 3000,
+              //             verticalPosition: 'top',
+              //           });
+              //         } else {
+              //           this.snackBar.open('Une erreur est survenue', 'Fermer', {
+              //             duration: 3000,
+              //             verticalPosition: 'top',
+              //           });
+              //}
+              //},
             });
         }
       },

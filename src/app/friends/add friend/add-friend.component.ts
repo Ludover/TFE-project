@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FriendsService } from '../friends.service';
 import { AuthService } from 'src/app/auth/auth.service';
-import { response } from 'express';
 
 @Component({
   selector: 'app-add-friend',
@@ -71,79 +70,36 @@ export class AddFriendComponent implements OnInit, OnDestroy {
   }
 
   onAddFriend(friendId: string) {
-    this.friendsService.isFriend(friendId).subscribe({
-      next: (isFriend: boolean) => {
-        // Assurez-vous que `isFriend` est du type `boolean`
-        if (isFriend) {
-          this.snackBar.open(
-            "Cet utilisateur est déjà dans votre liste d'amis.",
-            'Fermer',
-            {
-              duration: 3000,
-              verticalPosition: 'top',
-            }
-          );
-          return;
-        }
-
-        const snackBarRef = this.snackBar.open(
-          'Voulez-vous ajouter cet ami ?',
-          'Oui',
-          {
-            duration: 5000,
-            verticalPosition: 'top',
-          }
-        );
-
-        snackBarRef.onAction().subscribe(() => {
-          this.friendsService.sendFriendRequest(friendId).subscribe({
-            next: () => {
-              this.snackBar.open(
-                "Demande d'ami envoyée avec succès",
-                'Fermer',
-                {
-                  duration: 3000,
-                  verticalPosition: 'top',
-                }
-              );
-            },
-            error: (error) => {
-              if (
-                error.status === 400 &&
-                error.error.message === "Demande d'ami déjà envoyée."
-              ) {
-                this.snackBar.open(
-                  "Vous avez déjà envoyé une demande d'ami à cet utilisateur.",
-                  'Fermer',
-                  {
-                    duration: 3000,
-                    verticalPosition: 'top',
-                  }
-                );
-              } else {
-                this.snackBar.open(
-                  "Erreur lors de l'envoi de la demande d'ami. Réessayez plus tard.",
-                  'Fermer',
-                  {
-                    duration: 3000,
-                    verticalPosition: 'top',
-                  }
-                );
-              }
-            },
-          });
-        });
-      },
-      error: (error) => {
+    this.friendsService.isFriend(friendId).subscribe((isFriend: boolean) => {
+      if (isFriend) {
         this.snackBar.open(
-          'Erreur lors de la vérification des amis. Réessayez plus tard.',
+          "Cet utilisateur est déjà dans votre liste d'amis.",
           'Fermer',
           {
             duration: 3000,
             verticalPosition: 'top',
           }
         );
-      },
+        return;
+      }
+
+      const snackBarRef = this.snackBar.open(
+        'Voulez-vous ajouter cet ami ?',
+        'Oui',
+        {
+          duration: 5000,
+          verticalPosition: 'top',
+        }
+      );
+
+      snackBarRef.onAction().subscribe(() => {
+        this.friendsService.sendFriendRequest(friendId).subscribe(() => {
+          this.snackBar.open("Demande d'ami envoyée avec succès", 'Fermer', {
+            duration: 3000,
+            verticalPosition: 'top',
+          });
+        });
+      });
     });
   }
 

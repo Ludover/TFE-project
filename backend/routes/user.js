@@ -27,8 +27,8 @@ router.post("/signup", (req, res, next) => {
       })
       .catch((err) => {
         res.status(500).json({
-            message: "Les données ne sont pas valides!"
-          });
+          message: "Les données ne sont pas valides!",
+        });
       });
   });
 });
@@ -95,7 +95,9 @@ router.get("/id", checkAuth, async (req, res) => {
       res.status(404).json({ message: "Utilisateur non trouvé." });
     }
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération du pseudo." });
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération du pseudo." });
   }
 });
 
@@ -111,7 +113,9 @@ router.get("/pseudo", checkAuth, async (req, res) => {
       res.status(404).json({ message: "Utilisateur non trouvé." });
     }
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération du pseudo." });
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération du pseudo." });
   }
 });
 
@@ -137,7 +141,9 @@ router.get("/search/:pseudo", checkAuth, async (req, res, next) => {
         .json({ message: "Aucun utilisateur trouvé avec ce pseudo." });
     }
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur." });
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération de l'utilisateur." });
   }
 });
 
@@ -146,7 +152,6 @@ router.post("/send-friend-request/:friendId", checkAuth, async (req, res) => {
   try {
     const userId = req.userData.userId;
     const friendId = req.params.friendId;
-
     const friendRequest = { from: userId, to: friendId };
 
     if (userId === friendId) {
@@ -172,7 +177,7 @@ router.post("/send-friend-request/:friendId", checkAuth, async (req, res) => {
     await user.save();
     await friend.save();
 
-    req.io.emit('friendRequestReceived', friendRequest);
+    //req.io.emit("friendRequestReceived", friendRequest);
 
     res.status(200).json({ message: "Demande d'ami envoyée." });
   } catch (error) {
@@ -412,7 +417,7 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
     const { Title, imdbID } = req.body;
-    console.log(req.body);
+
     // Trouver l'utilisateur
     const user = await User.findById(userId);
     if (!user) {
@@ -439,9 +444,9 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
     });
     await user.save();
 
-    res.status(201).json({ message: "Film ajouté avec succès"});
+    res.status(201).json({ message: "Film ajouté avec succès" });
   } catch (error) {
-    res.status(500).json({ message: "L'ajout du film a échoué"});
+    res.status(500).json({ message: "L'ajout du film a échoué" });
   }
 });
 
@@ -540,7 +545,6 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
     // Filtrer les films selon le type de liste
     let movies = user.movies.filter((movie) => movie.list === listType);
     const maxMovies = movies.length;
-
     // Appliquer la pagination
     if (pageSize && currentPage) {
       const startIndex = pageSize * (currentPage - 1);
@@ -549,12 +553,13 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
 
     // Envoyer la réponse avec les films paginés et le nombre total de films
     res.status(200).json({
-      message: "Films récupérés avec succès.",
       movies: movies,
       maxMovies: maxMovies,
     });
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération des films"});
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération des films" });
   }
 });
 
@@ -564,7 +569,7 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
   const userId = req.userData.userId;
 
   const friendRequest = { from: userId, to: friendId };
-    
+
   try {
     // Trouver l'utilisateur actuel
     const user = await User.findById(userId);
@@ -601,7 +606,7 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
     friend.movies.push(recommendedMovie);
     await friend.save();
 
-    req.io.emit('movieReceived', friendRequest);
+    req.io.emit("movieReceived", friendRequest);
 
     res.status(200).json({ message: "Film partagé avec succès." });
   } catch (error) {

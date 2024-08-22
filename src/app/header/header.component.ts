@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { FriendsService } from '../friends/friends.service';
 import { MoviesService } from '../movies/movies.service';
-import { WebSocketService } from '../web-socket-service';
+// import { WebSocketService } from '../web-socket-service';
 
 @Component({
   selector: 'app-header',
@@ -20,28 +20,37 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private friendRequestsSubs: Subscription;
   private recommendedMoviesSub: Subscription;
 
-  constructor(private authService: AuthService, private router: Router,  private friendsService: FriendsService, private moviesService: MoviesService, private webSocketService: WebSocketService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private friendsService: FriendsService,
+    private moviesService: MoviesService // private webSocketService: WebSocketService
+  ) {}
 
   ngOnInit(): void {
     this.userIsAuthenticated = this.authService.getIsAuth();
 
     if (this.userIsAuthenticated) {
       this.loadUserPseudo();
-      this.loadFriendRequestsCount();
-      this.loadRecommendedMoviesCount();
+      //this.loadFriendRequestsCount();
+      //this.loadRecommendedMoviesCount();
 
       const userId = this.authService.getUserId(); // Suppose que tu as une méthode pour récupérer l'userId
-      this.webSocketService.emitEvent('register', userId);
+      // this.webSocketService.emitEvent('register', userId);
 
-      // Permet d'écouter les événements pour les demandes d'amis.
-      this.friendRequestsSubs = this.webSocketService.onEvent<any>('updateFriendRequests').subscribe((friendRequest: any) => {
-        this.friendRequestsCount += 1; // incrémenter le badge du nombre de demandes d'ami de 1.
-      });
+      // // Permet d'écouter les événements pour les demandes d'amis.
+      // this.friendRequestsSubs = this.webSocketService
+      //   .onEvent<any>('updateFriendRequests')
+      //   .subscribe((friendRequest: any) => {
+      //     this.friendRequestsCount += 1; // incrémenter le badge du nombre de demandes d'ami de 1.
+      //   });
 
-      // Permet d'écouter les événements pour les films recommandés.
-      this.recommendedMoviesSub = this.webSocketService.onEvent<any>('updateMoviesList').subscribe((movie: any) => {
-        this.recommendedMoviesCount += 1; // Incrément le badge de films recommandés de 1.
-      });
+      // // Permet d'écouter les événements pour les films recommandés.
+      // this.recommendedMoviesSub = this.webSocketService
+      //   .onEvent<any>('updateMoviesList')
+      //   .subscribe((movie: any) => {
+      //     this.recommendedMoviesCount += 1; // Incrément le badge de films recommandés de 1.
+      //   });
     }
 
     this.authListenerSubs = this.authService
@@ -50,12 +59,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.userIsAuthenticated = isAuthenticated;
         if (this.userIsAuthenticated) {
           this.loadUserPseudo();
-          this.loadFriendRequestsCount();
-          this.loadRecommendedMoviesCount();
+          // this.loadFriendRequestsCount();
+          // this.loadRecommendedMoviesCount();
 
           // Réenregistrer l'utilisateur auprès du WebSocket
-        const userId = this.authService.getUserId(); // Suppose que tu as une méthode pour récupérer l'userId
-        this.webSocketService.emitEvent('register', userId);
+          // const userId = this.authService.getUserId();
+          // this.webSocketService.emitEvent('register', userId);
         } else {
           this.userPseudo = null;
           this.friendRequestsCount = 0;
@@ -71,19 +80,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   loadFriendRequestsCount() {
-    this.friendRequestsSubs = this.friendsService.getFriendsRequestReceived()
+    this.friendRequestsSubs = this.friendsService
+      .getFriendsRequestReceived()
       .subscribe((friendRequests) => {
         this.friendRequestsCount = friendRequests.length;
       });
   }
 
-  loadRecommendedMoviesCount() {
-    this.recommendedMoviesSub = this.moviesService
-      .getRecommendedMoviesCount()
-      .subscribe((count) => {
-        this.recommendedMoviesCount = count;
-      });
-  }
+  // loadRecommendedMoviesCount() {
+  //   this.recommendedMoviesSub = this.moviesService
+  //     .getRecommendedMoviesCount()
+  //     .subscribe((count) => {
+  //       this.recommendedMoviesCount = count;
+  //     });
+  // }
 
   onLogout() {
     this.authService.logout();

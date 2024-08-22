@@ -56,30 +56,30 @@ export class SearchComponent {
           verticalPosition: 'top',
         });
       },
-      error: (error) => {
-        if (
-          error.status === 400 &&
-          error.error.message === 'Ce film est déjà dans votre liste à voir.'
-        ) {
-          this.snackBar.open(
-            'Ce film est déjà dans votre liste à voir.',
-            'Fermer',
-            {
-              duration: 3000,
-              verticalPosition: 'top',
-            }
-          );
-        } else {
-          this.snackBar.open(
-            "Erreur lors de l'ajout du film. Réessayez plus tard.",
-            'Fermer',
-            {
-              duration: 3000,
-              verticalPosition: 'top',
-            }
-          );
-        }
-      },
+      // error: (error) => {
+      //   if (
+      //     error.status === 400 &&
+      //     error.error.message === 'Ce film est déjà dans votre liste à voir.'
+      //   ) {
+      //     this.snackBar.open(
+      //       'Ce film est déjà dans votre liste à voir.',
+      //       'Fermer',
+      //       {
+      //         duration: 3000,
+      //         verticalPosition: 'top',
+      //       }
+      //     );
+      //   } else {
+      //     this.snackBar.open(
+      //       "Erreur lors de l'ajout du film. Réessayez plus tard.",
+      //       'Fermer',
+      //       {
+      //         duration: 3000,
+      //         verticalPosition: 'top',
+      //       }
+      //     );
+      //   }
+      // },
     });
   }
 
@@ -101,39 +101,38 @@ export class SearchComponent {
       next: (result) => {
         console.log(result);
         if (result) {
-          this.moviesService
-            .shareMovie(
-              result.friendId,
-              result.movieTitle,
-              result.date,
-              result.imdb
-            )
-            .subscribe({
-              next: () => {
-                this.snackBar.open('Film partagé avec succès', 'Fermer', {
-                  duration: 3000,
-                  verticalPosition: 'top',
-                });
-              },
-              error: (error) => {
-                // Vérifier si le message d'erreur est celui attendu
-                const errorMessage =
-                  error.error.message || 'Erreur lors du partage du film';
-                if (
-                  errorMessage === 'Ce film a déjà été conseillé à cet ami.'
-                ) {
-                  this.snackBar.open(errorMessage, 'Fermer', {
-                    duration: 3000,
-                    verticalPosition: 'top',
-                  });
-                } else {
-                  this.snackBar.open('Une erreur est survenue', 'Fermer', {
-                    duration: 3000,
-                    verticalPosition: 'top',
-                  });
-                }
-              },
-            });
+          this.moviesService.shareMovie(
+            result.friendId,
+            result.movieTitle,
+            result.date,
+            result.imdb
+          );
+          // .subscribe({
+          //   next: () => {
+          //     this.snackBar.open('Film partagé avec succès', 'Fermer', {
+          //       duration: 3000,
+          //       verticalPosition: 'top',
+          //     });
+          //   },
+          //   error: (error) => {
+          //     // Vérifier si le message d'erreur est celui attendu
+          //     const errorMessage =
+          //       error.error.message || 'Erreur lors du partage du film';
+          //     if (
+          //       errorMessage === 'Ce film a déjà été conseillé à cet ami.'
+          //     ) {
+          //       this.snackBar.open(errorMessage, 'Fermer', {
+          //         duration: 3000,
+          //         verticalPosition: 'top',
+          //       });
+          //     } else {
+          //       this.snackBar.open('Une erreur est survenue', 'Fermer', {
+          //         duration: 3000,
+          //         verticalPosition: 'top',
+          //       });
+          //     }
+          //   },
+          // });
         }
       },
       error: (err) => {

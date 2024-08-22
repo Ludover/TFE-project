@@ -35,24 +35,12 @@ export class FriendListRequestSentComponent implements OnInit, OnDestroy {
 
   // Méthode pour annuler une demande d'ami
   cancelFriendRequest(friendId: string) {
-    this.friendsService.cancelFriendRequest(friendId).subscribe({
-      next: () => {
-        this.snackBar.open("Demande d'ami annulée", 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
-        this.removeFriendFromList(friendId);
-      },
-      error: (error) => {
-        this.snackBar.open(
-          "Erreur lors de l'annulation de la demande",
-          'Fermer',
-          {
-            duration: 3000,
-            verticalPosition: 'top',
-          }
-        );
-      },
+    this.friendsService.cancelFriendRequest(friendId).subscribe(() => {
+      this.snackBar.open("Demande d'ami annulée", 'Fermer', {
+        duration: 3000,
+        verticalPosition: 'top',
+      });
+      this.removeFriendFromList(friendId);
     });
   }
 
