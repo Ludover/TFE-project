@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -16,6 +16,10 @@ export class MoviesService {
   private moviesRecommendedUpdated = new Subject<Movie[]>();
 
   constructor(private http: HttpClient, private router: Router) {}
+
+  getMoviesRecommendedUpdatedListener() {
+    return this.moviesRecommendedUpdated.asObservable();
+  }
 
   getMoviesByListType(
     listType: string,
@@ -50,17 +54,40 @@ export class MoviesService {
           movies: [...this.movies],
           movieCount: mappedMoviesData.maxMovie,
         });
+        if (listType === 'recommended') {
+          this.moviesRecommendedUpdated.next(mappedMoviesData.movies);
+        }
       });
   }
 
-  // getRecommendedMoviesCount(): Observable<number> {
-  //   return this.getMoviesByListType('recommended', 1, 1).pipe(
-  //     map((responseData) => responseData.maxMovie)
-  //   );
-  // }
+  getRecommendedMoviesCount(): Observable<number> {
+    const queryParams = `?pagesize=1&page=1`;
+    return this.http
+      .get<{ message: string; movies: any[]; maxMovies: number }>(
+        `http://localhost:3000/api/user/movies/list/recommended` + queryParams
+      )
+      .pipe(map((responseData) => responseData.maxMovies));
+  }
 
   getMovieUpdateListener() {
     return this.moviesUpdated.asObservable();
+  }
+
+  getRandomMovie(): Observable<Movie> {
+    return this.http
+      .get<{ movie: Movie }>(
+        'http://localhost:3000/api/user/movies/random/tosee'
+      )
+      .pipe(
+        map((responseData) => responseData.movie),
+        catchError((error) => {
+          console.error(
+            "Erreur lors de la récupération d'un film aléatoire :",
+            error
+          );
+          return of(null); // Retourne un observable avec null en cas d'erreur
+        })
+      );
   }
 
   addMovie(movie: Movie): Observable<{ message: string; movie: Movie }> {

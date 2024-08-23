@@ -119,32 +119,6 @@ export class MovieListComponent implements OnInit, OnDestroy {
             verticalPosition: 'top',
           });
         },
-        // error: (error) => {
-        //   if (
-        //     error.status === 400 &&
-        //     error.error.message === 'Ce film est déjà dans votre liste à voir.'
-        //   ) {
-        //     this.snackBar.open(
-        //       'Ce film est déjà dans votre liste à voir.',
-        //       'Fermer',
-        //       {
-        //         duration: 3000,
-        //         verticalPosition: 'top',
-        //         panelClass: ['mat-toolbar', 'mat-warn'],
-        //       }
-        //     );
-        //   } else {
-        //     this.snackBar.open(
-        //       'Erreur lors de la mise à jour du film',
-        //       'Fermer',
-        //       {
-        //         duration: 3000,
-        //         verticalPosition: 'top',
-        //         panelClass: ['mat-toolbar', 'mat-warn'],
-        //       }
-        //     );
-        //   }
-        // },
       });
     });
   }
@@ -154,48 +128,32 @@ export class MovieListComponent implements OnInit, OnDestroy {
       width: '400px',
       data: { movie: movie },
     });
-    console.log(movie);
-    console.log(dialogRef);
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
-          this.moviesService.shareMovie(
-            result.friendId,
-            result.movieTitle,
-            result.date,
-            result.imdbId
-          );
-          // .subscribe({
-          //   next: () => {
-          //     this.snackBar.open('Film partagé avec succès', 'Fermer', {
-          //       duration: 3000,
-          //       verticalPosition: 'top',
-          //     });
-          //   },
-          //   error: (error) => {
-          //     // Vérifier si le message d'erreur est celui attendu
-          //     const errorMessage =
-          //       error.error.message || 'Erreur lors du partage du film';
-          //     if (
-          //       errorMessage === 'Ce film a déjà été conseillé à cet ami.'
-          //     ) {
-          //       this.snackBar.open(errorMessage, 'Fermer', {
-          //         duration: 3000,
-          //         verticalPosition: 'top',
-          //       });
-          //     } else {
-          //       this.snackBar.open('Une erreur est survenue', 'Fermer', {
-          //         duration: 3000,
-          //         verticalPosition: 'top',
-          //       });
-          //     }
-          //   },
-          // });
+          this.moviesService
+            .shareMovie(
+              result.friendId,
+              result.movieTitle,
+              result.date,
+              result.imdbId
+            )
+            .subscribe({});
         }
       },
       error: (err) => {
         console.error('Erreur lors de la fermeture du dialog:', err);
       },
+    });
+  }
+
+  onFindRandomMovie() {
+    this.moviesService.getRandomMovie().subscribe((movie) => {
+      if (movie) {
+        this.searchMovieById(movie.imdbId);
+      } else {
+        console.error('Aucun film aléatoire trouvé.');
+      }
     });
   }
 
@@ -211,6 +169,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   ngOnDestroy() {
     this.moviesSub?.unsubscribe();
     this.authStatusSub.unsubscribe();

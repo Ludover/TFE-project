@@ -5,7 +5,6 @@ import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -102,49 +101,22 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
         verticalPosition: 'top',
       }
     );
+
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.updateMovie(movie.title, movie.date, 'tosee');
-      // .subscribe({
-      //   next: () => {
-      //     // Rafraîchir la liste des films après la mise à jour réussie
-      //     this.moviesService.getMoviesByListType(
-      //       'tosee',
-      //       this.moviesPerPage,
-      //       this.currentPage
-      //     );
-      //     this.snackBar.open('Film marqué comme vu', 'Fermer', {
-      //       duration: 3000,
-      //       verticalPosition: 'top',
-      //     });
-      //   },
-      //   error: (error) => {
-      //     if (
-      //       error.status === 400 &&
-      //       error.error.message ===
-      //         'Ce film est déjà dans votre liste à voir.'
-      //     ) {
-      //       this.snackBar.open(
-      //         'Ce film est déjà dans votre liste à voir.',
-      //         'Fermer',
-      //         {
-      //           duration: 3000,
-      //           verticalPosition: 'top',
-      //           panelClass: ['mat-toolbar', 'mat-warn'],
-      //         }
-      //       );
-      //     } else {
-      //       this.snackBar.open(
-      //         'Erreur lors de la mise à jour du film',
-      //         'Fermer',
-      //         {
-      //           duration: 3000,
-      //           verticalPosition: 'top',
-      //           panelClass: ['mat-toolbar', 'mat-warn'],
-      //         }
-      //       );
-      //     }
-      //   },
-      // });
+      this.moviesService
+        .updateMovie(movie.title, movie.date, 'tosee')
+        .subscribe(() => {
+          this.moviesService.getMoviesByListType(
+            'recommended',
+            this.moviesPerPage,
+            this.currentPage
+          );
+
+          this.snackBar.open('Film marqué comme à voir', 'Fermer', {
+            duration: 3000,
+            verticalPosition: 'top',
+          });
+        });
     });
   }
 

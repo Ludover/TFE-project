@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { User } from './user.model';
 
 @Injectable({ providedIn: 'root' })
 export class FriendsService {
   private apiUrl = 'http://localhost:3000/api/user';
+  private friendRequestsUpdated = new Subject<void>();
 
   constructor(private http: HttpClient) {}
+
+  getFriendRequestsUpdatedListener() {
+    return this.friendRequestsUpdated.asObservable();
+  }
 
   searchUserByPseudo(pseudo: string): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/search/${pseudo}`);
@@ -20,12 +25,42 @@ export class FriendsService {
 
   // Méthode pour accepter une demande d'ami
   acceptFriendRequest(userId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/accept-friend-request/${userId}`, {});
+    return new Observable((observer) => {
+      this.http
+        .post(`${this.apiUrl}/accept-friend-request/${userId}`, {})
+        .subscribe({
+          next: (response) => {
+            observer.next(response);
+            this.friendRequestsUpdated.next();
+          },
+          error: (err) => {
+            observer.error(err);
+          },
+          complete: () => {
+            observer.complete();
+          },
+        });
+    });
   }
 
   // Méthode pour refuser une demande d'ami
   rejectFriendRequest(userId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reject-friend-request/${userId}`, {});
+    return new Observable((observer) => {
+      this.http
+        .post(`${this.apiUrl}/reject-friend-request/${userId}`, {})
+        .subscribe({
+          next: (response) => {
+            observer.next(response);
+            this.friendRequestsUpdated.next();
+          },
+          error: (err) => {
+            observer.error(err);
+          },
+          complete: () => {
+            observer.complete();
+          },
+        });
+    });
   }
 
   // Méthode pour annuler une demande d'ami envoyée

@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   friends: User[] = [];
   private authStatusSub: Subscription;
+  private friendRequestsUpdateSub: Subscription;
   UserIsAuthenticated = false;
 
   constructor(
@@ -22,15 +23,25 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.friendsService.getFriendsRequestReceived().subscribe((friends) => {
-      this.friends = friends;
-    });
+    this.loadFriendRequests();
     this.UserIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService
       .getAuthStatusListener()
       .subscribe((isAuthenticated) => {
         this.UserIsAuthenticated = isAuthenticated;
       });
+
+    this.friendRequestsUpdateSub = this.friendsService
+      .getFriendRequestsUpdatedListener()
+      .subscribe(() => {
+        this.loadFriendRequests(); // Recharger la liste des demandes après une mise à jour
+      });
+  }
+
+  loadFriendRequests() {
+    this.friendsService.getFriendsRequestReceived().subscribe((friends) => {
+      this.friends = friends;
+    });
   }
 
   // Méthode pour accepter une demande d'ami
@@ -62,5 +73,6 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.authStatusSub.unsubscribe();
+    this.friendRequestsUpdateSub.unsubscribe();
   }
 }

@@ -487,6 +487,7 @@ router.put("/update-movie/:title", checkAuth, (req, res) => {
   const title = req.body.title;
   const list = req.body.list;
   const date = req.body.date;
+  const listInFrench = list === "tosee" ? "à voir" : "vu";
 
   User.findOne({ _id: userId, "movies.title": title })
     .then((user) => {
@@ -502,9 +503,9 @@ router.put("/update-movie/:title", checkAuth, (req, res) => {
       );
 
       if (movieExists) {
-        return res
-          .status(400)
-          .json({ message: "Ce film est déjà dans votre liste à voir." });
+        return res.status(400).json({
+          message: "Ce film est déjà dans votre liste " + listInFrench,
+        });
       }
 
       const movieIndex = user.movies.findIndex(
@@ -567,7 +568,6 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
 router.post("/share-movie", checkAuth, async (req, res, next) => {
   const { friendId, movieTitle, date, imdbId } = req.body;
   const userId = req.userData.userId;
-
   const friendRequest = { from: userId, to: friendId };
 
   try {
@@ -606,60 +606,13 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
     friend.movies.push(recommendedMovie);
     await friend.save();
 
-    req.io.emit("movieReceived", friendRequest);
+    //req.io.emit("movieReceived", friendRequest);
 
     res.status(200).json({ message: "Film partagé avec succès." });
   } catch (error) {
     res.status(500).json({ message: "Erreur lors du partage de film" });
   }
 });
-
-// router.get("/movies-recommended", checkAuth, async (req, res) => {
-//   try {
-//     const user = await User.findById(req.userData.userId).select(
-//       "moviesRecommended"
-//     );
-//     if (!user) {
-//       return res.status(404).json({ message: "Utilisateur non trouvé" });
-//     }
-//     res.status(200).json({
-//       movies: user.moviesRecommended,
-//     });
-//   } catch (error) {
-//     console.error(
-//       "Erreur lors de la récupération des films recommandés :",
-//       error
-//     );
-//     res.status(500).json({ message: "Erreur serveur" });
-//   }
-// });
-
-// router.delete(
-//   "/delete-movie-recommended/:title",
-//   checkAuth,
-//   async (req, res, next) => {
-//     try {
-//       const userId = req.userData.userId;
-//       const movieTitle = req.params.title;
-
-//       // Trouver l'utilisateur
-//       const user = await User.findById(userId);
-//       if (!user) {
-//         return res.status(404).json({ message: "Utilisateur non trouvé" });
-//       }
-
-//       // Filtrer la liste des films pour supprimer celui avec le titre donné
-//       user.moviesRecommended = user.moviesRecommended.filter(
-//         (movie) => movie.title !== movieTitle
-//       );
-//       await user.save();
-
-//       res.status(200).json({ message: "Film supprimé avec succès" });
-//     } catch (error) {
-//       res.status(500).json({ message: "Erreur serveur", error });
-//     }
-//   }
-// );
 
 router.post("/move-movie-to-normal-list", checkAuth, async (req, res, next) => {
   const { title } = req.body;
@@ -695,6 +648,40 @@ router.post("/move-movie-to-normal-list", checkAuth, async (req, res, next) => {
       .json({ message: "Film déplacé avec succès vers la liste normale" });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
+// Nouvelle route pour récupérer un film aléatoire de la liste "tosee"
+router.get("/movies/random/tosee", checkAuth, async (req, res, next) => {
+  const userId = req.userData.userId;
+
+  try {
+    // Trouver l'utilisateur actuel
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Filtrer les films dans la liste "tosee"
+    const toseeMovies = user.movies.filter((movie) => movie.list === "tosee");
+    const maxMovies = toseeMovies.length;
+
+    if (maxMovies === 0) {
+      return res
+        .status(404)
+        .json({ message: "Aucun film trouvé dans la liste à voir." });
+    }
+
+    // Choisir un film aléatoire
+    const randomIndex = Math.floor(Math.random() * maxMovies);
+    const randomMovie = toseeMovies[randomIndex];
+
+    // Envoyer la réponse avec le film aléatoire
+    res.status(200).json({
+      movie: randomMovie,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération du film" });
   }
 });
 

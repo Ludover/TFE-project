@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FriendsService } from '../friends.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-friend',
@@ -22,7 +23,8 @@ export class AddFriendComponent implements OnInit, OnDestroy {
   constructor(
     private friendsService: FriendsService,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -80,6 +82,9 @@ export class AddFriendComponent implements OnInit, OnDestroy {
             verticalPosition: 'top',
           }
         );
+        this.router.navigate(['/addfriend']).then(() => {
+          window.location.reload();
+        });
         return;
       }
 
@@ -97,6 +102,9 @@ export class AddFriendComponent implements OnInit, OnDestroy {
           this.snackBar.open("Demande d'ami envoyée avec succès", 'Fermer', {
             duration: 3000,
             verticalPosition: 'top',
+          });
+          this.router.navigate(['/addfriend']).then(() => {
+            window.location.reload();
           });
         });
       });

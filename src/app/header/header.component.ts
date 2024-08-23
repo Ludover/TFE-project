@@ -19,6 +19,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private authListenerSubs: Subscription;
   private friendRequestsSubs: Subscription;
   private recommendedMoviesSub: Subscription;
+  private friendRequestsUpdateSub: Subscription;
+  private moviesUpdateSub: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -32,8 +34,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     if (this.userIsAuthenticated) {
       this.loadUserPseudo();
-      //this.loadFriendRequestsCount();
-      //this.loadRecommendedMoviesCount();
+      this.loadFriendRequestsCount();
+      this.loadRecommendedMoviesCount();
+
+      this.friendRequestsUpdateSub = this.friendsService
+        .getFriendRequestsUpdatedListener()
+        .subscribe(() => {
+          this.loadFriendRequestsCount(); // Recharger le nombre de demandes d'amis
+        });
+
+      this.moviesUpdateSub = this.moviesService
+        .getMoviesRecommendedUpdatedListener()
+        .subscribe((movies) => {
+          this.recommendedMoviesCount = movies.length; // Met à jour le compteur de films recommandés
+        });
 
       const userId = this.authService.getUserId(); // Suppose que tu as une méthode pour récupérer l'userId
       // this.webSocketService.emitEvent('register', userId);
@@ -59,8 +73,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.userIsAuthenticated = isAuthenticated;
         if (this.userIsAuthenticated) {
           this.loadUserPseudo();
-          // this.loadFriendRequestsCount();
-          // this.loadRecommendedMoviesCount();
+          this.loadFriendRequestsCount();
+          this.loadRecommendedMoviesCount();
 
           // Réenregistrer l'utilisateur auprès du WebSocket
           // const userId = this.authService.getUserId();
@@ -87,13 +101,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-  // loadRecommendedMoviesCount() {
-  //   this.recommendedMoviesSub = this.moviesService
-  //     .getRecommendedMoviesCount()
-  //     .subscribe((count) => {
-  //       this.recommendedMoviesCount = count;
-  //     });
-  // }
+  loadRecommendedMoviesCount() {
+    this.recommendedMoviesSub = this.moviesService
+      .getRecommendedMoviesCount()
+      .subscribe((count) => {
+        this.recommendedMoviesCount = count;
+      });
+  }
 
   onLogout() {
     this.authService.logout();
@@ -110,6 +124,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (this.recommendedMoviesSub) {
       this.recommendedMoviesSub.unsubscribe();
+    }
+    if (this.friendRequestsUpdateSub) {
+      this.friendRequestsUpdateSub.unsubscribe();
+    }
+    if (this.moviesUpdateSub) {
+      this.moviesUpdateSub.unsubscribe();
     }
   }
 }
