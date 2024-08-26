@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 
-import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { TmdbService } from 'src/app/tmdb.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
-import { OmdbService } from 'src/app/omdb.service';
+import { Movie } from '../movie.model';
+import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
 
 @Component({
@@ -32,7 +33,8 @@ export class MovieListComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private omdbService: OmdbService
+    private tmdbService: TmdbService,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit() {
@@ -86,16 +88,12 @@ export class MovieListComponent implements OnInit, OnDestroy {
           this.currentPage
         );
       });
-      // this.snackBar.open('Film supprimé avec succès', 'Fermer', {
-      //   duration: 3000,
-      //   verticalPosition: 'top',
-      // });
     });
   }
 
-  updateAsSeen(title: string, date: Date) {
+  updateAsSeen(movie: Movie) {
     const snackBarRef = this.snackBar.open(
-      `Êtes-vous sûr de vouloir marquer "${title}" comme vu ?`,
+      `Êtes-vous sûr de vouloir marquer "${movie.title}" comme vu ?`,
       'Oui',
       {
         duration: 5000,
@@ -106,7 +104,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
     snackBarRef.onAction().subscribe(() => {
       // Appeler le service pour mettre à jour le film
-      this.moviesService.updateMovie(title, date, 'seen').subscribe({
+      this.moviesService.updateMovie(movie, 'seen').subscribe({
         next: () => {
           // Rafraîchir la liste des films après la mise à jour réussie
           this.moviesService.getMoviesByListType(
@@ -114,29 +112,30 @@ export class MovieListComponent implements OnInit, OnDestroy {
             this.moviesPerPage,
             this.currentPage
           );
-          this.snackBar.open('Film marqué comme vu', 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-          });
         },
       });
     });
   }
 
   onShare(movie: Movie) {
+    const isHandset = this.breakpointObserver.isMatched(Breakpoints.Handset);
+    const dialogWidth = isHandset ? '90vw' : '600px';
+
     const dialogRef = this.dialog.open(ShareMovieDialogComponent, {
-      width: '400px',
+      width: dialogWidth,
+      maxWidth: '90vw',
       data: { movie: movie },
     });
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
+          console.log(result);
           this.moviesService
             .shareMovie(
               result.friendId,
               result.movieTitle,
               result.date,
-              result.imdbId
+              result.tmdbId
             )
             .subscribe({});
         }
@@ -150,7 +149,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
   onFindRandomMovie() {
     this.moviesService.getRandomMovie().subscribe((movie) => {
       if (movie) {
-        this.searchMovieById(movie.imdbId);
+        this.searchMovieById(movie.tmdbId);
       } else {
         console.error('Aucun film aléatoire trouvé.');
       }
@@ -158,10 +157,16 @@ export class MovieListComponent implements OnInit, OnDestroy {
   }
 
   searchMovieById(id: string) {
-    this.omdbService.searchMovieById(id).subscribe((response) => {
+    this.tmdbService.getMovieDetails(id).subscribe((response) => {
       if (response && response.Response !== 'False') {
+        const isHandset = this.breakpointObserver.isMatched(
+          Breakpoints.Handset
+        );
+        const dialogWidth = isHandset ? '90vw' : '1000px';
+
         this.dialog.open(MovieDetailsDialogComponent, {
-          width: '600px',
+          width: dialogWidth,
+          maxWidth: '90vw',
           data: { movie: response },
         });
       } else {

@@ -1,23 +1,29 @@
-<mat-card>
+<mat-card class="movie-list-card" appearance="outlined">
   <mat-card-header>
     <mat-card-title>
       <h1>Mes amis</h1>
     </mat-card-title>
   </mat-card-header>
-  <mat-accordion multi="true" *ngIf="friends.length > 0">
-    <mat-expansion-panel *ngFor="let friend of friends">
-      <mat-expansion-panel-header>
-        {{ friend.pseudo }}
-      </mat-expansion-panel-header>
-      <mat-action-row>
-        <button mat-button color="warn" (click)="removeFriend(friend._id)">
-          Supprimer
-        </button>
-      </mat-action-row>
-    </mat-expansion-panel>
-  </mat-accordion>
-
-  <p class="info-text" *ngIf="friends.length === 0">
-    Vous n'avez pas encore d'amis.
-  </p>
+  <mat-card-content>
+    <mat-accordion multi="false" *ngIf="friends.length > 0">
+      <mat-expansion-panel *ngFor="let friend of friends">
+        <mat-expansion-panel-header>
+          {{ friend.pseudo }}
+        </mat-expansion-panel-header>
+        <mat-action-row>
+          <button
+            mat-flat-button
+            color="warn"
+            (click)="removeFriend(friend._id)"
+            matTooltip="Supprimer {{ friend.pseudo }} de vos amis"
+          >
+            Supprimer
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <p class="info-text mat-body-1" *ngIf="friends.length === 0">
+      Vous n'avez pas encore d'amis.
+    </p>
+  </mat-card-content>
 </mat-card>

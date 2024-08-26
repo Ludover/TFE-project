@@ -1,50 +1,65 @@
-import { Component } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MoviesService } from '../movies.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
-import { Movie } from '../movie.model';
-import { MatDialog } from '@angular/material/dialog';
-import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
+import { Component, OnInit } from '@angular/core';
 import { TmdbService } from 'src/app/tmdb.service';
-import { AuthService } from 'src/app/auth/auth.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatDialog } from '@angular/material/dialog';
+import { MovieDetailsDialogComponent } from '../movies/movie-details-dialog/movie-details-dialog.component';
+import { ShareMovieDialogComponent } from '../movies/share-movie-dialog/share-movie-dialog.component';
+import { MoviesService } from '../movies/movies.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css'],
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
 })
-export class SearchComponent {
-  title: string = '';
-  movies: any[] = [];
-  isLoading: boolean = false;
-  movieDetails: any;
+export class HomeComponent implements OnInit {
+  nowPlayingMovies: any[] = [];
+  upcomingMovies: any[] = [];
+  isLoading: boolean = true;
 
   constructor(
     private tmdbService: TmdbService,
-    public moviesService: MoviesService,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
+    private moviesService: MoviesService,
+    private snackBar: MatSnackBar,
     private authService: AuthService
   ) {}
 
-  searchMovies() {
-    if (this.title) {
-      this.isLoading = true;
-      this.tmdbService.searchMovie(this.title).subscribe((response) => {
-        this.movies = response.results || [];
+  ngOnInit(): void {
+    this.fetchNowPlayingMovies();
+    this.fetchUpcomingMovies();
+  }
+
+  fetchNowPlayingMovies() {
+    this.tmdbService.getNowPlayingMovies().subscribe({
+      next: (data) => {
+        this.nowPlayingMovies = data.results;
         this.isLoading = false;
-      });
-    }
+      },
+      error: () => {
+        this.isLoading = false;
+      },
+    });
+  }
+
+  fetchUpcomingMovies() {
+    this.tmdbService.getUpcomingMovies().subscribe({
+      next: (data) => {
+        this.upcomingMovies = data.results;
+      },
+    });
   }
 
   searchMovieById(id: string) {
     this.tmdbService.getMovieDetails(id).subscribe((response) => {
-      const isHandset = this.breakpointObserver.isMatched(Breakpoints.Handset);
-      const dialogWidth = isHandset ? '90vw' : '1000px';
-
       if (response && response.Response !== 'False') {
+        const isHandset = this.breakpointObserver.isMatched(
+          Breakpoints.Handset
+        );
+        const dialogWidth = isHandset ? '90vw' : '1000px';
+
         this.dialog.open(MovieDetailsDialogComponent, {
           width: dialogWidth,
           maxWidth: '90vw',

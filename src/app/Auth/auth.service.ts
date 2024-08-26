@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthData } from './auth-data.model';
-import { Router } from '@angular/router';
 import { AuthDataLogin } from './auth-data-login.model';
 
 @Injectable({ providedIn: 'root' })
@@ -26,6 +26,7 @@ export class AuthService {
     return this.authStatusListener.asObservable();
   }
 
+  // Méthode permettant la création de l'utilisateur.
   createUser(
     email: string,
     password: string,
@@ -51,6 +52,7 @@ export class AuthService {
       );
   }
 
+  // Méthode permettant à l'utilisateur de se connecter.
   login(email: string, password: string): Observable<void> {
     const AuthDataLogin: AuthDataLogin = { email, password };
     return this.http
@@ -81,21 +83,27 @@ export class AuthService {
       );
   }
 
+  // Méthode pour vérifier si l'utilisateur est authentifié
   autoAuthUser() {
     const authInformation = this.getAuthData();
     if (!authInformation) {
       return;
     }
     const now = new Date();
+    // Calcule la durée restante avant l'expiration du token.
     const expiresIn = authInformation.expirationDate.getTime() - now.getTime();
     if (expiresIn > 0) {
       this.token = authInformation.token;
       this.isAuthenticated = true;
       this.setAuthTimer(expiresIn / 1000);
+
+      // Permet d'informer les autres parties de l'application que l'utilisateur est authentifié.
       this.authStatusListener.next(true);
     }
   }
 
+  // Méthode pour déconnecter l'utilisateur en supprimant les informations d'authentification
+  // et en réinitialisant l'état de connexion.
   logout() {
     this.token = null;
     this.isAuthenticated = false;
@@ -105,30 +113,36 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
+  // Méthode pour récupérer l'id de l'utilisateur.
   getUserId(): Observable<{ id: string }> {
     return this.http.get<{ id: string }>('http://localhost:3000/api/user/id');
   }
 
+  // Méthode pour récupérer le pseudo de l'utilisateur.
   getUserPseudo(): Observable<any> {
     return this.http.get<any>('http://localhost:3000/api/user/pseudo');
   }
 
+  // Configure un minuteur pour déconnecter automatiquement l'utilisateur lorsque le token expire.
   private setAuthTimer(duration: number) {
     this.tokenTimer = setTimeout(() => {
       this.logout();
     }, duration * 1000);
   }
 
+  // Ca enregistre les infos d'authentification dans le stockage local du navigateur.
   private saveAuthData(token: string, expirationDate: Date) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
   }
 
+  // Ca supprime les informations d'authentification du stockage local du navigateur.
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
   }
 
+  // Récupère les informations d'authentification depuis le stockage local du navigateur.
   private getAuthData() {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expiration');

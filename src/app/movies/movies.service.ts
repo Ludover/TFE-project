@@ -39,9 +39,10 @@ export class MoviesService {
                 id: movie._id,
                 title: movie.title,
                 date: movie.date,
+                dateSeen: movie.dateSeen,
                 list: movie.list,
                 creator: movie.creator,
-                imdbId: movie.imdbId,
+                tmdbId: movie.tmdbId,
               };
             }),
             maxMovie: responseData.maxMovies,
@@ -99,7 +100,8 @@ export class MoviesService {
         )
         .subscribe({
           next: (responseData) => {
-            this.router.navigate(['/']);
+            observer.next(responseData);
+            observer.complete();
           },
           error: (error) => {
             observer.error(error);
@@ -108,11 +110,11 @@ export class MoviesService {
     });
   }
 
-  updateMovie(title: string, date: Date, list: string) {
-    const updateData = { title, date, list };
+  updateMovie(movie: Movie, list: string) {
+    const updateData = { movie, list };
 
     return this.http.put(
-      `http://localhost:3000/api/user/update-movie/${title}`,
+      `http://localhost:3000/api/user/update-movie/${movie.id}`,
       updateData
     );
   }
@@ -127,14 +129,14 @@ export class MoviesService {
     friendId: string,
     movieTitle: string,
     date: Date,
-    imdbId: string
+    tmdbId: string
   ): Observable<any> {
     return this.http
       .post<{ message: string }>('http://localhost:3000/api/user/share-movie', {
         friendId,
         movieTitle,
         date,
-        imdbId,
+        tmdbId,
       })
       .pipe(
         catchError((error) => {

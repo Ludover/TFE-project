@@ -17,7 +17,6 @@ export class AddFriendComponent implements OnInit, OnDestroy {
   isLoading = false;
   searchPerformed = false;
   userIsAuthenticated = false;
-  private friendsSub?: Subscription;
   private authStatusSub: Subscription;
 
   constructor(
@@ -29,6 +28,8 @@ export class AddFriendComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userIsAuthenticated = this.authService.getIsAuth();
+
+    // Abonne le composant aux mises à jour du statut d'authentification.
     this.authStatusSub = this.authService
       .getAuthStatusListener()
       .subscribe((isAuthenticated) => {
@@ -36,7 +37,20 @@ export class AddFriendComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Méthode pour rechercher un ami.
   onSearchFriend() {
+    if (!this.userIsAuthenticated) {
+      this.snackBar.open(
+        'Vous devez être connecté pour rechercher un ami.',
+        'Fermer',
+        {
+          duration: 3000,
+          verticalPosition: 'top',
+        }
+      );
+      return;
+    }
+
     if (this.pseudo) {
       this.isLoading = true;
       // Récupérer le pseudo de l'utilisateur connecté
@@ -62,7 +76,7 @@ export class AddFriendComponent implements OnInit, OnDestroy {
             this.isLoading = false;
             this.searchPerformed = true;
           },
-          error: (error) => {
+          error: () => {
             this.isLoading = false;
             this.searchPerformed = true;
           },
@@ -71,7 +85,20 @@ export class AddFriendComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Méthode pour ajouter un ami.
   onAddFriend(friendId: string) {
+    if (!this.userIsAuthenticated) {
+      this.snackBar.open(
+        'Vous devez être connecté pour ajouter un ami.',
+        'Fermer',
+        {
+          duration: 3000,
+          verticalPosition: 'top',
+        }
+      );
+      return;
+    }
+
     this.friendsService.isFriend(friendId).subscribe((isFriend: boolean) => {
       if (isFriend) {
         this.snackBar.open(
@@ -112,7 +139,7 @@ export class AddFriendComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.friendsSub?.unsubscribe();
+    // Annule l'abonnement au statut d'authentification.
     this.authStatusSub.unsubscribe();
   }
 }

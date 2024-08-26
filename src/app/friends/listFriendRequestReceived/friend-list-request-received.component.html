@@ -1,33 +1,37 @@
-<mat-card>
+<mat-card class="movie-list-card" appearance="outlined">
   <mat-card-header>
     <mat-card-title>
       <h1>Mes demandes d'amis reçues</h1>
     </mat-card-title>
   </mat-card-header>
-  <mat-accordion multi="true" *ngIf="friends.length > 0">
-    <mat-expansion-panel *ngFor="let friend of friends">
-      <mat-expansion-panel-header>
-        {{ friend.pseudo }}
-      </mat-expansion-panel-header>
-      <mat-action-row>
-        <button
-          mat-button
-          color="primary"
-          (click)="acceptFriendRequest(friend._id)"
-        >
-          Accepter
-        </button>
-        <button
-          mat-button
-          color="warn"
-          (click)="rejectFriendRequest(friend._id)"
-        >
-          Rejeter
-        </button>
-      </mat-action-row>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <mat-card-footer *ngIf="friends.length === 0">
-    <p class="info-text">Vous n'avez pas de demandes d'amis.</p>
-  </mat-card-footer>
+  <mat-card-content>
+    <mat-accordion multi="false" *ngIf="friends.length > 0">
+      <mat-expansion-panel *ngFor="let friend of friends">
+        <mat-expansion-panel-header>
+          {{ friend.pseudo }}
+        </mat-expansion-panel-header>
+        <mat-action-row>
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="acceptFriendRequest(friend._id)"
+            matTooltip="Accepter la demande d'ami de {{ friend.pseudo }}"
+          >
+            Accepter
+          </button>
+          <button
+            mat-flat-button
+            color="warn"
+            (click)="rejectFriendRequest(friend._id)"
+            matTooltip="Rejeter la demande d'ami de {{ friend.pseudo }}"
+          >
+            Rejeter
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <p class="info-text mat-body-1" *ngIf="friends.length === 0">
+      Vous n'avez pas de demandes d'amis.
+    </p>
+  </mat-card-content>
 </mat-card>

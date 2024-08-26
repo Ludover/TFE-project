@@ -416,7 +416,7 @@ router.get("/is-friend/:userId", checkAuth, async (req, res) => {
 router.post("/add-movie", checkAuth, async (req, res, next) => {
   try {
     const userId = req.userData.userId;
-    const { Title, imdbID } = req.body;
+    const { title, id } = req.body;
 
     // Trouver l'utilisateur
     const user = await User.findById(userId);
@@ -426,9 +426,10 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
 
     // Vérifier si le film existe déjà dans la liste "tosee"
     const movieExists = user.movies.some(
-      (movie) => movie.title === Title && movie.list === "tosee"
+      (movie) => movie.tmdbId === id.toString() && movie.list === "tosee"
     );
 
+    console.log;
     if (movieExists) {
       return res
         .status(400)
@@ -437,10 +438,10 @@ router.post("/add-movie", checkAuth, async (req, res, next) => {
 
     // Ajouter le film à la liste "tosee"
     user.movies.push({
-      title: Title,
+      title: title,
       date: new Date(),
       list: "tosee",
-      imdbId: imdbID,
+      tmdbId: id,
     });
     await user.save();
 
@@ -482,14 +483,16 @@ router.delete("/delete-movie/:id", checkAuth, async (req, res, next) => {
 });
 
 // Route pour mettre à jour la liste d'un film (de 'tosee' à 'seen' ou de 'recommended' à 'tosee').
-router.put("/update-movie/:title", checkAuth, (req, res) => {
+router.put("/update-movie/:id", checkAuth, (req, res) => {
   const userId = req.userData.userId;
-  const title = req.body.title;
+  const movieId = req.params.id;
+  const tmdbId = req.body.movie.tmdbId;
   const list = req.body.list;
-  const date = req.body.date;
+  const date = req.body.movie.date;
+  const dateSeen = list === "seen" ? new Date() : null;
   const listInFrench = list === "tosee" ? "à voir" : "vu";
 
-  User.findOne({ _id: userId, "movies.title": title })
+  User.findOne({ _id: userId, "movies._id": movieId })
     .then((user) => {
       if (!user) {
         return res
@@ -499,7 +502,7 @@ router.put("/update-movie/:title", checkAuth, (req, res) => {
 
       // Vérifier si le film existe déjà dans la liste "tosee"
       const movieExists = user.movies.some(
-        (movie) => movie.title === title && movie.list === list
+        (movie) => movie.tmdbId === tmdbId && movie.list === list
       );
 
       if (movieExists) {
@@ -509,15 +512,16 @@ router.put("/update-movie/:title", checkAuth, (req, res) => {
       }
 
       const movieIndex = user.movies.findIndex(
-        (movie) => movie.title === title
+        (movie) => movie._id.toString() === movieId
       );
       if (movieIndex > -1) {
         user.movies[movieIndex].list = list;
         user.movies[movieIndex].date = date;
+        user.movies[movieIndex].dateSeen = dateSeen;
         return user.save().then((result) => {
           res.status(200).json({
             message: "Film mis à jour avec succès.",
-            movie: result.movies,
+            movie: result.movies[movieIndex], // Retourne le film mis à jour
           });
         });
       } else {
@@ -566,10 +570,10 @@ router.get("/movies/list/:listType", checkAuth, async (req, res, next) => {
 
 // Route pour partager un film
 router.post("/share-movie", checkAuth, async (req, res, next) => {
-  const { friendId, movieTitle, date, imdbId } = req.body;
+  const { friendId, movieTitle, date, tmdbId } = req.body;
   const userId = req.userData.userId;
   const friendRequest = { from: userId, to: friendId };
-
+  console.log(req.body);
   try {
     // Trouver l'utilisateur actuel
     const user = await User.findById(userId);
@@ -599,7 +603,7 @@ router.post("/share-movie", checkAuth, async (req, res, next) => {
       date: date,
       list: "recommended",
       creator: user.pseudo,
-      imdbId: imdbId,
+      tmdbId: tmdbId,
     };
 
     // Ajouter le film recommandé à la liste de l'ami

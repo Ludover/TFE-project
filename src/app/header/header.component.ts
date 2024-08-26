@@ -12,6 +12,7 @@ import { MoviesService } from '../movies/movies.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  menuOpened: boolean = false;
   userIsAuthenticated = false;
   userPseudo: string | null = null;
   friendRequestsCount: number = 0;
@@ -107,6 +108,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe((count) => {
         this.recommendedMoviesCount = count;
       });
+  }
+
+  toggleMenu() {
+    this.menuOpened = !this.menuOpened;
+  }
+
+  closeMenu() {
+    this.menuOpened = false;
   }
 
   onLogout() {

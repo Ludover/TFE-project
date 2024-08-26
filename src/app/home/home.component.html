@@ -1,0 +1,83 @@
+<div class="home-container">
+  <mat-card class="welcome-card">
+    <mat-card-header color="primary">
+      <mat-card-title color="primary"
+        ><h1>Bienvenue sur Partage ton film</h1></mat-card-title
+      >
+    </mat-card-header>
+    <mat-card-content>
+      <h3>
+        Vous pouvez rechercher des films, les ajouter à votre liste de films à
+        voir, les marquer comme vus, et partager vos découvertes avec vos amis.
+        Vous trouverez également les derniers films à l'affiche, les sorties en
+        Blu-ray ou streaming, et toutes les actualités du cinéma.
+      </h3>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="movies-section">
+    <h1>Films à l'affiche</h1>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <div class="movie-list" *ngIf="!isLoading">
+      <mat-card *ngFor="let movie of nowPlayingMovies" class="movie-card">
+        <img
+          mat-card-image
+          [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+          alt="{{ movie.title }}"
+        />
+        <mat-card-title>{{ movie.title }}</mat-card-title>
+        <mat-card-actions class="movie-actions">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="searchMovieById(movie.id)"
+            matTooltip="Voir plus d'infos sur {{ movie.title }}"
+          >
+            Info
+          </button>
+          <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
+            Ajouter
+          </button>
+          <button mat-flat-button color="primary" (click)="onShare(movie)">
+            Partager
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="movies-section">
+    <h2>Sorties à venir</h2>
+    <div class="movie-list">
+      <mat-card *ngFor="let movie of upcomingMovies" class="movie-card">
+        <img
+          mat-card-image
+          [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+          alt="{{ movie.title }}"
+        />
+        <mat-card-title>{{ movie.title }}</mat-card-title>
+        <mat-card-actions class="movie-actions">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="searchMovieById(movie.id)"
+            matTooltip="Voir plus d'infos sur {{ movie.title }}"
+          >
+            Plus d'info
+          </button>
+          <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
+            Sélectionner
+          </button>
+          <button mat-flat-button color="primary" (click)="onShare(movie)">
+            Partager
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="news-section">
+    <h2>Actualités Cinéma</h2>
+    <p>Retrouvez ici les dernières actualités du monde du cinéma...</p>
+  </div>
+</div>

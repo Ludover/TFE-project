@@ -1,26 +1,29 @@
-<div mat-dialog-actions align="end">
+<div mat-dialog-actions align="end" class="dialog-actions">
   <button mat-button (click)="onNoClick()">Fermer</button>
 </div>
-<h1 mat-dialog-title>Détails du film</h1>
+
 <div mat-dialog-content>
-  <mat-card>
+  <mat-card class="dialog-card">
     <mat-card-header>
-      <mat-card-title>{{ data.movie.Title }}</mat-card-title>
-      <mat-card-subtitle>{{ data.movie.Year }}</mat-card-subtitle>
+      <mat-card-title>{{ data.movie.original_title }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <p><strong>Synopsis:</strong> {{ data.movie.Plot }}</p>
-      <p><strong>Genre:</strong> {{ data.movie.Genre }}</p>
-      <p><strong>Réalisateur:</strong> {{ data.movie.Director }}</p>
-      <p><strong>Acteurs:</strong> {{ data.movie.Actors }}</p>
-      <p><strong>Durée:</strong> {{ data.movie.Runtime }}</p>
-      <p><strong>Langue:</strong> {{ data.movie.Language }}</p>
+      <p>
+        <strong>Date de sortie:</strong>
+        {{ data.movie.release_date | date : " d MMMM y" }}
+      </p>
+      <p><strong>Synopsis:</strong> {{ data.movie.overview }}</p>
+      <p><strong>Genre:</strong> {{ getGenreList() }}</p>
+      <p><strong>Réalisateur:</strong> {{ getCrewList() }}</p>
+      <p><strong>Acteurs:</strong> {{ getActorList() }}</p>
+      <p><strong>Durée:</strong> {{ data.movie.runtime }} min</p>
+      <p><strong>Note:</strong> {{ data.movie.vote_average }}/10</p>
     </mat-card-content>
     <img
       mat-card-image
-      [src]="data.movie.Poster"
+      [src]="'https://image.tmdb.org/t/p/w500/' + data.movie.poster_path"
       alt="{{ data.movie.Title }}"
+      class="dialog-image"
     />
   </mat-card>
 </div>
-

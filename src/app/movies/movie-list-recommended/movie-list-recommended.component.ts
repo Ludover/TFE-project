@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 
 import { Movie } from '../movie.model';
@@ -8,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { OmdbService } from 'src/app/omdb.service';
+import { TmdbService } from 'src/app/tmdb.service';
 
 @Component({
   selector: 'app-movie-list-recommended',
@@ -31,7 +32,8 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private omdbService: OmdbService
+    private tmdbService: TmdbService,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit() {
@@ -80,15 +82,11 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     snackBarRef.onAction().subscribe(() => {
       this.moviesService.deleteMovie(movieId).subscribe(() => {
         this.moviesService.getMoviesByListType(
-          'tosee',
+          'recommended',
           this.moviesPerPage,
           this.currentPage
         );
       });
-      // this.snackBar.open('Film supprimé avec succès', 'Fermer', {
-      //   duration: 3000,
-      //   verticalPosition: 'top',
-      // });
     });
   }
 
@@ -103,28 +101,32 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService
-        .updateMovie(movie.title, movie.date, 'tosee')
-        .subscribe(() => {
-          this.moviesService.getMoviesByListType(
-            'recommended',
-            this.moviesPerPage,
-            this.currentPage
-          );
+      this.moviesService.updateMovie(movie, 'tosee').subscribe(() => {
+        this.moviesService.getMoviesByListType(
+          'recommended',
+          this.moviesPerPage,
+          this.currentPage
+        );
 
-          this.snackBar.open('Film marqué comme à voir', 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-          });
+        this.snackBar.open('Film marqué comme à voir', 'Fermer', {
+          duration: 3000,
+          verticalPosition: 'top',
         });
+      });
     });
   }
 
   searchMovieById(id: string) {
-    this.omdbService.searchMovieById(id).subscribe((response) => {
+    this.tmdbService.getMovieDetails(id).subscribe((response) => {
       if (response && response.Response !== 'False') {
+        const isHandset = this.breakpointObserver.isMatched(
+          Breakpoints.Handset
+        );
+        const dialogWidth = isHandset ? '90vw' : '1000px';
+
         this.dialog.open(MovieDetailsDialogComponent, {
-          width: '600px',
+          width: dialogWidth,
+          maxWidth: '90vw',
           data: { movie: response },
         });
       } else {

@@ -11,9 +11,10 @@ import { AddFriendComponent } from './friends/add friend/add-friend.component';
 import { FriendListRequestSentComponent } from './friends/listFriendRequestSent/friend-list-request-sent.component';
 import { FriendListRequestReceivedComponent } from './friends/listFriendRequestReceived/friend-list-request-received.component';
 import { MovieListRecommendedComponent } from './movies/movie-list-recommended/movie-list-recommended.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  { path: '', canActivate: [AuthGuard], component: MovieListComponent },
+  { path: '', component: HomeComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'signin', component: SigninComponent },
   { path: 'search', component: SearchComponent },

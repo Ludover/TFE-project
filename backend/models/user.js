@@ -4,9 +4,10 @@ const uniqueValidator = require("mongoose-unique-validator");
 const movieSchema = mongoose.Schema({
   title: { type: String, required: true },
   date: { type: String, required: true },
+  dateSeen: { type: String },
   list: { type: String, required: true }, // "a voir" ou "vu"
   creator: { type: String },
-  imdbId: { type: String, required: true },
+  tmdbId: { type: String, required: true },
 });
 
 const userSchema = mongoose.Schema({

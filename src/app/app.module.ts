@@ -1,19 +1,18 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import {
-  HTTP_INTERCEPTORS,
-  HttpClient,
-  HttpClientModule,
-} from '@angular/common/http';
-
-import { AppComponent } from './app.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HeaderComponent } from './header/header.component';
-import { MovieListComponent } from './movies/movie-list/movie-list.component';
+import { DatePipe, registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { ErrorInterceptor } from './error-interceptor';
+
+import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { MovieListComponent } from './movies/movie-list/movie-list.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
 import { SearchComponent } from './movies/search/search.component';
@@ -25,8 +24,7 @@ import { FriendListRequestReceivedComponent } from './friends/listFriendRequestR
 import { ShareMovieDialogComponent } from './movies/share-movie-dialog/share-movie-dialog.component';
 import { MovieListRecommendedComponent } from './movies/movie-list-recommended/movie-list-recommended.component';
 import { MovieDetailsDialogComponent } from './movies/movie-details-dialog/movie-details-dialog.component';
-import { DatePipe, registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
+import { HomeComponent } from './home/home.component';
 
 import { AngularMaterialModule } from './angular-material-module';
 
@@ -48,6 +46,7 @@ registerLocaleData(localeFr);
     ShareMovieDialogComponent,
     MovieListRecommendedComponent,
     MovieDetailsDialogComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,95 @@
+.home-container {
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.welcome-card {
+  margin-bottom: 30px;
+  width: auto;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.movies-section {
+  margin-bottom: 50px;
+}
+
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.movie-card {
+  flex: 1 1 calc(25% - 20px);
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+mat-card {
+  width: calc(25% - 20px);
+  margin-bottom: 20px;
+}
+
+mat-card-title {
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.movie-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.movie-actions button {
+  flex: 1;
+  margin: 0 5px;
+}
+
+mat-card-content {
+  font-size: 14px;
+}
+
+.news-section {
+  margin-top: 50px;
+}
+
+@media (max-width: 1024px) {
+  mat-card {
+    width: calc(33.33% - 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  mat-card {
+    width: calc(50% - 20px);
+  }
+
+  .movie-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .movie-actions button {
+    margin: 5px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  mat-card {
+    width: 100%;
+  }
+
+  .movie-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .movie-actions button {
+    margin: 5px 0;
+  }
+}

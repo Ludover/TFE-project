@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FriendListComponent implements OnInit, OnDestroy {
   friends: User[] = [];
   private authStatusSub: Subscription;
-  UserIsAuthenticated = false;
+  userIsAuthenticated = false;
 
   constructor(
     private friendsService: FriendsService,
@@ -25,15 +25,29 @@ export class FriendListComponent implements OnInit, OnDestroy {
     this.friendsService.getFriends().subscribe((friends) => {
       this.friends = friends;
     });
-    this.UserIsAuthenticated = this.authService.getIsAuth();
+    this.userIsAuthenticated = this.authService.getIsAuth();
+
+    // Abonnement au changement de statut d'authentification.
     this.authStatusSub = this.authService
       .getAuthStatusListener()
       .subscribe((isAuthenticated) => {
-        this.UserIsAuthenticated = isAuthenticated;
+        this.userIsAuthenticated = isAuthenticated;
       });
   }
 
   removeFriend(friendId: string) {
+    if (!this.userIsAuthenticated) {
+      this.snackBar.open(
+        'Vous devez être connecté pour supprimer un ami.',
+        'Fermer',
+        {
+          duration: 3000,
+          verticalPosition: 'top',
+        }
+      );
+      return;
+    }
+
     const snackBarRef = this.snackBar.open(
       'Voulez-vous vraiment supprimer cet ami ?',
       'Supprimer',

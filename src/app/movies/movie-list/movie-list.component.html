@@ -1,56 +1,81 @@
-<mat-card>
+<mat-card class="movie-list-card" appearance="outlined">
   <mat-card-header>
     <mat-card-title>
       <h1>Ma Liste de Films à voir</h1>
     </mat-card-title>
   </mat-card-header>
-  <mat-card-actions align="end"
-    ><button mat-flat-button color="primary" (click)="onFindRandomMovie()">
-      Aide moi à choisir un film
-    </button></mat-card-actions
-  >
-  <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <mat-accordion multi="true" *ngIf="movies.length > 0 && !isLoading">
-    <mat-expansion-panel *ngFor="let movie of movies">
-      <mat-expansion-panel-header>
-        {{ movie.title }}
-      </mat-expansion-panel-header>
-      <p>Ajouté le: {{ movie.date | date : " d MMMM y" }}</p>
-      <p *ngIf="movie.creator">
-        Conseillé par: <b>{{ movie.creator }}</b>
-      </p>
-      <mat-action-row>
-        <button
-          mat-flat-button
-          color="basic"
-          (click)="searchMovieById(movie.imdbId)"
-        >
-          Plus d'info
-        </button>
-        <button
-          mat-flat-button
-          color="accent"
-          (click)="updateAsSeen(movie.title, movie.date)"
-        >
-          J'ai vu
-        </button>
-        <button mat-flat-button color="primary" (click)="onShare(movie)">
-          Partager
-        </button>
-        <button mat-flat-button color="warn" (click)="onDelete(movie.id)">
-          Supprimer
-        </button>
-      </mat-action-row>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <mat-paginator
-    [length]="totalMovies"
-    [pageSize]="moviesPerPage"
-    [pageSizeOptions]="pageSizeOptions"
-    (page)="onChangedPage($event)"
-    *ngIf="movies.length > 0"
-  ></mat-paginator>
-  <p class="info-text mat-body-1" *ngIf="movies.length <= 0 && !isLoading">
-    Votre liste est vide
-  </p>
+  <mat-card-actions align="start">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onFindRandomMovie()"
+      matTooltip="Lance une recherche aléatoire sur ta liste de films à voir"
+    >
+      Que regarder aujourd'hui?
+    </button>
+  </mat-card-actions>
+  <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
+  <mat-card-content>
+    <mat-accordion multi="false" *ngIf="movies.length > 0 && !isLoading">
+      <mat-expansion-panel *ngFor="let movie of movies">
+        <mat-expansion-panel-header>
+          {{ movie.title }}
+        </mat-expansion-panel-header>
+        <div class="movie-details">
+          <p *ngIf="!movie.creator">
+            Vous avez ajouté ce film le
+            <b>{{ movie.date | date : " d MMMM y" }}</b>
+          </p>
+          <p *ngIf="movie.creator">
+            Conseillé par <b>{{ movie.creator }}</b> le
+            {{ movie.date | date : " d MMMM y" }}
+          </p>
+        </div>
+        <mat-action-row>
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="searchMovieById(movie.tmdbId)"
+            matTooltip="Voir plus d'infos sur {{ movie.title }}"
+          >
+            Info
+          </button>
+          <button
+            mat-flat-button
+            color="accent"
+            (click)="updateAsSeen(movie)"
+            matTooltip="Marquer {{ movie.title }} comme vu"
+          >
+            J'ai vu
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="onShare(movie)"
+            matTooltip="Partager {{ movie.title }}"
+          >
+            Partager
+          </button>
+          <button
+            mat-flat-button
+            color="warn"
+            (click)="onDelete(movie.id)"
+            matTooltip="Supprimer {{ movie.title }}"
+          >
+            Supprimer
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-paginator
+      [length]="totalMovies"
+      [pageSize]="moviesPerPage"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onChangedPage($event)"
+      *ngIf="movies.length > 0"
+    ></mat-paginator>
+    <p class="info-text mat-body-1" *ngIf="movies.length <= 0 && !isLoading">
+      Votre liste est vide
+    </p>
+  </mat-card-content>
 </mat-card>

@@ -1,59 +1,67 @@
-<mat-card class="signup-card">
-  <mat-spinner *ngIf="isLoading"></mat-spinner>
+<mat-card class="auth-card">
+  <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
   <form (submit)="onSignup(signupForm)" #signupForm="ngForm" *ngIf="!isLoading">
-    <h2>Créer un compte</h2>
-    <mat-form-field appearance="fill">
-      <mat-label>E-Mail</mat-label>
-      <input
-        matInput
-        type="email"
-        ngModel
-        name="email"
-        required
-        placeholder="E-Mail"
-        #emailInput="ngModel"
-      />
-      <mat-error *ngIf="emailInput.invalid && emailInput.touched">
-        Veuillez saisir un email valide.
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Mot de passe</mat-label>
-      <input
-        matInput
-        type="password"
-        ngModel
-        name="password"
-        required
-        placeholder="Mot de passe"
-        #passwordInput="ngModel"
-      />
-      <mat-error *ngIf="passwordInput.invalid && passwordInput.touched">
-        Veuillez saisir un mot de passe.
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Pseudo</mat-label>
-      <input
-        matInput
-        type="string"
-        ngModel
-        name="pseudo"
-        required
-        placeholder="Pseudo"
-        #pseudoInput="ngModel"
-      />
-      <mat-error *ngIf="pseudoInput.invalid && pseudoInput.touched">
-        Veuillez saisir un pseudo
-      </mat-error>
-    </mat-form-field>
-    <button
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="signupForm.invalid || isLoading"
-    >
-      S'enregistrer
-    </button>
+    <mat-card-header>
+      <mat-card-title>
+        <h1>Créer un compte</h1>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>E-Mail</mat-label>
+        <input
+          matInput
+          type="email"
+          ngModel
+          name="email"
+          required
+          placeholder="E-Mail"
+          #emailInput="ngModel"
+        />
+        <mat-error *ngIf="emailInput.invalid && emailInput.touched">
+          Veuillez saisir un email valide.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Mot de passe</mat-label>
+        <input
+          matInput
+          type="password"
+          ngModel
+          name="password"
+          required
+          placeholder="Mot de passe"
+          #passwordInput="ngModel"
+        />
+        <mat-error *ngIf="passwordInput.invalid && passwordInput.touched">
+          Veuillez saisir un mot de passe.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Pseudo</mat-label>
+        <input
+          matInput
+          type="text"
+          ngModel
+          name="pseudo"
+          required
+          placeholder="Pseudo"
+          #pseudoInput="ngModel"
+        />
+        <mat-error *ngIf="pseudoInput.invalid && pseudoInput.touched">
+          Veuillez saisir un pseudo.
+        </mat-error>
+      </mat-form-field>
+      <div class="auth-button">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="signupForm.invalid || isLoading"
+        >
+          S'enregistrer
+        </button>
+      </div>
+    </mat-card-content>
   </form>
 </mat-card>

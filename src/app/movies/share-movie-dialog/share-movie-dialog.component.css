@@ -1,37 +1,65 @@
-h1[mat-dialog-title] {
-  font-size: 1.8rem;
-  color: blueviolet;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-mat-dialog-content p {
-  font-size: 1.2rem;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-mat-form-field {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-mat-dialog-actions {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-}
-
-mat-dialog-actions button {
+.dialog-title {
+  font-size: 1.5rem;
   font-weight: bold;
+  color: blueviolet;
+  padding: 1rem;
 }
 
-mat-dialog-actions button:first-child {
-  color: #ff4081;
+.dialog-content {
+  padding: 1rem;
 }
 
-mat-dialog-actions button:last-child {
-  background-color: blueviolet;
-  color: white;
+.dialog-content p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.dialog-actions {
+  padding: 1rem;
+  background-color: #f4f6f9;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dialog-actions button {
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .dialog-title {
+    font-size: 1.25rem;
+  }
+
+  .dialog-content p {
+    font-size: 0.9rem;
+  }
+
+  .dialog-actions {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dialog-title {
+    font-size: 1.15rem;
+  }
+
+  .dialog-content p {
+    font-size: 0.8rem;
+  }
+
+  .dialog-actions {
+    padding: 0.5rem;
+    flex-direction: column;
+  }
+
+  .dialog-actions button {
+    margin: 0.5rem 0;
+  }
 }

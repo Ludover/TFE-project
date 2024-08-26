@@ -15,4 +15,29 @@ export class MovieDetailsDialogComponent {
   onNoClick(): void {
     this.dialogRef.close();
   }
+
+  getGenreList(): string {
+    return (
+      this.data?.movie?.genres.map((genre: any) => genre.name).join(', ') || ''
+    );
+  }
+
+  getActorList(): string {
+    return (
+      this.data?.movie?.credits.cast
+        .slice(0, 5)
+        .map((cast: any) => cast.name)
+        .join(', ') || ''
+    );
+  }
+
+  getCrewList(): string {
+    return (
+      this.data?.movie?.credits.crew
+        .filter((crew: any) => crew.job === 'Director')
+        .slice(0, 5)
+        .map((cast: any) => cast.name)
+        .join(', ') || ''
+    );
+  }
 }

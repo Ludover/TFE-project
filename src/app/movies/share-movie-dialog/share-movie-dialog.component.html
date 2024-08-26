@@ -1,7 +1,8 @@
-<h1 mat-dialog-title>Partager le film</h1>
-<div mat-dialog-content>
+<h1 mat-dialog-title class="dialog-title">Partager le film</h1>
+
+<div mat-dialog-content class="dialog-content">
   <p>Sélectionnez un ami pour partager le film "{{ data.movie.title }}" :</p>
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="full-width">
     <mat-label>Ami</mat-label>
     <mat-select [(value)]="selectedFriendId">
       <mat-option *ngFor="let friend of friends" [value]="friend._id">
@@ -10,7 +11,8 @@
     </mat-select>
   </mat-form-field>
 </div>
-<div mat-dialog-actions>
+
+<div mat-dialog-actions class="dialog-actions">
   <button mat-flat-button color="warn" (click)="onNoClick()">Annuler</button>
   <button mat-flat-button color="primary" (click)="onShare()">Partager</button>
 </div>

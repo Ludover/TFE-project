@@ -1,4 +1,4 @@
-import { NgModule  } from "@angular/core";
+import { NgModule } from '@angular/core';
 
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,25 +15,28 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-@NgModule({   
-    exports: [
-        MatInputModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatCardModule,
-        MatToolbarModule,
-        MatExpansionModule,
-        MatProgressSpinnerModule,
-        MatIconModule,
-        MatSnackBarModule,
-        MatMenuModule,
-        MatListModule,
-        MatSelectModule,
-        MatDialogModule,
-        MatPaginatorModule,
-        MatBadgeModule
-    ]
+@NgModule({
+  exports: [
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatExpansionModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatSnackBarModule,
+    MatMenuModule,
+    MatListModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatPaginatorModule,
+    MatBadgeModule,
+    MatSidenavModule,
+    MatTooltipModule,
+  ],
 })
-
 export class AngularMaterialModule {}

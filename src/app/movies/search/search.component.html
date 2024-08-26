@@ -1,43 +1,52 @@
-<mat-card>
+<mat-card class="search-card">
   <mat-card-header>
     <mat-card-title>
       <h1>Rechercher un film</h1>
     </mat-card-title>
   </mat-card-header>
-  <mat-form-field appearance="fill">
-    <mat-label>Titre du film</mat-label>
-    <input matInput [(ngModel)]="title" placeholder="Entrez le titre du film" />
-  </mat-form-field>
+  <mat-card-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Titre du film</mat-label>
+      <input
+        matInput
+        [(ngModel)]="title"
+        placeholder="Entrez le titre du film"
+      />
+    </mat-form-field>
+  </mat-card-content>
   <div class="search-button">
     <button mat-raised-button color="primary" (click)="searchMovies()">
       Rechercher
     </button>
   </div>
+</mat-card>
 
-  <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
+<mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
-  <div class="movies" *ngIf="movies.length > 0">
-    <mat-card class="movie" *ngFor="let movie of movies">
-      <mat-card-header>
-        <mat-card-title>{{ movie.Title }}</mat-card-title>
-        <mat-card-subtitle>{{ movie.Year }}</mat-card-subtitle>
-      </mat-card-header>
-      <img mat-card-image [src]="movie.Poster" alt="{{ movie.Title }}" />
-      <mat-card-actions>
-        <button
-          mat-flat-button
-          color="accent"
-          (click)="searchMovieById(movie.imdbID)"
-        >
-          Plus d'info
-        </button>
-        <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
-          Sélectionner
-        </button>
-        <button mat-flat-button color="primary" (click)="onShare(movie)">
-          Partager
-        </button>
-      </mat-card-actions>
-    </mat-card>
+<mat-card *ngIf="movies.length > 0" class="results-card">
+  <div class="movie" *ngFor="let movie of movies">
+    <mat-card-header>
+      <mat-card-title>{{ movie.Title }}</mat-card-title>
+    </mat-card-header>
+    <img
+      mat-card-image
+      [src]="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
+      alt="{{ movie.title }}"
+    />
+    <mat-card-actions class="movie-actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="searchMovieById(movie.id)"
+      >
+        Info
+      </button>
+      <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
+        Ajouter
+      </button>
+      <button mat-flat-button color="primary" (click)="onShare(movie)">
+        Partager
+      </button>
+    </mat-card-actions>
   </div>
 </mat-card>

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 
 import { Movie } from '../movie.model';
@@ -8,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
-import { OmdbService } from 'src/app/omdb.service';
+import { TmdbService } from 'src/app/tmdb.service';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
 
 @Component({
@@ -32,7 +33,8 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private omdbService: OmdbService
+    private tmdbService: TmdbService,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit() {
@@ -94,8 +96,12 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
   }
 
   onShare(movie: Movie) {
+    const isHandset = this.breakpointObserver.isMatched(Breakpoints.Handset);
+    const dialogWidth = isHandset ? '90vw' : '600px';
+
     const dialogRef = this.dialog.open(ShareMovieDialogComponent, {
-      width: '400px',
+      width: dialogWidth,
+      maxWidth: '90vw',
       data: { movie: movie },
     });
 
@@ -107,7 +113,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
               result.friendId,
               result.movieTitle,
               result.date,
-              result.imdbId
+              result.tmdbId
             )
             .subscribe({});
         }
@@ -119,10 +125,15 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
   }
 
   searchMovieById(id: string) {
-    this.omdbService.searchMovieById(id).subscribe((response) => {
+    this.tmdbService.getMovieDetails(id).subscribe((response) => {
       if (response && response.Response !== 'False') {
+        const isHandset = this.breakpointObserver.isMatched(
+          Breakpoints.Handset
+        );
+        const dialogWidth = isHandset ? '90vw' : '1000px';
         this.dialog.open(MovieDetailsDialogComponent, {
-          width: '600px',
+          width: dialogWidth,
+          maxWidth: '90vw',
           data: { movie: response },
         });
       } else {

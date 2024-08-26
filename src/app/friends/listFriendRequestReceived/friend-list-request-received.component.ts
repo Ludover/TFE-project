@@ -14,7 +14,7 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   friends: User[] = [];
   private authStatusSub: Subscription;
   private friendRequestsUpdateSub: Subscription;
-  UserIsAuthenticated = false;
+  userIsAuthenticated = false;
 
   constructor(
     private friendsService: FriendsService,
@@ -24,11 +24,11 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadFriendRequests();
-    this.UserIsAuthenticated = this.authService.getIsAuth();
+    this.userIsAuthenticated = this.authService.getIsAuth();
     this.authStatusSub = this.authService
       .getAuthStatusListener()
       .subscribe((isAuthenticated) => {
-        this.UserIsAuthenticated = isAuthenticated;
+        this.userIsAuthenticated = isAuthenticated;
       });
 
     this.friendRequestsUpdateSub = this.friendsService

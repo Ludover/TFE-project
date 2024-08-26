@@ -1,24 +1,98 @@
-mat-card {
-    margin: 20px;
-    border-bottom: 50px;
+.movie-list-card {
+  margin: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+mat-card-header {
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding: 16px;
+}
+
+mat-card-title h1 {
+  font-size: 1.75rem;
+  color: blueviolet;
+  margin: 0;
+  text-align: center;
+}
+
+mat-card-content {
+  padding: 16px;
+}
+
+mat-card-actions {
+  border-top: 1px solid #e0e0e0;
+  padding: 16px;
+  text-align: right;
+}
+
+.loading-spinner {
+  display: block;
+  margin: 20px auto;
+}
+
+mat-accordion {
+  margin-top: 20px;
+}
+
+mat-expansion-panel {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+mat-expansion-panel-header {
+  background-color: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.movie-details {
+  padding: 16px;
+}
+
+mat-action-row button {
+  margin-right: 12px;
+  border-radius: 8px;
+}
+
+mat-paginator {
+  margin-top: 20px;
+}
+
+.info-text {
+  margin-top: 20px;
+  text-align: center;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .movie-list-card {
+    margin: 10px;
   }
-  
+
   mat-card-title h1 {
-    font-size: 2rem;
-    color: blueviolet;
-    margin: 0;
-    text-align: center;
+    font-size: 1.5rem;
   }
-  
-  mat-accordion {
-    margin-top: 40px;
+
+  mat-action-row button {
+    margin-right: 8px;
   }
-  
-  mat-spinner {
-    margin: auto;
+
+  mat-expansion-panel {
+    margin: 8px 0;
   }
-  
+}
+
+@media (max-width: 480px) {
+  mat-card-title h1 {
+    font-size: 1.25rem;
+  }
+
   .info-text {
-    margin-top: 40px;
-    text-align: center;
+    font-size: 0.875rem;
   }
+}

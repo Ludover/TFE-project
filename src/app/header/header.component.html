@@ -1,19 +1,27 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="toolbar">
   <span class="toolbar-title">
-    <a routerLink="/" class="logo-link">Pipso</a>
+    <a routerLink="/" class="logo-link">Partage ton film</a>
   </span>
   <span class="spacer"></span>
   <span *ngIf="userIsAuthenticated" class="welcome-message">
     Bonjour, {{ userPseudo }}
   </span>
-  <ul class="menu-list">
-    <li *ngIf="userIsAuthenticated">
-      <a mat-button routerLink="/search" routerLinkActive="mat-accent">
+  <button mat-icon-button class="menu-icon" (click)="toggleMenu()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <ul class="menu-list" [ngClass]="{ 'menu-open': menuOpened }">
+    <li>
+      <a
+        mat-button
+        routerLink="/search"
+        routerLinkActive="mat-accent"
+        (click)="closeMenu()"
+      >
         <mat-icon>search</mat-icon> Rechercher un film
       </a>
     </li>
-    <li *ngIf="userIsAuthenticated" [matMenuTriggerFor]="filmMenu">
-      <button mat-button>
+    <li *ngIf="userIsAuthenticated">
+      <button mat-button [matMenuTriggerFor]="filmMenu">
         <mat-icon>list</mat-icon> Mes films
         <span
           matBadge="{{ recommendedMoviesCount }}"
@@ -23,9 +31,17 @@
         ></span>
       </button>
       <mat-menu #filmMenu="matMenu">
-        <button mat-menu-item routerLink="/listtosee">A voir</button>
-        <button mat-menu-item routerLink="/listseen">Vu</button>
-        <button mat-menu-item routerLink="/recommendedlist">
+        <button mat-menu-item routerLink="/listtosee" (click)="closeMenu()">
+          A voir
+        </button>
+        <button mat-menu-item routerLink="/listseen" (click)="closeMenu()">
+          Vu
+        </button>
+        <button
+          mat-menu-item
+          routerLink="/recommendedlist"
+          (click)="closeMenu()"
+        >
           Conseillé
           <span
             matBadge="{{ recommendedMoviesCount }}"
@@ -36,8 +52,8 @@
         </button>
       </mat-menu>
     </li>
-    <li *ngIf="userIsAuthenticated" [matMenuTriggerFor]="friendMenu">
-      <button mat-button>
+    <li *ngIf="userIsAuthenticated">
+      <button mat-button [matMenuTriggerFor]="friendMenu">
         <mat-icon>person</mat-icon> Amis
         <span
           matBadge="{{ friendRequestsCount }}"
@@ -47,9 +63,17 @@
         ></span>
       </button>
       <mat-menu #friendMenu="matMenu">
-        <button mat-menu-item routerLink="/friendlist">Ma liste d'amis</button>
-        <button mat-menu-item routerLink="/addfriend">Ajouter un ami</button>
-        <button mat-menu-item routerLink="/friendrequestReceived">
+        <button mat-menu-item routerLink="/friendlist" (click)="closeMenu()">
+          Ma liste d'amis
+        </button>
+        <button mat-menu-item routerLink="/addfriend" (click)="closeMenu()">
+          Ajouter un ami
+        </button>
+        <button
+          mat-menu-item
+          routerLink="/friendrequestReceived"
+          (click)="closeMenu()"
+        >
           Invitations reçues
           <span
             matBadge="{{ friendRequestsCount }}"
@@ -64,12 +88,22 @@
       </mat-menu>
     </li>
     <li *ngIf="!userIsAuthenticated">
-      <a mat-button routerLink="/signin" routerLinkActive="mat-accent">
+      <a
+        mat-button
+        routerLink="/signin"
+        routerLinkActive="mat-accent"
+        (click)="closeMenu()"
+      >
         <mat-icon>login</mat-icon> Se connecter
       </a>
     </li>
     <li *ngIf="!userIsAuthenticated">
-      <a mat-button routerLink="/signup" routerLinkActive="mat-accent">
+      <a
+        mat-button
+        routerLink="/signup"
+        routerLinkActive="mat-accent"
+        (click)="closeMenu()"
+      >
         <mat-icon>person_add</mat-icon> Créer un compte
       </a>
     </li>
