@@ -1,24 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MoviesService } from '../movies.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
-import { Movie } from '../movie.model';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
 import { TmdbService } from 'src/app/tmdb.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit, OnDestroy{
   title: string = '';
   movies: any[] = [];
   isLoading: boolean = false;
   movieDetails: any;
+  private authStatusSub: Subscription;
+  UserIsAuthenticated = false;
 
   constructor(
     private tmdbService: TmdbService,
@@ -29,6 +31,16 @@ export class SearchComponent {
     private authService: AuthService
   ) {}
 
+  ngOnInit() {
+    this.UserIsAuthenticated = this.authService.getIsAuth();
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe((isAuthenticated) => {
+        this.UserIsAuthenticated = isAuthenticated;
+      });
+  }
+
+  // Méthode pour rechercher les films avec un titre via l'API TMDB.
   searchMovies() {
     if (this.title) {
       this.isLoading = true;
@@ -39,6 +51,7 @@ export class SearchComponent {
     }
   }
 
+  // Méthode pour afficher via un dialog les détails d'un film.
   searchMovieById(id: string) {
     this.tmdbService.getMovieDetails(id).subscribe((response) => {
       const isHandset = this.breakpointObserver.isMatched(Breakpoints.Handset);
@@ -56,8 +69,9 @@ export class SearchComponent {
     });
   }
 
+  // Méthode permettant d'ajouter un film sélectionné dans la bdd.
   onSelectMovie(movie: any) {
-    if (!this.authService.getIsAuth()) {
+    if (!this.UserIsAuthenticated) {
       this.snackBar.open(
         'Vous devez être connecté pour ajouter un film à votre liste.',
         'Fermer',
@@ -79,8 +93,9 @@ export class SearchComponent {
     });
   }
 
+  // Méthode pour partager le film.
   onShare(movie: any) {
-    if (!this.authService.getIsAuth()) {
+    if (!this.UserIsAuthenticated) {
       this.snackBar.open(
         'Vous devez être connecté pour partager un film.',
         'Fermer',
@@ -125,5 +140,9 @@ export class SearchComponent {
         console.error('Erreur lors de la fermeture du dialog:', err);
       },
     });
+  }
+
+  ngOnDestroy() {
+    this.authStatusSub.unsubscribe();
   }
 }

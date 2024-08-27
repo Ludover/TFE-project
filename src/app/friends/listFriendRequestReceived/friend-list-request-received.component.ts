@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FriendsService } from '../friends.service';
 import { User } from '../user.model';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,39 +11,33 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   friends: User[] = [];
-  private authStatusSub: Subscription;
   private friendRequestsUpdateSub: Subscription;
   userIsAuthenticated = false;
 
   constructor(
     private friendsService: FriendsService,
-    private authService: AuthService,
     private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
     this.loadFriendRequests();
-    this.userIsAuthenticated = this.authService.getIsAuth();
-    this.authStatusSub = this.authService
-      .getAuthStatusListener()
-      .subscribe((isAuthenticated) => {
-        this.userIsAuthenticated = isAuthenticated;
-      });
 
     this.friendRequestsUpdateSub = this.friendsService
       .getFriendRequestsUpdatedListener()
       .subscribe(() => {
-        this.loadFriendRequests(); // Recharger la liste des demandes après une mise à jour
+        // Recharger la liste des demandes après une mise à jour
+        this.loadFriendRequests(); 
       });
   }
 
+  // Méthode pour récupérer les demandes d'amis reçues.
   loadFriendRequests() {
     this.friendsService.getFriendsRequestReceived().subscribe((friends) => {
       this.friends = friends;
     });
   }
 
-  // Méthode pour accepter une demande d'ami
+  // Méthode pour accepter une demande d'ami.
   acceptFriendRequest(friendId: string) {
     this.friendsService.acceptFriendRequest(friendId).subscribe(() => {
       this.snackBar.open("Demande d'ami acceptée", 'Fermer', {
@@ -55,7 +48,7 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Méthode pour rejeter une demande d'ami
+  // Méthode pour rejeter une demande d'ami.
   rejectFriendRequest(friendId: string) {
     this.friendsService.rejectFriendRequest(friendId).subscribe(() => {
       this.snackBar.open("Demande d'ami rejetée", 'Fermer', {
@@ -66,13 +59,12 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Méthode pour supprimer un ami de la liste affichée
+  // Méthode pour supprimer un ami de la liste affichée.
   removeFriendFromList(friendId: string) {
     this.friends = this.friends.filter((friend) => friend._id !== friendId);
   }
 
   ngOnDestroy() {
-    this.authStatusSub.unsubscribe();
     this.friendRequestsUpdateSub.unsubscribe();
   }
 }

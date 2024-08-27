@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FriendsService } from '../friends.service';
 import { User } from '../user.model';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -10,14 +9,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './friend-list.component.html',
   styleUrls: ['./friend-list.component.css'],
 })
-export class FriendListComponent implements OnInit, OnDestroy {
+export class FriendListComponent implements OnInit {
   friends: User[] = [];
   private authStatusSub: Subscription;
-  userIsAuthenticated = false;
 
   constructor(
     private friendsService: FriendsService,
-    private authService: AuthService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -25,29 +22,11 @@ export class FriendListComponent implements OnInit, OnDestroy {
     this.friendsService.getFriends().subscribe((friends) => {
       this.friends = friends;
     });
-    this.userIsAuthenticated = this.authService.getIsAuth();
 
-    // Abonnement au changement de statut d'authentification.
-    this.authStatusSub = this.authService
-      .getAuthStatusListener()
-      .subscribe((isAuthenticated) => {
-        this.userIsAuthenticated = isAuthenticated;
-      });
   }
 
+  // Méthode pour supprimer un ami.
   removeFriend(friendId: string) {
-    if (!this.userIsAuthenticated) {
-      this.snackBar.open(
-        'Vous devez être connecté pour supprimer un ami.',
-        'Fermer',
-        {
-          duration: 3000,
-          verticalPosition: 'top',
-        }
-      );
-      return;
-    }
-
     const snackBarRef = this.snackBar.open(
       'Voulez-vous vraiment supprimer cet ami ?',
       'Supprimer',
@@ -68,7 +47,4 @@ export class FriendListComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.authStatusSub.unsubscribe();
-  }
 }

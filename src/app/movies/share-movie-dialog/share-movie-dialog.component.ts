@@ -21,7 +21,9 @@ export class ShareMovieDialogComponent {
     });
   }
 
+  // Méthode appelée lorsque l'utilisateur clique sur le bouton "Partager".
   onShare() {
+    // Ferme la boîte de dialogue et renvoie les informations du film et l'ID de l'ami sélectionné.
     this.dialogRef.close({
       friendId: this.selectedFriendId,
       movieTitle: this.data.movie.title,
@@ -30,6 +32,7 @@ export class ShareMovieDialogComponent {
     });
   }
 
+  // Méthode appelée lors d'une annulation de partage.
   onNoClick(): void {
     this.dialogRef.close();
   }

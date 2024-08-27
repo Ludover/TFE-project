@@ -16,12 +16,14 @@ export class MovieDetailsDialogComponent {
     this.dialogRef.close();
   }
 
+  // Permet de récupérer les genres.
   getGenreList(): string {
     return (
       this.data?.movie?.genres.map((genre: any) => genre.name).join(', ') || ''
     );
   }
 
+  // Permet la récupération des acteurs.
   getActorList(): string {
     return (
       this.data?.movie?.credits.cast
@@ -31,6 +33,7 @@ export class MovieDetailsDialogComponent {
     );
   }
 
+  // Permet la récupération des réalisateurs.
   getCrewList(): string {
     return (
       this.data?.movie?.credits.crew

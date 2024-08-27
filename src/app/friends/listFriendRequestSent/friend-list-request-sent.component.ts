@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FriendsService } from '../friends.service';
 import { User } from '../user.model';
-import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -10,14 +8,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './friend-list-request-sent.component.html',
   styleUrls: ['./friend-list-request-sent.component.css'],
 })
-export class FriendListRequestSentComponent implements OnInit, OnDestroy {
+export class FriendListRequestSentComponent implements OnInit {
   friends: User[] = [];
-  private authStatusSub: Subscription;
-  UserIsAuthenticated = false;
 
   constructor(
     private friendsService: FriendsService,
-    private authService: AuthService,
     private snackBar: MatSnackBar
   ) {}
 
@@ -25,12 +20,6 @@ export class FriendListRequestSentComponent implements OnInit, OnDestroy {
     this.friendsService.getFriendsRequestSent().subscribe((friends) => {
       this.friends = friends;
     });
-    this.UserIsAuthenticated = this.authService.getIsAuth();
-    this.authStatusSub = this.authService
-      .getAuthStatusListener()
-      .subscribe((isAuthenticated) => {
-        this.UserIsAuthenticated = isAuthenticated;
-      });
   }
 
   // Méthode pour annuler une demande d'ami
@@ -49,7 +38,4 @@ export class FriendListRequestSentComponent implements OnInit, OnDestroy {
     this.friends = this.friends.filter((friend) => friend._id !== friendId);
   }
 
-  ngOnDestroy() {
-    this.authStatusSub.unsubscribe();
-  }
 }

@@ -71,24 +71,27 @@ export class FriendsService {
     );
   }
 
+  // Récupère les amis.
   getFriends(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/friends`);
   }
 
+  // Récupère les demandes d'amis envoyées.
   getFriendsRequestSent(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/friendRequestsSent`);
   }
 
+  // Récupère les demandes d'amis reçues.
   getFriendsRequestReceived(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/friendRequestsReceived`);
   }
 
-  // Méthode pour supprimer un ami
+  // Méthode pour supprimer un ami.
   removeFriend(friendId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/remove-friend/${friendId}`);
   }
 
-  // Méthode pour vérifier si un utilisateur est déjà dans la liste d'amis
+  // Méthode pour vérifier si un utilisateur est déjà dans la liste d'amis.
   isFriend(userId: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/is-friend/${userId}`);
   }

@@ -17,6 +17,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userPseudo: string | null = null;
   friendRequestsCount: number = 0;
   recommendedMoviesCount: number = 0;
+
+  // Ces variables servent à "se désabonner" lorsque le composant est détruit, pour éviter des problèmes de mémoire.
   private authListenerSubs: Subscription;
   private friendRequestsSubs: Subscription;
   private recommendedMoviesSub: Subscription;
@@ -50,7 +52,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.recommendedMoviesCount = movies.length; // Met à jour le compteur de films recommandés
         });
 
-      const userId = this.authService.getUserId(); // Suppose que tu as une méthode pour récupérer l'userId
+      const userId = this.authService.getUserId();
       // this.webSocketService.emitEvent('register', userId);
 
       // // Permet d'écouter les événements pour les demandes d'amis.
@@ -68,6 +70,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       //   });
     }
 
+    // Sert à écouter les changements de statut de connexion.
     this.authListenerSubs = this.authService
       .getAuthStatusListener()
       .subscribe((isAuthenticated) => {
@@ -88,12 +91,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Méthode permettant de récupérer le pseudo de l'utilisateur.
   loadUserPseudo() {
     this.authService.getUserPseudo().subscribe((response) => {
       this.userPseudo = response.pseudo;
     });
   }
 
+  // Méthode pour récupérer le nombre de demandes d'amis en attente pour alimenter les badges.
   loadFriendRequestsCount() {
     this.friendRequestsSubs = this.friendsService
       .getFriendsRequestReceived()
@@ -102,6 +107,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Méthode pour récupérer le nombre de films recommandés pour alimenter les badges.
   loadRecommendedMoviesCount() {
     this.recommendedMoviesSub = this.moviesService
       .getRecommendedMoviesCount()
@@ -110,20 +116,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Méthode pour ouvrir ou fermer le menu.
   toggleMenu() {
     this.menuOpened = !this.menuOpened;
   }
 
+  // Méthode pour fermer le menu.
   closeMenu() {
     this.menuOpened = false;
   }
 
+  // Méthode pour déconnecter l'utilisateur et le rediriger vers la page d'accueil.
   onLogout() {
     this.authService.logout();
     this.userPseudo = null;
-    this.router.navigate(['/signin']);
+    this.router.navigate(['/']);
   }
 
+  // Méthode lorsque le composant est détruit afin de se désabonner de tous les abonnements pour éviter les fuites de mémoire.
   ngOnDestroy(): void {
     if (this.authListenerSubs) {
       this.authListenerSubs.unsubscribe();

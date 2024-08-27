@@ -1,15 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 import { Movie } from '../movie.model';
-import { MoviesService } from '../movies.service';
-import { AuthService } from 'src/app/auth/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { PageEvent } from '@angular/material/paginator';
-import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 import { TmdbService } from 'src/app/tmdb.service';
+import { MoviesService } from '../movies.service';
+import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
 
 @Component({
   selector: 'app-movie-list-recommended',
@@ -20,8 +19,6 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
   movies: Movie[] = [];
   isLoading = false;
   private moviesSub?: Subscription;
-  private authStatusSub: Subscription;
-  UserIsAuthenticated = false;
   totalMovies = 0;
   moviesPerPage = 10;
   currentPage = 1;
@@ -29,7 +26,6 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
 
   constructor(
     public moviesService: MoviesService,
-    private authService: AuthService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private tmdbService: TmdbService,
@@ -50,14 +46,9 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
         this.totalMovies = movieData.movieCount;
         this.movies = movieData.movies;
       });
-    this.UserIsAuthenticated = this.authService.getIsAuth();
-    this.authStatusSub = this.authService
-      .getAuthStatusListener()
-      .subscribe((isAuthenticated) => {
-        this.UserIsAuthenticated = isAuthenticated;
-      });
   }
 
+  // Méthode lors du changement de page afin de récupérer les données pour la suivante.
   onChangedPage(pageData: PageEvent) {
     this.isLoading = true;
     this.currentPage = pageData.pageIndex + 1;
@@ -69,6 +60,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Méthode pour supprimer un film.
   onDelete(movieId: string) {
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
@@ -90,6 +82,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Méthode pour mettre à jour le film avec la liste à "vu".
   updateAsToSee(movie: Movie) {
     const snackBarRef = this.snackBar.open(
       `Êtes-vous sûr de vouloir mettre ${movie.title} dans la liste à voir ?`,
@@ -116,6 +109,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Méthode pour afficher via un dialog les détails d'un film.
   searchMovieById(id: string) {
     this.tmdbService.getMovieDetails(id).subscribe((response) => {
       if (response && response.Response !== 'False') {
@@ -137,6 +131,5 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.moviesSub?.unsubscribe();
-    this.authStatusSub.unsubscribe();
   }
 }

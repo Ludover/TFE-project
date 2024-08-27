@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TmdbService } from 'src/app/tmdb.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,16 +7,19 @@ import { ShareMovieDialogComponent } from '../movies/share-movie-dialog/share-mo
 import { MoviesService } from '../movies/movies.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   nowPlayingMovies: any[] = [];
   upcomingMovies: any[] = [];
   isLoading: boolean = true;
+  private authStatusSub: Subscription;
+  UserIsAuthenticated = false;
 
   constructor(
     private tmdbService: TmdbService,
@@ -28,11 +31,18 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchNowPlayingMovies();
-    this.fetchUpcomingMovies();
+    this.UserIsAuthenticated = this.authService.getIsAuth();
+    this.authStatusSub = this.authService
+      .getAuthStatusListener()
+      .subscribe((isAuthenticated) => {
+        this.UserIsAuthenticated = isAuthenticated;
+      });
+
+    this.getNowPlayingMovies();
+    this.getUpcomingMovies();
   }
 
-  fetchNowPlayingMovies() {
+  getNowPlayingMovies() {
     this.tmdbService.getNowPlayingMovies().subscribe({
       next: (data) => {
         this.nowPlayingMovies = data.results;
@@ -44,7 +54,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  fetchUpcomingMovies() {
+  getUpcomingMovies() {
     this.tmdbService.getUpcomingMovies().subscribe({
       next: (data) => {
         this.upcomingMovies = data.results;
@@ -72,7 +82,7 @@ export class HomeComponent implements OnInit {
   }
 
   onSelectMovie(movie: any) {
-    if (!this.authService.getIsAuth()) {
+    if (!this.UserIsAuthenticated) {
       this.snackBar.open(
         'Vous devez être connecté pour ajouter un film à votre liste.',
         'Fermer',
@@ -95,7 +105,7 @@ export class HomeComponent implements OnInit {
   }
 
   onShare(movie: any) {
-    if (!this.authService.getIsAuth()) {
+    if (!this.UserIsAuthenticated) {
       this.snackBar.open(
         'Vous devez être connecté pour partager un film.',
         'Fermer',
@@ -140,5 +150,9 @@ export class HomeComponent implements OnInit {
         console.error('Erreur lors de la fermeture du dialog:', err);
       },
     });
+  }
+  
+  ngOnDestroy() {
+    this.authStatusSub.unsubscribe();
   }
 }
