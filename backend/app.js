@@ -3,13 +3,15 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/user");
-
+require("dotenv").config();
 const app = express();
 
 // Connection à MongoDB
 mongoose
   .connect(
-    "mongodb+srv://ludoverhenne:ra9jWlfmImVvxOGI@cluster0.x6yp1c7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://ludoverhenne:" +
+      process.env.MONGO_ATLAS_PW +
+      "@cluster0.x6yp1c7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => {
     console.log("Connected to database");

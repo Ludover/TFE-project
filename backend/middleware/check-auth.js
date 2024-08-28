@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
 
     // Vérifie la validité du token en le décodant avec la clé secrète.
-    const decodedToken = jwt.verify(token, "secret_this_is_long");
+    const decodedToken = jwt.verify(token, process.env.JWT_KEY);
 
     // Ajoute les informations de l'utilisateur décodées à l'objet de la requête.
     req.userData = { email: decodedToken.email, userId: decodedToken.userId };

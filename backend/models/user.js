@@ -20,6 +20,8 @@ const userSchema = mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   ],
   movies: [movieSchema],
+  resetToken: { type: String },
+  resetTokenExpiration: { type: Date },
 });
 
 userSchema.plugin(uniqueValidator);
