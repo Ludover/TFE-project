@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Router } from '@angular/router';
 
+import { environment } from 'src/environments/environments';
 import { Movie } from '../movies/movie.model';
+
+const BACKEND_URL = environment.apiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class MoviesService {
@@ -29,7 +32,7 @@ export class MoviesService {
     const queryParams = `?pagesize=${moviesPerPage}&page=${currentPage}`;
     this.http
       .get<{ message: string; movies: any[]; maxMovies: number }>(
-        `http://localhost:3000/api/user/movies/list/${listType}` + queryParams
+        `${BACKEND_URL}/movies/list/${listType}` + queryParams
       )
       .pipe(
         map((responseData) => {
@@ -65,7 +68,7 @@ export class MoviesService {
     const queryParams = `?pagesize=1&page=1`;
     return this.http
       .get<{ message: string; movies: any[]; maxMovies: number }>(
-        `http://localhost:3000/api/user/movies/list/recommended` + queryParams
+        `${BACKEND_URL}/movies/list/recommended${queryParams}`
       )
       .pipe(map((responseData) => responseData.maxMovies));
   }
@@ -77,7 +80,7 @@ export class MoviesService {
   getRandomMovie(): Observable<Movie> {
     return this.http
       .get<{ movie: Movie }>(
-        'http://localhost:3000/api/user/movies/random/tosee'
+        `${BACKEND_URL}/movies/random/tosee`
       )
       .pipe(
         map((responseData) => responseData.movie),
@@ -95,7 +98,7 @@ export class MoviesService {
     return new Observable((observer) => {
       this.http
         .post<{ message: string; movie: Movie }>(
-          'http://localhost:3000/api/user/add-movie',
+          `${BACKEND_URL}/add-movie`,
           movie
         )
         .subscribe({
@@ -114,14 +117,14 @@ export class MoviesService {
     const updateData = { movie, list };
 
     return this.http.put(
-      `http://localhost:3000/api/user/update-movie/${movie.id}`,
+      `${BACKEND_URL}/update-movie/${movie.id}`,
       updateData
     );
   }
 
   deleteMovie(movieId: string) {
     return this.http.delete(
-      `http://localhost:3000/api/user/delete-movie/${movieId}`
+      `${BACKEND_URL}/delete-movie/${movieId}`
     );
   }
 
@@ -132,7 +135,7 @@ export class MoviesService {
     tmdbId: string
   ): Observable<any> {
     return this.http
-      .post<{ message: string }>('http://localhost:3000/api/user/share-movie', {
+      .post<{ message: string }>(`${BACKEND_URL}/share-movie`, {
         friendId,
         movieTitle,
         date,
