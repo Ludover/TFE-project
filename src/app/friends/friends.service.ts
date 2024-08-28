@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 
-import { environment } from 'src/environments/environments';
+import { environment } from 'src/environments/environment';
 import { User } from './user.model';
 
 const BACKEND_URL = environment.apiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class FriendsService {
-
   private friendRequestsUpdated = new Subject<void>();
 
   constructor(private http: HttpClient) {}

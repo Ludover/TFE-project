@@ -6,7 +6,7 @@ import { catchError, map } from 'rxjs/operators';
 import { AuthData } from './auth-data.model';
 import { AuthDataLogin } from './auth-data-login.model';
 
-import { environment } from 'src/environments/environments';
+import { environment } from 'src/environments/environment';
 
 const BACKEND_URL = environment.apiUrl;
 
@@ -38,10 +38,7 @@ export class AuthService {
   ): Observable<void> {
     const authData: AuthData = { email, password, pseudo };
     return this.http
-      .post<{ message: string; result: any }>(
-        `${BACKEND_URL}/signup`,
-        authData
-      )
+      .post<{ message: string; result: any }>(`${BACKEND_URL}/signup`, authData)
       .pipe(
         map((response) => {
           console.log(response);

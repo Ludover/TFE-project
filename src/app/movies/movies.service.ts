@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { environment } from 'src/environments/environments';
+import { environment } from 'src/environments/environment';
 import { Movie } from '../movies/movie.model';
 
 const BACKEND_URL = environment.apiUrl;
@@ -79,9 +79,7 @@ export class MoviesService {
 
   getRandomMovie(): Observable<Movie> {
     return this.http
-      .get<{ movie: Movie }>(
-        `${BACKEND_URL}/movies/random/tosee`
-      )
+      .get<{ movie: Movie }>(`${BACKEND_URL}/movies/random/tosee`)
       .pipe(
         map((responseData) => responseData.movie),
         catchError((error) => {
@@ -116,16 +114,11 @@ export class MoviesService {
   updateMovie(movie: Movie, list: string) {
     const updateData = { movie, list };
 
-    return this.http.put(
-      `${BACKEND_URL}/update-movie/${movie.id}`,
-      updateData
-    );
+    return this.http.put(`${BACKEND_URL}/update-movie/${movie.id}`, updateData);
   }
 
   deleteMovie(movieId: string) {
-    return this.http.delete(
-      `${BACKEND_URL}/delete-movie/${movieId}`
-    );
+    return this.http.delete(`${BACKEND_URL}/delete-movie/${movieId}`);
   }
 
   shareMovie(
