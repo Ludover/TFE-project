@@ -1,13 +1,14 @@
 body {
   font-family: "Roboto", sans-serif;
   background-color: #f4f6f9;
-  margin: 0;
-  padding: 0;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .search-card {
   margin: 2rem auto;
   max-width: 600px;
+  min-width: auto;
   padding: 2rem;
   background-color: white;
   border-radius: 16px;
@@ -42,23 +43,26 @@ body {
   text-transform: uppercase;
 }
 
-.results-card {
-  margin: 2rem auto;
-  max-width: 900px;
-  padding: 2rem;
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+.movie-list {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
 }
 
-.movie {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 2rem;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
+.movie-card {
+  flex: 1 1 calc(25% - 20px);
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  min-width: 200px;
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .movie:hover {
@@ -76,26 +80,27 @@ body {
   text-align: center;
 }
 
-.mat-card-title {
-  font-size: 1.25rem;
-  color: #333;
-}
-
-.mat-card-subtitle {
-  font-size: 1rem;
-  color: #777;
-}
-
 .movie-actions {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 1rem;
+  justify-content: space-between;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.movie-actions button {
+  flex: 1;
+  margin: 0 5px;
 }
 
 .loading-spinner {
   display: block;
   margin: 2rem auto;
+}
+
+@media (max-width: 1024px) {
+  movie-card {
+    width: calc(33.33% - 20px);
+  }
 }
 
 @media (max-width: 768px) {
@@ -104,12 +109,12 @@ body {
     padding: 1rem;
   }
 
-  .movie {
-    margin-bottom: 1rem;
+  movie-card {
+    width: calc(50% - 20px);
   }
 
   .movie-actions {
-    flex-direction: column;
+    gap: 10px;
   }
 
   .movie-actions button {
@@ -119,6 +124,19 @@ body {
 
 @media (max-width: 480px) {
   .search-button button {
+    width: 100%;
+  }
+
+  .movie-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .movie-actions button {
+    margin: 5px 0;
+  }
+
+  movie-card {
     width: 100%;
   }
 }

@@ -87,6 +87,19 @@ export class AuthService {
       );
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post('http://localhost:3000/api/user/forgot-password', {
+      email: email,
+    });
+  }
+
+  resetPassword(token: string, password: string): Observable<any> {
+    return this.http.post('http://localhost:3000/api/user/reset-password', {
+      token: token,
+      password: password,
+    });
+  }
+
   // Méthode pour vérifier si l'utilisateur est authentifié
   autoAuthUser() {
     const authInformation = this.getAuthData();

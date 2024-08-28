@@ -15,7 +15,7 @@
     </mat-card-content>
   </mat-card>
 
-  <div class="movies-section">
+  <div class="movies-section" *ngIf="nowPlayingMovies.length > 0">
     <h1>Films à l'affiche</h1>
     <mat-spinner *ngIf="isLoading"></mat-spinner>
     <div class="movie-list" *ngIf="!isLoading">
@@ -25,7 +25,6 @@
           [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
           alt="{{ movie.title }}"
         />
-        <mat-card-title>{{ movie.title }}</mat-card-title>
         <mat-card-actions class="movie-actions">
           <button
             mat-stroked-button
@@ -46,8 +45,8 @@
     </div>
   </div>
 
-  <div class="movies-section">
-    <h2>Sorties à venir</h2>
+  <div class="movies-section" *ngIf="upcomingMovies.length > 0">
+    <h1>Sorties à venir</h1>
     <div class="movie-list">
       <mat-card *ngFor="let movie of upcomingMovies" class="movie-card">
         <img
@@ -55,7 +54,6 @@
           [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
           alt="{{ movie.title }}"
         />
-        <mat-card-title>{{ movie.title }}</mat-card-title>
         <mat-card-actions class="movie-actions">
           <button
             mat-stroked-button

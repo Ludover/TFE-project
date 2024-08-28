@@ -12,11 +12,15 @@ import { FriendListRequestSentComponent } from './friends/listFriendRequestSent/
 import { FriendListRequestReceivedComponent } from './friends/listFriendRequestReceived/friend-list-request-received.component';
 import { MovieListRecommendedComponent } from './movies/movie-list-recommended/movie-list-recommended.component';
 import { HomeComponent } from './home/home.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'signin', component: SigninComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent },
   { path: 'search', component: SearchComponent },
   {
     path: 'listtosee',

@@ -11,6 +11,12 @@
   margin-right: auto;
 }
 
+h1 {
+  font-size: 1.75rem;
+  color: blueviolet;
+  margin-bottom: 1.5rem;
+}
+
 .movies-section {
   margin-bottom: 50px;
 }
@@ -26,6 +32,7 @@
   flex: 1 1 calc(25% - 20px);
   box-sizing: border-box;
   margin-bottom: 20px;
+  min-width: 200px;
 }
 
 mat-card {
@@ -70,12 +77,11 @@ mat-card-content {
   }
 
   .movie-actions {
-    flex-direction: column;
     gap: 10px;
   }
 
   .movie-actions button {
-    margin: 5px 0;
+    margin: 0.5rem 0;
   }
 }
 

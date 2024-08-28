@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signin',
@@ -11,7 +12,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class SigninComponent {
   isLoading = false;
 
-  constructor(public authService: AuthService, private snackBar: MatSnackBar) {}
+  constructor(
+    public authService: AuthService,
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {}
 
   onLogin(form: NgForm) {
     if (form.invalid) {
@@ -34,5 +39,9 @@ export class SigninComponent {
         });
       },
     });
+  }
+
+  onForgotPassword() {
+    this.router.navigate(['/forgot-password']); // Redirige vers une nouvelle page pour la réinitialisation du mot de passe
   }
 }

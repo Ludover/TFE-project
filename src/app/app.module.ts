@@ -25,6 +25,8 @@ import { ShareMovieDialogComponent } from './movies/share-movie-dialog/share-mov
 import { MovieListRecommendedComponent } from './movies/movie-list-recommended/movie-list-recommended.component';
 import { MovieDetailsDialogComponent } from './movies/movie-details-dialog/movie-details-dialog.component';
 import { HomeComponent } from './home/home.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 import { AngularMaterialModule } from './angular-material-module';
 
@@ -47,6 +49,8 @@ registerLocaleData(localeFr);
     MovieListRecommendedComponent,
     MovieDetailsDialogComponent,
     HomeComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,
