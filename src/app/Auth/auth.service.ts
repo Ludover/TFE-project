@@ -6,6 +6,10 @@ import { catchError, map } from 'rxjs/operators';
 import { AuthData } from './auth-data.model';
 import { AuthDataLogin } from './auth-data-login.model';
 
+import { environment } from 'src/environments/environments';
+
+const BACKEND_URL = environment.apiUrl;
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private isAuthenticated = false;
@@ -35,7 +39,7 @@ export class AuthService {
     const authData: AuthData = { email, password, pseudo };
     return this.http
       .post<{ message: string; result: any }>(
-        'http://localhost:3000/api/user/signup',
+        `${BACKEND_URL}/signup`,
         authData
       )
       .pipe(
@@ -57,7 +61,7 @@ export class AuthService {
     const AuthDataLogin: AuthDataLogin = { email, password };
     return this.http
       .post<{ token: string; expiresIn: number }>(
-        'http://localhost:3000/api/user/login',
+        `${BACKEND_URL}/login`,
         AuthDataLogin
       )
       .pipe(
@@ -128,12 +132,12 @@ export class AuthService {
 
   // Méthode pour récupérer l'id de l'utilisateur.
   getUserId(): Observable<{ id: string }> {
-    return this.http.get<{ id: string }>('http://localhost:3000/api/user/id');
+    return this.http.get<{ id: string }>(`${BACKEND_URL}/id`);
   }
 
   // Méthode pour récupérer le pseudo de l'utilisateur.
   getUserPseudo(): Observable<any> {
-    return this.http.get<any>('http://localhost:3000/api/user/pseudo');
+    return this.http.get<any>(`${BACKEND_URL}/pseudo`);
   }
 
   // Configure un minuteur pour déconnecter automatiquement l'utilisateur lorsque le token expire.
