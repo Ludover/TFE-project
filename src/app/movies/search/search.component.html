@@ -23,11 +23,8 @@
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
-<mat-card *ngIf="movies.length > 0" class="results-card">
-  <div class="movie" *ngFor="let movie of movies">
-    <mat-card-header>
-      <mat-card-title>{{ movie.Title }}</mat-card-title>
-    </mat-card-header>
+<div *ngIf="movies.length > 0" class="movie-list">
+  <mat-card class="movie-card" *ngFor="let movie of movies">
     <img
       mat-card-image
       [src]="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
@@ -48,5 +45,5 @@
         Partager
       </button>
     </mat-card-actions>
-  </div>
-</mat-card>
+  </mat-card>
+</div>
