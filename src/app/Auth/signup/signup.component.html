@@ -15,27 +15,21 @@
           ngModel
           name="email"
           required
+          email
           placeholder="E-Mail"
-          #emailInput="ngModel"
         />
-        <mat-error *ngIf="emailInput.invalid">
-          Veuillez saisir un email valide.
-        </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Mot de passe</mat-label>
+        <mat-label>Mot de passe (6 caractères minimum)</mat-label>
         <input
           matInput
           type="password"
           ngModel
           name="password"
           required
+          minlength="6"
           placeholder="Mot de passe"
-          #passwordInput="ngModel"
         />
-        <mat-error *ngIf="passwordInput.invalid">
-          Veuillez saisir un mot de passe.
-        </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Pseudo</mat-label>
@@ -46,11 +40,7 @@
           name="pseudo"
           required
           placeholder="Pseudo"
-          #pseudoInput="ngModel"
         />
-        <mat-error *ngIf="pseudoInput.invalid">
-          Veuillez saisir un pseudo.
-        </mat-error>
       </mat-form-field>
       <div class="auth-button">
         <button

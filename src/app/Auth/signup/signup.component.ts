@@ -14,7 +14,18 @@ export class SignupComponent {
   constructor(public authService: AuthService, private snackBar: MatSnackBar) {}
 
   onSignup(form: NgForm) {
+    // Vérifier si le formulaire est invalide
     if (form.invalid) {
+      if (form.controls['password']?.errors?.['minlength']) {
+        this.snackBar.open(
+          'Le mot de passe doit comporter au moins 6 caractères.',
+          'Fermer',
+          {
+            duration: 3000,
+            verticalPosition: 'top',
+          }
+        );
+      }
       return;
     }
     this.isLoading = true;
@@ -31,6 +42,9 @@ export class SignupComponent {
               verticalPosition: 'top',
             }
           );
+        },
+        error: (err) => {
+          this.isLoading = false;
         },
       });
   }
