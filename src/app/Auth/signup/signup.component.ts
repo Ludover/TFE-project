@@ -32,17 +32,6 @@ export class SignupComponent {
             }
           );
         },
-        // error: (error) => {
-        //   this.isLoading = false;
-        //   this.snackBar.open(
-        //     "Une erreur est survenue lors de l'inscription.",
-        //     'Fermer',
-        //     {
-        //       duration: 3000,
-        //       verticalPosition: 'top',
-        //     }
-        //   );
-        // },
       });
   }
 }

@@ -52,22 +52,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.recommendedMoviesCount = movies.length; // Met à jour le compteur de films recommandés
         });
 
-      const userId = this.authService.getUserId();
-      // this.webSocketService.emitEvent('register', userId);
-
-      // // Permet d'écouter les événements pour les demandes d'amis.
-      // this.friendRequestsSubs = this.webSocketService
-      //   .onEvent<any>('updateFriendRequests')
-      //   .subscribe((friendRequest: any) => {
-      //     this.friendRequestsCount += 1; // incrémenter le badge du nombre de demandes d'ami de 1.
-      //   });
-
-      // // Permet d'écouter les événements pour les films recommandés.
-      // this.recommendedMoviesSub = this.webSocketService
-      //   .onEvent<any>('updateMoviesList')
-      //   .subscribe((movie: any) => {
-      //     this.recommendedMoviesCount += 1; // Incrément le badge de films recommandés de 1.
-      //   });
     }
 
     // Sert à écouter les changements de statut de connexion.

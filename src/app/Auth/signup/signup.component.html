@@ -18,7 +18,7 @@
           placeholder="E-Mail"
           #emailInput="ngModel"
         />
-        <mat-error *ngIf="emailInput.invalid && emailInput.touched">
+        <mat-error *ngIf="emailInput.invalid">
           Veuillez saisir un email valide.
         </mat-error>
       </mat-form-field>
@@ -33,7 +33,7 @@
           placeholder="Mot de passe"
           #passwordInput="ngModel"
         />
-        <mat-error *ngIf="passwordInput.invalid && passwordInput.touched">
+        <mat-error *ngIf="passwordInput.invalid">
           Veuillez saisir un mot de passe.
         </mat-error>
       </mat-form-field>
@@ -48,7 +48,7 @@
           placeholder="Pseudo"
           #pseudoInput="ngModel"
         />
-        <mat-error *ngIf="pseudoInput.invalid && pseudoInput.touched">
+        <mat-error *ngIf="pseudoInput.invalid">
           Veuillez saisir un pseudo.
         </mat-error>
       </mat-form-field>
