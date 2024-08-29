@@ -38,7 +38,7 @@ export class ResetPasswordComponent implements OnInit {
           duration: 3000,
           verticalPosition: 'top',
         });
-        this.router.navigate(['/login']);
+        this.router.navigate(['/signin']);
       },
       error: () => {
         this.isLoading = false;

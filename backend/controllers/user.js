@@ -2,20 +2,20 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-const joi = require('joi');
+const joi = require("joi");
 
 const User = require("../models/user");
 
 const signUpSchema = joi.object({
   email: joi.string().email().required,
-  password: joi.string().required,
-  pseudo: joi.string().required()
-})
+  password: joi.string().min(6).required,
+  pseudo: joi.string().required(),
+});
 
 const loginSchema = joi.object({
   email: joi.string().email().required,
   password: joi.string().required,
-})
+});
 
 //#region Authentification
 
@@ -52,7 +52,7 @@ exports.login = async (req, res) => {
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }
-  
+
   const { email, password } = req.body;
 
   // Vérifiez que les données sont présentes
