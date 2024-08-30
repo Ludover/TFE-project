@@ -28,6 +28,21 @@ export class SignupComponent {
       }
       return;
     }
+
+    // Vérifier si le pseudo contient des espaces
+    const pseudo = form.value.pseudo;
+    if (/\s/.test(pseudo)) {
+      this.snackBar.open(
+        "Le pseudo ne doit pas contenir d'espaces.",
+        'Fermer',
+        {
+          duration: 3000,
+          verticalPosition: 'top',
+        }
+      );
+      return;
+    }
+
     this.isLoading = true;
     this.authService
       .createUser(form.value.email, form.value.password, form.value.pseudo)

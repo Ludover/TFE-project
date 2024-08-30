@@ -56,13 +56,14 @@ mat-expansion-panel-header {
 
 mat-action-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 5px;
   flex-wrap: wrap;
 }
 mat-action-row button {
   flex: 1;
   margin: 0 5px;
+  max-width: 200px;
 }
 
 mat-paginator {
@@ -85,10 +86,13 @@ mat-paginator {
   }
 
   mat-action-row {
+    justify-content: flex-start;
     gap: 10px;
   }
 
   mat-action-row button {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
     margin: 0.5rem 0;
   }
 
@@ -103,11 +107,14 @@ mat-paginator {
   }
 
   mat-action-row {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 10px;
   }
 
   mat-action-row button {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
     margin: 5px 0;
   }
 

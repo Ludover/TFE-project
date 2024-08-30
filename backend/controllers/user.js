@@ -25,12 +25,19 @@ exports.signUp = (req, res, next) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
+  if (/\s/.test(pseudo)) {
+    return res
+      .status(400)
+      .json({ message: "Le pseudo ne doit pas contenir d'espaces." });
+  }
+
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
       email: req.body.email,
       password: hash,
-      pseudo: req.body.pseudo,
+      pseudo: req.body.pseudo.trim(),
     });
+    console.log(req.body.pseudo);
     user
       .save()
       .then((result) => {
@@ -131,7 +138,7 @@ exports.forgotPassword = async (req, res) => {
       from: process.env.EMAIL_USER,
       subject: "Réinitialisation de mot de passe",
       html: `<p>Vous avez demandé une réinitialisation de mot de passe.</p>
-             <p>Cliquez sur ce <a href="http://localhost:4200/reset-password/${resetToken}">lien</a> pour réinitialiser votre mot de passe.</p>`,
+             <p>Cliquez sur ce <a href="http://www.monpopcorn.com/reset-password/${resetToken}">lien</a> pour réinitialiser votre mot de passe.</p>`,
     };
 
     transporter
@@ -221,9 +228,8 @@ exports.getFriend = async (req, res, next) => {
     const authUserId = req.userData.userId;
     // Rechercher l'utilisateur par pseudo (insensible à la casse)
     const user = await User.findOne({
-      pseudo: new RegExp(`^${req.params.pseudo}$`, "i"),
+      pseudo: req.params.pseudo,
     });
-
     if (user) {
       if (user._id.toString() === authUserId) {
         return res
@@ -247,7 +253,6 @@ exports.sendFriendRequest = async (req, res) => {
   try {
     const userId = req.userData.userId;
     const friendId = req.params.friendId;
-    const friendRequest = { from: userId, to: friendId };
 
     if (userId === friendId) {
       return res.status(400).json({
@@ -271,8 +276,6 @@ exports.sendFriendRequest = async (req, res) => {
 
     await user.save();
     await friend.save();
-
-    //req.io.emit("friendRequestReceived", friendRequest);
 
     res.status(200).json({ message: "Demande d'ami envoyée." });
   } catch (error) {
@@ -647,7 +650,8 @@ exports.getMoviesList = async (req, res, next) => {
   }
 };
 
-exports.shareMovie = async (req, res, next) => {
+exports.shareMovie = async (req, res) => {
+  console.log(req.body);
   const { friendId, movieTitle, date, tmdbId, friendComment } = req.body;
   const userId = req.userData.userId;
   try {

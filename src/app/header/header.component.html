@@ -6,9 +6,9 @@
     <mat-icon>menu</mat-icon>
   </button>
   <ul class="menu-list" [ngClass]="{ 'menu-open': menuOpened }">
-    <span *ngIf="userIsAuthenticated" class="welcome-message">
+    <li *ngIf="userIsAuthenticated" class="welcome-message">
       Bonjour, {{ userPseudo }}
-    </span>
+    </li>
     <li>
       <a
         mat-button

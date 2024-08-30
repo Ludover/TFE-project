@@ -84,13 +84,13 @@ export class AuthService {
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post('http://localhost:3000/api/user/forgot-password', {
+    return this.http.post(`${BACKEND_URL}/forgot-password`, {
       email: email,
     });
   }
 
   resetPassword(token: string, password: string): Observable<any> {
-    return this.http.post('http://localhost:3000/api/user/reset-password', {
+    return this.http.post(`${BACKEND_URL}/reset-password`, {
       token: token,
       password: password,
     });

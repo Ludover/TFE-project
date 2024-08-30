@@ -125,13 +125,15 @@ export class SearchComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
-          this.moviesService.shareMovie(
-            result.friendId,
-            result.movieTitle,
-            result.date,
-            result.imdb,
-            result.friendComment
-          );
+          this.moviesService
+            .shareMovie(
+              result.friendId,
+              result.movieTitle,
+              result.date,
+              result.tmdbId,
+              result.friendComment
+            )
+            .subscribe({});
         }
       },
       error: (err) => {

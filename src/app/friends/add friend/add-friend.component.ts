@@ -39,18 +39,6 @@ export class AddFriendComponent implements OnInit, OnDestroy {
 
   // Méthode pour rechercher un ami.
   onSearchFriend() {
-    if (!this.userIsAuthenticated) {
-      this.snackBar.open(
-        'Vous devez être connecté pour rechercher un ami.',
-        'Fermer',
-        {
-          duration: 3000,
-          verticalPosition: 'top',
-        }
-      );
-      return;
-    }
-
     if (this.pseudo) {
       this.isLoading = true;
       // Récupérer le pseudo de l'utilisateur connecté

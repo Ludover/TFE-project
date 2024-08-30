@@ -135,13 +135,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
-          this.moviesService.shareMovie(
-            result.friendId,
-            result.movieTitle,
-            result.date,
-            result.imdb,
-            result.friendComment
-          );
+          this.moviesService
+            .shareMovie(
+              result.friendId,
+              result.movieTitle,
+              result.date,
+              result.imdb,
+              result.friendComment
+            )
+            .subscribe({});
         }
       },
       error: (err) => {

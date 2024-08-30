@@ -19,6 +19,10 @@
   flex: 1;
 }
 
+.welcome-message {
+  color: blueviolet;
+}
+
 .menu-icon {
   display: none;
 }
@@ -96,8 +100,8 @@ mat-icon {
     align-items: flex-start;
     right: 0;
     top: 64px;
-    background-color: transparent;
-    box-shadow: none;
+    background-color: white;
+    box-shadow: gray;
   }
 
   .menu-list a,
