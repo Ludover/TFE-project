@@ -125,13 +125,13 @@ export class MovieListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
-          console.log(result);
           this.moviesService
             .shareMovie(
               result.friendId,
               result.movieTitle,
               result.date,
-              result.tmdbId
+              result.tmdbId,
+              result.friendComment
             )
             .subscribe({});
         }

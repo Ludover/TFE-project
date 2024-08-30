@@ -10,6 +10,7 @@ import { FriendsService } from 'src/app/friends/friends.service'; // Assurez-vou
 export class ShareMovieDialogComponent {
   friends: any[] = [];
   selectedFriendId: string = '';
+  comment: string = '';
 
   constructor(
     public dialogRef: MatDialogRef<ShareMovieDialogComponent>,
@@ -29,6 +30,7 @@ export class ShareMovieDialogComponent {
       movieTitle: this.data.movie.title,
       date: new Date(),
       tmdbId: this.data.movie.tmdbId,
+      friendComment: this.comment,
     });
   }
 

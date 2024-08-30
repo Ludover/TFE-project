@@ -29,6 +29,17 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  position: absolute;
+  top: 64px;
+  right: 0;
+  background-color: blueviolet;
+  width: 250px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
 }
 
 .menu-list li {
@@ -54,27 +65,13 @@ mat-icon {
   margin-right: 8px;
 }
 
-.menu-list {
-  position: absolute;
-  top: 64px;
-  right: 0;
-  background-color: blueviolet;
-  width: 250px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-}
-
 .menu-list.menu-open {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 950px) {
   .menu-list {
     display: flex;
     position: static;
@@ -92,15 +89,28 @@ mat-icon {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 949px) {
   .menu-list {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     right: 0;
     top: 64px;
+    background-color: transparent;
+    box-shadow: none;
   }
 
+  .menu-list a,
+  .menu-list button {
+    background-color: white;
+    color: blueviolet;
+  }
+
+  .menu-list a:hover,
+  .menu-list button:hover {
+    background-color: blueviolet;
+    color: white;
+  }
   .menu-icon {
     display: block;
   }

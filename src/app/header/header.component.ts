@@ -49,9 +49,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.moviesUpdateSub = this.moviesService
         .getMoviesRecommendedUpdatedListener()
         .subscribe((movies) => {
+          this.loadRecommendedMoviesCount();
           this.recommendedMoviesCount = movies.length; // Met à jour le compteur de films recommandés
         });
-
     }
 
     // Sert à écouter les changements de statut de connexion.
@@ -63,10 +63,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.loadUserPseudo();
           this.loadFriendRequestsCount();
           this.loadRecommendedMoviesCount();
-
-          // Réenregistrer l'utilisateur auprès du WebSocket
-          // const userId = this.authService.getUserId();
-          // this.webSocketService.emitEvent('register', userId);
         } else {
           this.userPseudo = null;
           this.friendRequestsCount = 0;

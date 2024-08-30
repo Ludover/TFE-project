@@ -54,9 +54,15 @@ mat-expansion-panel-header {
   padding: 16px;
 }
 
+mat-action-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  flex-wrap: wrap;
+}
 mat-action-row button {
-  margin-right: 12px;
-  border-radius: 8px;
+  flex: 1;
+  margin: 0 5px;
 }
 
 mat-paginator {
@@ -78,8 +84,12 @@ mat-paginator {
     font-size: 1.5rem;
   }
 
+  mat-action-row {
+    gap: 10px;
+  }
+
   mat-action-row button {
-    margin-right: 8px;
+    margin: 0.5rem 0;
   }
 
   mat-expansion-panel {
@@ -90,6 +100,15 @@ mat-paginator {
 @media (max-width: 480px) {
   mat-card-title h1 {
     font-size: 1.25rem;
+  }
+
+  mat-action-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  mat-action-row button {
+    margin: 5px 0;
   }
 
   .info-text {

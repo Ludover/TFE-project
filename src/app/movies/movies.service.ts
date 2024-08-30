@@ -45,6 +45,7 @@ export class MoviesService {
                 dateSeen: movie.dateSeen,
                 list: movie.list,
                 creator: movie.creator,
+                friendComment: movie.friendComment,
                 tmdbId: movie.tmdbId,
               };
             }),
@@ -125,7 +126,8 @@ export class MoviesService {
     friendId: string,
     movieTitle: string,
     date: Date,
-    tmdbId: string
+    tmdbId: string,
+    friendComment: string
   ): Observable<any> {
     return this.http
       .post<{ message: string }>(`${BACKEND_URL}/share-movie`, {
@@ -133,6 +135,7 @@ export class MoviesService {
         movieTitle,
         date,
         tmdbId,
+        friendComment,
       })
       .pipe(
         catchError((error) => {

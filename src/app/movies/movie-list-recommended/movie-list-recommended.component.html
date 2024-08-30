@@ -16,6 +16,9 @@
             Proposé par: <b>{{ movie.creator }}</b> le
             {{ movie.date | date : " d MMMM y" }}
           </p>
+          <p *ngIf="movie.friendComment">
+            Commentaire de votre ami(e): <b>{{ movie.friendComment }}</b>
+          </p>
         </div>
         <mat-action-row>
           <button

@@ -5,8 +5,9 @@ const movieSchema = mongoose.Schema({
   title: { type: String, required: true },
   date: { type: String, required: true },
   dateSeen: { type: String },
-  list: { type: String, required: true }, // "a voir" ou "vu"
+  list: { type: String, required: true },
   creator: { type: String },
+  friendComment: { type: String },
   tmdbId: { type: String, required: true },
 });
 

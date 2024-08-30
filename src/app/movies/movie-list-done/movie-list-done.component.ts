@@ -106,7 +106,8 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
               result.friendId,
               result.movieTitle,
               result.date,
-              result.tmdbId
+              result.tmdbId,
+              result.friendComment
             )
             .subscribe({});
         }

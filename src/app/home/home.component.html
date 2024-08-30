@@ -2,7 +2,7 @@
   <mat-card class="welcome-card">
     <mat-card-header color="primary">
       <mat-card-title color="primary"
-        ><h1>Bienvenue sur Partage ton film</h1></mat-card-title
+        ><h1>Bienvenue sur Mon Popcorn</h1></mat-card-title
       >
     </mat-card-header>
     <mat-card-content>
@@ -34,10 +34,20 @@
           >
             Info
           </button>
-          <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
+          <button
+            mat-flat-button
+            color="accent"
+            matTooltip="Ajouter {{ movie.title }} à votre liste de films à voir"
+            (click)="onSelectMovie(movie)"
+          >
             Ajouter
           </button>
-          <button mat-flat-button color="primary" (click)="onShare(movie)">
+          <button
+            mat-flat-button
+            color="primary"
+            matTooltip="Partager {{ movie.title }}"
+            (click)="onShare(movie)"
+          >
             Partager
           </button>
         </mat-card-actions>

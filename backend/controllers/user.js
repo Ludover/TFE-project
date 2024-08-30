@@ -7,14 +7,14 @@ const joi = require("joi");
 const User = require("../models/user");
 
 const signUpSchema = joi.object({
-  email: joi.string().email().required,
-  password: joi.string().min(6).required,
+  email: joi.string().email().required(),
+  password: joi.string().min(6).required(),
   pseudo: joi.string().required(),
 });
 
 const loginSchema = joi.object({
-  email: joi.string().email().required,
-  password: joi.string().required,
+  email: joi.string().email().required(),
+  password: joi.string().required(),
 });
 
 //#region Authentification
@@ -125,8 +125,6 @@ exports.forgotPassword = async (req, res) => {
         pass: process.env.EMAIL_PASS,
       },
     });
-    console.log(process.env.EMAIL_USER);
-    console.log(process.env.EMAIL_PASS);
 
     const mailOptions = {
       to: email,
@@ -139,7 +137,6 @@ exports.forgotPassword = async (req, res) => {
     transporter
       .sendMail(mailOptions)
       .then((info) => {
-        console.log("Email sent: " + info.response);
         res.status(200).json({
           message:
             "Un email a été envoyé pour réinitialiser votre mot de passe.",
@@ -515,7 +512,6 @@ exports.addMovie = async (req, res, next) => {
       (movie) => movie.tmdbId === id.toString() && movie.list === "tosee"
     );
 
-    console.log;
     if (movieExists) {
       return res
         .status(400)
@@ -652,10 +648,8 @@ exports.getMoviesList = async (req, res, next) => {
 };
 
 exports.shareMovie = async (req, res, next) => {
-  const { friendId, movieTitle, date, tmdbId } = req.body;
+  const { friendId, movieTitle, date, tmdbId, friendComment } = req.body;
   const userId = req.userData.userId;
-  const friendRequest = { from: userId, to: friendId };
-  console.log(req.body);
   try {
     // Trouver l'utilisateur actuel
     const user = await User.findById(userId);
@@ -686,13 +680,12 @@ exports.shareMovie = async (req, res, next) => {
       list: "recommended",
       creator: user.pseudo,
       tmdbId: tmdbId,
+      friendComment: friendComment,
     };
 
     // Ajouter le film recommandé à la liste de l'ami
     friend.movies.push(recommendedMovie);
     await friend.save();
-
-    //req.io.emit("movieReceived", friendRequest);
 
     res.status(200).json({ message: "Film partagé avec succès." });
   } catch (error) {

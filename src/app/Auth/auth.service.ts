@@ -41,7 +41,6 @@ export class AuthService {
       .post<{ message: string; result: any }>(`${BACKEND_URL}/signup`, authData)
       .pipe(
         map((response) => {
-          console.log(response);
           this.router.navigate(['/signin']);
         }),
         catchError((error) => {

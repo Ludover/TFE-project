@@ -131,18 +131,16 @@ export class HomeComponent implements OnInit, OnDestroy {
         },
       },
     });
-    console.log(dialogRef);
-    console.log(movie);
 
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        console.log(result);
         if (result) {
           this.moviesService.shareMovie(
             result.friendId,
             result.movieTitle,
             result.date,
-            result.imdb
+            result.imdb,
+            result.friendComment
           );
         }
       },
@@ -151,7 +149,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       },
     });
   }
-  
+
   ngOnDestroy() {
     this.authStatusSub.unsubscribe();
   }

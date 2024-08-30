@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
 })
-export class SearchComponent implements OnInit, OnDestroy{
+export class SearchComponent implements OnInit, OnDestroy {
   title: string = '';
   movies: any[] = [];
   isLoading: boolean = false;
@@ -121,18 +121,16 @@ export class SearchComponent implements OnInit, OnDestroy{
         },
       },
     });
-    console.log(dialogRef);
-    console.log(movie);
 
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        console.log(result);
         if (result) {
           this.moviesService.shareMovie(
             result.friendId,
             result.movieTitle,
             result.date,
-            result.imdb
+            result.imdb,
+            result.friendComment
           );
         }
       },

@@ -5,5 +5,6 @@ export interface Movie {
   dateSeen: Date;
   list?: string;
   creator?: string;
+  friendComment?: string;
   tmdbId: string;
 }
