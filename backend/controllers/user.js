@@ -37,7 +37,6 @@ exports.signUp = (req, res, next) => {
       password: hash,
       pseudo: req.body.pseudo.trim(),
     });
-    console.log(req.body.pseudo);
     user
       .save()
       .then((result) => {
@@ -651,7 +650,6 @@ exports.getMoviesList = async (req, res, next) => {
 };
 
 exports.shareMovie = async (req, res) => {
-  console.log(req.body);
   const { friendId, movieTitle, date, tmdbId, friendComment } = req.body;
   const userId = req.userData.userId;
   try {

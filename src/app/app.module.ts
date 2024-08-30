@@ -29,6 +29,8 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 import { AngularMaterialModule } from './angular-material-module';
+import { CustomMatPaginatorIntl } from './custom-paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 
 registerLocaleData(localeFr);
 
@@ -65,6 +67,7 @@ registerLocaleData(localeFr);
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     DatePipe,
     { provide: LOCALE_ID, useValue: 'fr-BE' },
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
   ],
   bootstrap: [AppComponent],
 })

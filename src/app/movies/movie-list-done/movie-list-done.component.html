@@ -1,65 +1,57 @@
-<mat-card class="movie-list-card" appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>
-      <h1>Ma Liste de Films vus</h1>
-    </mat-card-title>
-  </mat-card-header>
-  <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
-  <mat-card-content>
-    <mat-accordion multi="false" *ngIf="movies.length > 0 && !isLoading">
-      <mat-expansion-panel *ngFor="let movie of movies">
-        <mat-expansion-panel-header>
-          {{ movie.title }}
-        </mat-expansion-panel-header>
-        <div class="movie-details">
-          <p>
-            Vous avez vu ce film le {{ movie.dateSeen | date : " d MMMM y" }}
-          </p>
-          <p *ngIf="movie.creator">
-            Ce film vous avait été conseillé par <b>{{ movie.creator }}</b> le
-            {{ movie.date | date : " d MMMM y" }}
-          </p>
-          <p *ngIf="movie.friendComment">
-            Commentaire de votre ami(e): <b>{{ movie.friendComment }}</b>
-          </p>
-        </div>
-        <mat-action-row>
-          <button
-            mat-stroked-button
-            color="primary"
-            (click)="searchMovieById(movie.tmdbId)"
-            matTooltip="Voir plus d'infos sur {{ movie.title }}"
-          >
-            Info
-          </button>
-          <button
-            mat-flat-button
-            color="primary"
-            (click)="onShare(movie)"
-            matTooltip="Partager {{ movie.title }}"
-          >
-            Partager
-          </button>
-          <button
-            mat-flat-button
-            color="warn"
-            (click)="onDelete(movie.id)"
-            matTooltip="Supprimer {{ movie.title }}"
-          >
-            Supprimer
-          </button>
-        </mat-action-row>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <mat-paginator
-      [length]="totalMovies"
-      [pageSize]="moviesPerPage"
-      [pageSizeOptions]="pageSizeOptions"
-      (page)="onChangedPage($event)"
-      *ngIf="movies.length > 0"
-    ></mat-paginator>
-    <p class="info-text mat-body-1" *ngIf="movies.length <= 0 && !isLoading">
-      Votre liste est vide
-    </p>
-  </mat-card-content>
-</mat-card>
+<h1>Ma Liste de Films vus</h1>
+
+<mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
+
+<mat-accordion multi="false" *ngIf="movies.length > 0 && !isLoading">
+  <mat-expansion-panel *ngFor="let movie of movies">
+    <mat-expansion-panel-header>
+      {{ movie.title }}
+    </mat-expansion-panel-header>
+    <div class="movie-details">
+      <p>Vous avez vu ce film le {{ movie.dateSeen | date : " d MMMM y" }}</p>
+      <p *ngIf="movie.creator">
+        Ce film vous avait été conseillé par <b>{{ movie.creator }}</b> le
+        {{ movie.date | date : " d MMMM y" }}
+      </p>
+      <p *ngIf="movie.friendComment">
+        Commentaire de votre ami(e): <b>{{ movie.friendComment }}</b>
+      </p>
+    </div>
+    <mat-action-row>
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="searchMovieById(movie.tmdbId)"
+        matTooltip="Voir plus d'infos sur {{ movie.title }}"
+      >
+        Info
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="onShare(movie)"
+        matTooltip="Partager {{ movie.title }}"
+      >
+        Partager
+      </button>
+      <button
+        mat-flat-button
+        color="warn"
+        (click)="onDelete(movie.id)"
+        matTooltip="Supprimer {{ movie.title }}"
+      >
+        Supprimer
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
+<mat-paginator
+  [length]="totalMovies"
+  [pageSize]="moviesPerPage"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onChangedPage($event)"
+  *ngIf="movies.length > 0"
+></mat-paginator>
+<p class="info-text mat-body-1" *ngIf="movies.length <= 0 && !isLoading">
+  Votre liste est vide
+</p>

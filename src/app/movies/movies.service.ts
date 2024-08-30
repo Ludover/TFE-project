@@ -129,7 +129,6 @@ export class MoviesService {
     tmdbId: string,
     friendComment: string
   ): Observable<any> {
-    console.log(friendId, movieTitle, date, tmdbId, friendComment);
     return this.http
       .post<{ message: string }>(`${BACKEND_URL}/share-movie`, {
         friendId,
