@@ -25,32 +25,55 @@ exports.signUp = (req, res, next) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  if (/\s/.test(pseudo)) {
+  if (/\s/.test(req.body.pseudo)) {
     return res
       .status(400)
       .json({ message: "Le pseudo ne doit pas contenir d'espaces." });
   }
 
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    const user = new User({
-      email: req.body.email,
-      password: hash,
-      pseudo: req.body.pseudo.trim(),
-    });
-    user
-      .save()
-      .then((result) => {
-        res.status(201).json({
-          message: "User created!",
-          result: result,
+  // Vérifier si le pseudo ou l'adresse email existe déjà
+  User.findOne({
+    $or: [{ pseudo: req.body.pseudo.trim() }, { email: req.body.email.trim() }],
+  })
+    .then((existingUser) => {
+      if (existingUser) {
+        if (existingUser.pseudo === req.body.pseudo.trim()) {
+          return res
+            .status(400)
+            .json({ message: "Ce pseudo est déjà associé à un utilisateur." });
+        }
+        if (existingUser.email === req.body.email.trim()) {
+          return res
+            .status(400)
+            .json({ message: "Cette adresse email est déjà utilisée." });
+        }
+      }
+
+      bcrypt.hash(req.body.password, 10).then((hash) => {
+        const user = new User({
+          email: req.body.email.trim(),
+          password: hash,
+          pseudo: req.body.pseudo.trim(),
         });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "Les données ne sont pas valides!",
-        });
+
+        user
+          .save()
+          .then((result) => {
+            res.status(201).json({
+              message: "Utilisateur créé!",
+              result: result,
+            });
+          })
+          .catch((err) => {
+            res.status(500).json({
+              message: "Les données ne sont pas valides!",
+            });
+          });
       });
-  });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Erreur serveur, veuillez réessayer." });
+    });
 };
 
 exports.login = async (req, res) => {
@@ -225,17 +248,26 @@ exports.getPseudo = async (req, res) => {
 exports.getFriend = async (req, res, next) => {
   try {
     const authUserId = req.userData.userId;
-    // Rechercher l'utilisateur par pseudo (insensible à la casse)
-    const user = await User.findOne({
-      pseudo: req.params.pseudo,
+    const searchPseudo = req.params.pseudo;
+
+    // Utilisation d'une expression régulière pour une recherche partielle et insensible à la casse
+    const users = await User.find({
+      pseudo: { $regex: new RegExp(searchPseudo, "i") }, // 'i' pour insensibilité à la casse
     });
-    if (user) {
-      if (user._id.toString() === authUserId) {
-        return res
+
+    if (users.length > 0) {
+      // Filtrer les résultats pour exclure l'utilisateur authentifié
+      const filteredUsers = users.filter(
+        (user) => user._id.toString() !== authUserId
+      );
+
+      if (filteredUsers.length > 0) {
+        res.status(200).json(filteredUsers);
+      } else {
+        res
           .status(400)
           .json({ message: "Vous ne pouvez pas vous ajouter comme ami." });
       }
-      res.status(200).json(user); // Retourner l'utilisateur trouvé
     } else {
       res
         .status(404)

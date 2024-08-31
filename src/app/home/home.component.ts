@@ -140,7 +140,7 @@ export class HomeComponent implements OnInit, OnDestroy {
               result.friendId,
               result.movieTitle,
               result.date,
-              result.imdb,
+              result.tmdbId,
               result.friendComment
             )
             .subscribe({});

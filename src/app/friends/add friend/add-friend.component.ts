@@ -60,7 +60,7 @@ export class AddFriendComponent implements OnInit, OnDestroy {
 
         this.friendsService.searchUserByPseudo(this.pseudo).subscribe({
           next: (response) => {
-            this.friends = response ? [response] : [];
+            this.friends = response;
             this.isLoading = false;
             this.searchPerformed = true;
           },

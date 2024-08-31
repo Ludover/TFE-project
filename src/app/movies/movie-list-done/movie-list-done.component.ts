@@ -75,7 +75,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
     snackBarRef.onAction().subscribe(() => {
       this.moviesService.deleteMovie(movieId).subscribe(() => {
         this.moviesService.getMoviesByListType(
-          'tosee',
+          'seen',
           this.moviesPerPage,
           this.currentPage
         );

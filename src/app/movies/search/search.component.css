@@ -128,11 +128,14 @@ body {
   }
 
   .movie-actions {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 10px;
   }
 
   .movie-actions button {
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
     margin: 5px 0;
   }
 
