@@ -1,5 +1,6 @@
 <h1>Mes amis</h1>
 
+<mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 <mat-accordion multi="false" *ngIf="friends.length > 0">
   <mat-expansion-panel *ngFor="let friend of friends">
     <mat-expansion-panel-header>

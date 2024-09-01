@@ -63,10 +63,9 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   // Méthode pour supprimer un film.
   onDelete(movieId: string) {
-    this.isLoading = true;
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
-      'Oui',
+      'Supprimer',
       {
         duration: 5000,
         verticalPosition: 'top',
@@ -86,7 +85,6 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   // Méthode pour mettre à jour le film avec la liste à "vu".
   updateAsSeen(movie: Movie) {
-    this.isLoading = true;
     const snackBarRef = this.snackBar.open(
       `Êtes-vous sûr de vouloir marquer "${movie.title}" comme vu ?`,
       'Oui',

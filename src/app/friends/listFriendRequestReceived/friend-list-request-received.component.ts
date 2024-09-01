@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   friends: User[] = [];
+  isLoading = false;
   private friendRequestsUpdateSub: Subscription;
   userIsAuthenticated = false;
 
@@ -20,20 +21,28 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isLoading = true;
     this.loadFriendRequests();
 
     this.friendRequestsUpdateSub = this.friendsService
       .getFriendRequestsUpdatedListener()
       .subscribe(() => {
         // Recharger la liste des demandes après une mise à jour
-        this.loadFriendRequests(); 
+        this.isLoading = true;
+        this.loadFriendRequests();
       });
   }
 
   // Méthode pour récupérer les demandes d'amis reçues.
   loadFriendRequests() {
-    this.friendsService.getFriendsRequestReceived().subscribe((friends) => {
-      this.friends = friends;
+    this.friendsService.getFriendsRequestReceived().subscribe({
+      next: (friends) => {
+        this.friends = friends;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
   }
 

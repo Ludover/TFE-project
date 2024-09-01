@@ -1,7 +1,6 @@
 <h1>Ma Liste de Films vus</h1>
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
-
 <mat-accordion multi="false" *ngIf="movies.length > 0 && !isLoading">
   <mat-expansion-panel *ngFor="let movie of movies">
     <mat-expansion-panel-header>

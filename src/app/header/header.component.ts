@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userPseudo: string | null = null;
   friendRequestsCount: number = 0;
   recommendedMoviesCount: number = 0;
+  totalCount: number = 0;
 
   // Ces variables servent à "se désabonner" lorsque le composant est détruit, pour éviter des problèmes de mémoire.
   private authListenerSubs: Subscription;
@@ -29,7 +30,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private friendsService: FriendsService,
-    private moviesService: MoviesService // private webSocketService: WebSocketService
+    private moviesService: MoviesService //
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +52,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         .subscribe((movies) => {
           this.loadRecommendedMoviesCount();
           this.recommendedMoviesCount = movies.length; // Met à jour le compteur de films recommandés
+          console.log(this.recommendedMoviesCount);
         });
     }
 
@@ -84,6 +86,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .getFriendsRequestReceived()
       .subscribe((friendRequests) => {
         this.friendRequestsCount = friendRequests.length;
+        this.totalCount =
+          this.recommendedMoviesCount + this.friendRequestsCount;
       });
   }
 
@@ -93,6 +97,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .getRecommendedMoviesCount()
       .subscribe((count) => {
         this.recommendedMoviesCount = count;
+        this.totalCount =
+          this.recommendedMoviesCount + this.friendRequestsCount;
       });
   }
 

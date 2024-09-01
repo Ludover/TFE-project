@@ -64,7 +64,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
   onDelete(movieId: string) {
     const snackBarRef = this.snackBar.open(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
-      'Oui',
+      'Supprimer',
       {
         duration: 5000,
         verticalPosition: 'top',

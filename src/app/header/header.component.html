@@ -3,7 +3,13 @@
     <a routerLink="/" class="logo-link">Mon Popcorn</a>
   </span>
   <button mat-icon-button class="menu-icon" (click)="toggleMenu()">
-    <mat-icon>menu</mat-icon>
+    <mat-icon>menu</mat-icon
+    ><span
+      matBadge="!"
+      matBadgeColor="accent"
+      [matBadgeHidden]="totalCount === 0"
+      matBadgeOverlap="false"
+    ></span>
   </button>
   <ul class="menu-list" [ngClass]="{ 'menu-open': menuOpened }">
     <li *ngIf="userIsAuthenticated" class="welcome-message">

@@ -44,9 +44,14 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchMovies() {
     if (this.title) {
       this.isLoading = true;
-      this.tmdbService.searchMovie(this.title).subscribe((response) => {
-        this.movies = response.results || [];
-        this.isLoading = false;
+      this.tmdbService.searchMovie(this.title).subscribe({
+        next: (response) => {
+          this.movies = response.results || [];
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+        },
       });
     }
   }

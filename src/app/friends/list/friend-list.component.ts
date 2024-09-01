@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class FriendListComponent implements OnInit {
   friends: User[] = [];
+  isLoading = false;
   private authStatusSub: Subscription;
 
   constructor(
@@ -19,10 +20,16 @@ export class FriendListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.friendsService.getFriends().subscribe((friends) => {
-      this.friends = friends;
+    this.isLoading = true;
+    this.friendsService.getFriends().subscribe({
+      next: (friends) => {
+        this.friends = friends;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
     });
-
   }
 
   // Méthode pour supprimer un ami.
@@ -46,5 +53,4 @@ export class FriendListComponent implements OnInit {
       });
     });
   }
-
 }
