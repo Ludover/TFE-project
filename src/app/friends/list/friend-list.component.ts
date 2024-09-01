@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FriendsService } from '../friends.service';
 import { User } from '../user.model';
-import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,7 +11,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class FriendListComponent implements OnInit {
   friends: User[] = [];
   isLoading = false;
-  private authStatusSub: Subscription;
 
   constructor(
     private friendsService: FriendsService,

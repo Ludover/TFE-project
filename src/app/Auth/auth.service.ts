@@ -130,12 +130,10 @@ export class AuthService {
   getUserId(): Observable<{ id: string }> {
     return this.http.get<{ id: string }>(`${BACKEND_URL}/id`);
   }
-
   // Méthode pour récupérer le pseudo de l'utilisateur.
   getUserPseudo(): Observable<any> {
     return this.http.get<any>(`${BACKEND_URL}/pseudo`);
   }
-
   // Configure un minuteur pour déconnecter automatiquement l'utilisateur lorsque le token expire.
   private setAuthTimer(duration: number) {
     this.tokenTimer = setTimeout(() => {
