@@ -157,7 +157,7 @@ exports.forgotPassword = async (req, res) => {
 
     const mailOptions = {
       to: email,
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_SUPPORT,
       subject: "Réinitialisation de mot de passe",
       html: `<p>Vous avez demandé une réinitialisation de mot de passe.</p>
              <p>Cliquez sur ce <a href="http://www.monpopcorn.com/reset-password/${resetToken}">lien</a> pour réinitialiser votre mot de passe.</p>`,
