@@ -48,7 +48,7 @@ app.set("port", port);
 const server = http.createServer(app);
 const socketIoServer = socketIo(server, {
   cors: {
-    origin: "http://localhost:4200", // Remplace par l'origine de ton client Angular
+    origin: "http://www.monpopcorn.com",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,

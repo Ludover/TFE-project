@@ -10,7 +10,6 @@ import { TmdbService } from 'src/app/tmdb.service';
 import { Movie } from '../movie.model';
 import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
-import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-movie-list',

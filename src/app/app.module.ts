@@ -34,11 +34,13 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SocketService } from './web-socket-service';
+import { environment } from 'src/environments/environment';
 
 const userId = localStorage.getItem('userId');
+const BACKEND_URL = environment.apiForSocket;
 
 const socketIoConfig: SocketIoConfig = {
-  url: 'http://localhost:3000',
+  url: BACKEND_URL,
   options: {
     query: {
       userId: userId || '',
