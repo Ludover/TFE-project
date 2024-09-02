@@ -1,22 +1,32 @@
-// import { Injectable } from '@angular/core';
-// import { io, Socket } from 'socket.io-client';
-// import { Observable, fromEvent } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
 
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class WebSocketService {
-//   private socket: Socket;
+@Injectable()
+export class SocketService {
+  constructor(private socket: Socket) {}
 
-//   constructor() {
-//     this.socket = io('http://localhost:3000');
-//   }
+  emitFriendRequest(request: any) {
+    this.socket.emit('friendRequest', request);
+  }
 
-//   onEvent<T>(event: string): Observable<T> {
-//     return fromEvent<T>(this.socket, event);
-//   }
+  receiveFriendRequest(): Observable<any> {
+    return new Observable((observer) => {
+      this.socket.on('friendRequest', (request: any) => {
+        observer.next(request);
+      });
+    });
+  }
 
-//   emitEvent(event: string, data: any) {
-//     this.socket.emit(event, data);
-//   }
-// }
+  emitMovieRecommended(movie: any) {
+    this.socket.emit('movieRecommended', movie);
+  }
+
+  receiveMovieRecommended(): Observable<any> {
+    return new Observable((observer) => {
+      this.socket.on('movieRecommended', (movie: any) => {
+        observer.next(movie);
+      });
+    });
+  }
+}

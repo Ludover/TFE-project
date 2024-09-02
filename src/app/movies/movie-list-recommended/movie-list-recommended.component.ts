@@ -72,7 +72,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.deleteMovie(movieId).subscribe(() => {
+      this.moviesService.deleteMovie(movieId, 'recommended').subscribe(() => {
         this.moviesService.getMoviesByListType(
           'recommended',
           this.moviesPerPage,

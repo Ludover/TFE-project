@@ -49,10 +49,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
       this.moviesUpdateSub = this.moviesService
         .getMoviesRecommendedUpdatedListener()
-        .subscribe((movies) => {
+        .subscribe(() => {
           this.loadRecommendedMoviesCount();
-          this.recommendedMoviesCount = movies.length; // Met à jour le compteur de films recommandés
-          console.log(this.recommendedMoviesCount);
         });
     }
 
@@ -69,6 +67,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.userPseudo = null;
           this.friendRequestsCount = 0;
           this.recommendedMoviesCount = 0;
+          this.totalCount = 0;
         }
       });
   }

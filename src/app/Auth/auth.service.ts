@@ -56,7 +56,7 @@ export class AuthService {
   login(email: string, password: string): Observable<void> {
     const AuthDataLogin: AuthDataLogin = { email, password };
     return this.http
-      .post<{ token: string; expiresIn: number }>(
+      .post<{ token: string; expiresIn: number; userId: string }>(
         `${BACKEND_URL}/login`,
         AuthDataLogin
       )
@@ -77,6 +77,8 @@ export class AuthService {
               now.getTime() + expiresInDuration * 1000
             );
             this.saveAuthData(token, expirationDate);
+            const userId = response.userId;
+            localStorage.setItem('userId', userId);
             this.router.navigate(['/']);
           }
         })

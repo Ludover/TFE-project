@@ -30,7 +30,21 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
 
 import { AngularMaterialModule } from './angular-material-module';
 import { CustomMatPaginatorIntl } from './custom-paginator';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { SocketService } from './web-socket-service';
+
+const userId = localStorage.getItem('userId');
+
+const socketIoConfig: SocketIoConfig = {
+  url: 'http://localhost:3000',
+  options: {
+    query: {
+      userId: userId || '',
+    },
+  },
+};
 
 registerLocaleData(localeFr);
 
@@ -61,6 +75,7 @@ registerLocaleData(localeFr);
     BrowserAnimationsModule,
     HttpClientModule,
     AngularMaterialModule,
+    SocketIoModule.forRoot(socketIoConfig),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -68,6 +83,7 @@ registerLocaleData(localeFr);
     DatePipe,
     { provide: LOCALE_ID, useValue: 'fr-BE' },
     { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
+    SocketService,
   ],
   bootstrap: [AppComponent],
 })

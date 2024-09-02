@@ -119,6 +119,7 @@ exports.login = async (req, res) => {
     res.status(200).json({
       token: token,
       expiresIn: 3600,
+      userId: user._id,
     });
   } catch (error) {
     // Gestion des erreurs inattendues

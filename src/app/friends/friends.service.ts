@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from './user.model';
+import { SocketService } from '../web-socket-service';
 
 const BACKEND_URL = environment.apiUrl;
 
@@ -11,7 +12,9 @@ const BACKEND_URL = environment.apiUrl;
 export class FriendsService {
   private friendRequestsUpdated = new Subject<void>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private socketService: SocketService) {
+    this.observeSocket();
+  }
 
   getFriendRequestsUpdatedListener() {
     return this.friendRequestsUpdated.asObservable();
@@ -23,7 +26,20 @@ export class FriendsService {
 
   // Méthode pour envoyer une demande d'ami
   sendFriendRequest(friendId: string): Observable<any> {
-    return this.http.post(`${BACKEND_URL}/send-friend-request/${friendId}`, {});
+    return new Observable((observer) => {
+      this.http
+        .post(`${BACKEND_URL}/send-friend-request/${friendId}`, {})
+        .subscribe({
+          next: (response) => {
+            this.socketService.emitFriendRequest({ targetUserId: friendId }); // Émettre l'événement après la réussite de la requête
+            observer.next(response);
+            observer.complete();
+          },
+          error: (err) => {
+            observer.error(err);
+          },
+        });
+    });
   }
 
   // Méthode pour accepter une demande d'ami
@@ -97,5 +113,12 @@ export class FriendsService {
   // Méthode pour vérifier si un utilisateur est déjà dans la liste d'amis.
   isFriend(userId: string): Observable<boolean> {
     return this.http.get<boolean>(`${BACKEND_URL}/is-friend/${userId}`);
+  }
+
+  private observeSocket() {
+    this.socketService.receiveFriendRequest().subscribe(() => {
+      // Lorsqu'une nouvelle demande d'ami est reçue, émettez une mise à jour
+      this.friendRequestsUpdated.next();
+    });
   }
 }
