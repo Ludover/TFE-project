@@ -19,7 +19,7 @@ const loginSchema = joi.object({
 
 //#region Authentification
 
-exports.signUp = (req, res, next) => {
+exports.signUp = (req, res) => {
   const { error } = signUpSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -33,7 +33,10 @@ exports.signUp = (req, res, next) => {
 
   // Vérifier si le pseudo ou l'adresse email existe déjà
   User.findOne({
-    $or: [{ pseudo: req.body.pseudo.trim() }, { email: req.body.email.toLowerCase().trim() }],
+    $or: [
+      { pseudo: req.body.pseudo.trim() },
+      { email: req.body.email.toLowerCase().trim() },
+    ],
   })
     .then((existingUser) => {
       if (existingUser) {

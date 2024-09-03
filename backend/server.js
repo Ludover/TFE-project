@@ -49,6 +49,7 @@ const server = http.createServer(app);
 const socketIoServer = socketIo(server, {
   cors: {
     origin: "http://www.monpopcorn.com",
+    //origin: "http://localhost:4200",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,

@@ -21,6 +21,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   movieDetails: any;
   private authStatusSub: Subscription;
   UserIsAuthenticated = false;
+  performedSearch = false;
 
   constructor(
     private tmdbService: TmdbService,
@@ -48,6 +49,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.movies = response.results || [];
           this.isLoading = false;
+          this.performedSearch = true;
         },
         error: () => {
           this.isLoading = false;

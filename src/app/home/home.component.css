@@ -61,10 +61,6 @@ mat-card-content {
   font-size: 14px;
 }
 
-.news-section {
-  margin-top: 50px;
-}
-
 @media (max-width: 1024px) {
   mat-card {
     width: calc(33.33% - 20px);

@@ -45,9 +45,11 @@
         Partager
       </button>
     </mat-card-actions>
-    <div class="info-text mat-body-1" *ngIf="movies.length === 0">
-      aucun résultat trouvé
-    </div>
   </mat-card>
 </div>
-
+<div
+  *ngIf="movies.length === 0 && this.performedSearch"
+  class="info-text mat-body-1"
+>
+  aucun résultat trouvé
+</div>

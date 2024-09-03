@@ -40,7 +40,7 @@ import { AuthService } from './auth/auth.service';
 const BACKEND_URL = environment.apiForSocket;
 
 export function socketIoConfigFactory(): SocketIoConfig {
-  const userId = localStorage.getItem('userId'); // Méthode pour obtenir l'ID utilisateur actuel
+  const userId = localStorage.getItem('userId');
   return {
     url: BACKEND_URL,
     options: {
@@ -80,7 +80,7 @@ registerLocaleData(localeFr);
     BrowserAnimationsModule,
     HttpClientModule,
     AngularMaterialModule,
-    SocketIoModule.forRoot({url: BACKEND_URL, options: {}}),
+    SocketIoModule.forRoot({ url: BACKEND_URL, options: {} }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -88,11 +88,14 @@ registerLocaleData(localeFr);
     DatePipe,
     { provide: LOCALE_ID, useValue: 'fr-BE' },
     { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
-    SocketService, AuthService,
-    { provide: 'socketIoConfig', useFactory: socketIoConfigFactory, deps: [AuthService]},
+    SocketService,
+    AuthService,
+    {
+      provide: 'socketIoConfig',
+      useFactory: socketIoConfigFactory,
+      deps: [AuthService],
+    },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
-
-

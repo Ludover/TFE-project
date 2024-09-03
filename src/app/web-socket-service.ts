@@ -8,7 +8,10 @@ export class SocketService {
   constructor(private socket: Socket, private authService: AuthService) {}
 
   connect() {
-    this.socket.ioSocket.io.opts.query = { userId: this.authService.getUserId}; // Mettre à jour le userId dans les options
+    this.socket.ioSocket.io.opts.query = {
+      userId: localStorage.getItem('userId'),
+    }; // Mettre à jour le userId dans les options
+    console.log(this.socket.ioSocket.io.opts.query);
     this.socket.connect(); // Reconnecter avec la nouvelle configuration
   }
 
