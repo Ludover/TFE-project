@@ -36,7 +36,7 @@ export class FriendListRequestSentComponent implements OnInit {
       "Êtes-vous sûr de vouloir annuler cette demande d'ami ?",
       'Oui',
       {
-        duration: 5000,
+        duration: 10000,
         verticalPosition: 'top',
       }
     );

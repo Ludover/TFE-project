@@ -36,7 +36,7 @@ export class FriendListComponent implements OnInit {
       'Voulez-vous vraiment supprimer cet ami ?',
       'Supprimer',
       {
-        duration: 5000, // Durée avant que le snack-bar disparaisse
+        duration: 10000,
         verticalPosition: 'top',
       }
     );

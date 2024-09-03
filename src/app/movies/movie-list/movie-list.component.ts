@@ -67,13 +67,13 @@ export class MovieListComponent implements OnInit, OnDestroy {
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Supprimer',
       {
-        duration: 5000,
+        duration: 10000,
         verticalPosition: 'top',
       }
     );
 
     snackBarRef.onAction().subscribe(() => {
-      this.moviesService.deleteMovie(movieId, 'tosee').subscribe(() => {
+      this.moviesService.deleteMovie(movieId).subscribe(() => {
         this.moviesService.getMoviesByListType(
           'tosee',
           this.moviesPerPage,

@@ -16,14 +16,10 @@ export class MoviesService {
     movies: Movie[];
     movieCount: number;
   }>();
-  private moviesRecommendedUpdated = new Subject<boolean>();
+  private moviesRecommendedUpdated = new Subject<void>();
 
   constructor(private http: HttpClient, private socketService: SocketService) {
     this.observeSocket();
-  }
-
-  getMoviesRecommendedUpdatedListener() {
-    return this.moviesRecommendedUpdated.asObservable();
   }
 
   getMoviesByListType(
@@ -62,7 +58,7 @@ export class MoviesService {
           movieCount: mappedMoviesData.maxMovie,
         });
         if (listType === 'recommended') {
-          this.moviesRecommendedUpdated.next(true);
+          this.moviesRecommendedUpdated.next();
         }
       });
   }
@@ -78,6 +74,10 @@ export class MoviesService {
 
   getMovieUpdateListener() {
     return this.moviesUpdated.asObservable();
+  }
+
+  getMoviesRecommendedUpdatedListener() {
+    return this.moviesRecommendedUpdated.asObservable();
   }
 
   getRandomMovie(): Observable<Movie> {
@@ -120,32 +120,8 @@ export class MoviesService {
     return this.http.put(`${BACKEND_URL}/update-movie/${movie.id}`, updateData);
   }
 
-  deleteMovie(movieId: string, list: string) {
-    if (list === 'recommended') {
-      return new Observable((observer) => {
-        this.http
-          .delete(`${BACKEND_URL}/delete-movie/${movieId}`, {})
-          .subscribe({
-            next: (response) => {
-              // Mettre à jour la liste locale des films recommandés
-              this.movies = this.movies.filter((movie) => movie.id !== movieId);
-
-              // Mettre à jour le badge du header
-              this.moviesRecommendedUpdated.next(true);
-
-              observer.next(response);
-            },
-            error: (err) => {
-              observer.error(err);
-            },
-            complete: () => {
-              observer.complete();
-            },
-          });
-      });
-    } else {
-      return this.http.delete(`${BACKEND_URL}/delete-movie/${movieId}`);
-    }
+  deleteMovie(movieId: string) {
+    return this.http.delete(`${BACKEND_URL}/delete-movie/${movieId}`);
   }
 
   shareMovie(
@@ -190,9 +166,8 @@ export class MoviesService {
 
   // Méthode pour écouter les événements WebSocket
   private observeSocket() {
-    this.socketService.receiveMovieRecommended().subscribe((movie: any) => {
-      this.movies.push(movie);
-      this.moviesRecommendedUpdated.next(false);
+    this.socketService.receiveMovieRecommended().subscribe(() => {
+      this.moviesRecommendedUpdated.next();
     });
   }
 }
