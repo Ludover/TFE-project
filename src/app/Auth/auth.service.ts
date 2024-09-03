@@ -7,6 +7,7 @@ import { AuthData } from './auth-data.model';
 import { AuthDataLogin } from './auth-data-login.model';
 
 import { environment } from 'src/environments/environment';
+import { SocketService } from '../web-socket-service';
 
 const BACKEND_URL = environment.apiUrl;
 
@@ -16,7 +17,7 @@ export class AuthService {
   private token: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private socketService: SocketService) {}
 
   getToken() {
     return this.token;
@@ -78,7 +79,9 @@ export class AuthService {
             );
             this.saveAuthData(token, expirationDate);
             const userId = response.userId;
+            
             localStorage.setItem('userId', userId);
+            this.socketService.connect()
             this.router.navigate(['/']);
           }
         })

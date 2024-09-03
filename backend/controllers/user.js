@@ -33,7 +33,7 @@ exports.signUp = (req, res, next) => {
 
   // Vérifier si le pseudo ou l'adresse email existe déjà
   User.findOne({
-    $or: [{ pseudo: req.body.pseudo.trim() }, { email: req.body.email.trim() }],
+    $or: [{ pseudo: req.body.pseudo.trim() }, { email: req.body.email.toLowerCase().trim() }],
   })
     .then((existingUser) => {
       if (existingUser) {
@@ -42,7 +42,7 @@ exports.signUp = (req, res, next) => {
             .status(400)
             .json({ message: "Ce pseudo est déjà associé à un utilisateur." });
         }
-        if (existingUser.email === req.body.email.trim()) {
+        if (existingUser.email === req.body.email.toLowerCase().trim()) {
           return res
             .status(400)
             .json({ message: "Cette adresse email est déjà utilisée." });
@@ -51,7 +51,7 @@ exports.signUp = (req, res, next) => {
 
       bcrypt.hash(req.body.password, 10).then((hash) => {
         const user = new User({
-          email: req.body.email.trim(),
+          email: req.body.email.toLowerCase().trim(),
           password: hash,
           pseudo: req.body.pseudo.trim(),
         });
@@ -93,7 +93,7 @@ exports.login = async (req, res) => {
 
   try {
     // Cherchez l'utilisateur dans la base de données
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
 
     // Si l'utilisateur n'existe pas, renvoyez une erreur
     if (!user) {

@@ -23,7 +23,7 @@
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
-<div *ngIf="movies.length > 0" class="movie-list">
+<div *ngIf="movies.length > 0 && !isLoading" class="movie-list">
   <mat-card class="movie-card" *ngFor="let movie of movies">
     <img
       mat-card-image
@@ -45,5 +45,9 @@
         Partager
       </button>
     </mat-card-actions>
+    <div class="info-text mat-body-1" *ngIf="movies.length === 0">
+      aucun résultat trouvé
+    </div>
   </mat-card>
 </div>
+

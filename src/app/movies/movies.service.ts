@@ -16,7 +16,7 @@ export class MoviesService {
     movies: Movie[];
     movieCount: number;
   }>();
-  private moviesRecommendedUpdated = new Subject<Movie[]>();
+  private moviesRecommendedUpdated = new Subject<boolean>();
 
   constructor(private http: HttpClient, private socketService: SocketService) {
     this.observeSocket();
@@ -62,7 +62,7 @@ export class MoviesService {
           movieCount: mappedMoviesData.maxMovie,
         });
         if (listType === 'recommended') {
-          this.moviesRecommendedUpdated.next(mappedMoviesData.movies);
+          this.moviesRecommendedUpdated.next(true);
         }
       });
   }
@@ -130,8 +130,8 @@ export class MoviesService {
               // Mettre à jour la liste locale des films recommandés
               this.movies = this.movies.filter((movie) => movie.id !== movieId);
 
-              // Émettre la liste mise à jour des films recommandés
-              this.moviesRecommendedUpdated.next([...this.movies]);
+              // Mettre à jour le badge du header
+              this.moviesRecommendedUpdated.next(true);
 
               observer.next(response);
             },
@@ -192,7 +192,7 @@ export class MoviesService {
   private observeSocket() {
     this.socketService.receiveMovieRecommended().subscribe((movie: any) => {
       this.movies.push(movie);
-      this.moviesRecommendedUpdated.next([...this.movies]);
+      this.moviesRecommendedUpdated.next(false);
     });
   }
 }

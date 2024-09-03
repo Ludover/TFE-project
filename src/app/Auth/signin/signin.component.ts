@@ -23,7 +23,7 @@ export class SigninComponent {
       return;
     }
     this.isLoading = true;
-    this.authService.login(form.value.email, form.value.password).subscribe({
+    this.authService.login(form.value.email.toLowerCase(), form.value.password).subscribe({
       next: () => {
         this.isLoading = false;
         this.snackBar.open('Connexion réussie', 'Fermer', {

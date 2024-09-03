@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FriendsService } from '../friends.service';
-import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,7 +17,6 @@ export class AddFriendComponent {
 
   constructor(
     private friendsService: FriendsService,
-    private authService: AuthService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}

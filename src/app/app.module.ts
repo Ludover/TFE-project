@@ -35,18 +35,21 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SocketService } from './web-socket-service';
 import { environment } from 'src/environments/environment';
+import { AuthService } from './auth/auth.service';
 
-const userId = localStorage.getItem('userId');
 const BACKEND_URL = environment.apiForSocket;
 
-const socketIoConfig: SocketIoConfig = {
-  url: BACKEND_URL,
-  options: {
-    query: {
-      userId: userId || '',
+export function socketIoConfigFactory(): SocketIoConfig {
+  const userId = localStorage.getItem('userId'); // Méthode pour obtenir l'ID utilisateur actuel
+  return {
+    url: BACKEND_URL,
+    options: {
+      query: {
+        userId: userId || '',
+      },
     },
-  },
-};
+  };
+}
 
 registerLocaleData(localeFr);
 
@@ -77,7 +80,7 @@ registerLocaleData(localeFr);
     BrowserAnimationsModule,
     HttpClientModule,
     AngularMaterialModule,
-    SocketIoModule.forRoot(socketIoConfig),
+    SocketIoModule.forRoot({url: BACKEND_URL, options: {}}),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -85,8 +88,11 @@ registerLocaleData(localeFr);
     DatePipe,
     { provide: LOCALE_ID, useValue: 'fr-BE' },
     { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
-    SocketService,
+    SocketService, AuthService,
+    { provide: 'socketIoConfig', useFactory: socketIoConfigFactory, deps: [AuthService]},
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+
