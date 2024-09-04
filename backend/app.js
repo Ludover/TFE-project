@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Headers pour le CORS
 app.use((req, res, next) => {
-  const allowedOrigins = ["http://localhost:4200", "http://www.monpopcorn.com"]; // Remplacez par vos origines autorisées
+  const allowedOrigins = ["http://localhost:4200", "http://www.monpopcorn.com"];
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
@@ -46,7 +46,7 @@ app.use((req, res, next) => {
 });
 
 app.options("/*", (req, res) => {
-  const allowedOrigins = ["http://localhost:4200", "http://www.monpopcorn.com"]; // Remplacez par vos origines autorisées
+  const allowedOrigins = ["http://localhost:4200", "http://www.monpopcorn.com"];
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {

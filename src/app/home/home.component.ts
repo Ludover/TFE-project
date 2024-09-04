@@ -72,7 +72,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.nowPlayingMovies = data.results;
         this.totalNowPlayingMovies = data.total_results;
         this.isLoading = false;
-        console.log(data);
       },
       error: () => {
         this.isLoading = false;

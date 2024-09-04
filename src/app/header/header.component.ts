@@ -35,45 +35,48 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.userIsAuthenticated = this.authService.getIsAuth();
+    // Abonnement aux changements d'état d'authentification.
+    this.authListenerSubs = this.authService
+      .getAuthStatusListener()
+      .subscribe((isAuthenticated) => {
+        this.userIsAuthenticated = isAuthenticated;
+        this.updateUserState();
+      });
 
+    // Vérification initiale de l'état d'authentification.
+    this.userIsAuthenticated = this.authService.getIsAuth();
+    this.updateUserState();
+  }
+
+  private updateUserState(): void {
     if (this.userIsAuthenticated) {
       this.loadUserPseudo();
       this.loadFriendRequestsCount();
       this.loadRecommendedMoviesCount();
       this.sseService.connect(localStorage.getItem('userId'));
 
-      this.friendRequestsUpdateSub = this.friendsService
-        .getFriendRequestsUpdatedListener()
-        .subscribe(() => {
-          this.loadFriendRequestsCount();
-        });
+      if (!this.friendRequestsUpdateSub) {
+        this.friendRequestsUpdateSub = this.friendsService
+          .getFriendRequestsUpdatedListener()
+          .subscribe(() => {
+            this.loadFriendRequestsCount();
+          });
+      }
 
-      this.moviesUpdateSub = this.moviesService
-        .getMoviesRecommendedUpdatedListener()
-        .subscribe(() => {
-          this.loadRecommendedMoviesCount();
-        });
+      if (!this.moviesUpdateSub) {
+        this.moviesUpdateSub = this.moviesService
+          .getMoviesRecommendedUpdatedListener()
+          .subscribe(() => {
+            this.loadRecommendedMoviesCount();
+          });
+      }
+    } else {
+      this.userPseudo = null;
+      this.friendRequestsCount = 0;
+      this.recommendedMoviesCount = 0;
+      this.totalCount = 0;
+      this.sseService.disconnect();
     }
-
-    // Sert à écouter les changements de statut de connexion.
-    this.authListenerSubs = this.authService
-      .getAuthStatusListener()
-      .subscribe((isAuthenticated) => {
-        this.userIsAuthenticated = isAuthenticated;
-        if (this.userIsAuthenticated) {
-          this.loadUserPseudo();
-          this.loadFriendRequestsCount();
-          this.loadRecommendedMoviesCount();
-          this.sseService.connect(localStorage.getItem('userId'));
-        } else {
-          this.userPseudo = null;
-          this.friendRequestsCount = 0;
-          this.recommendedMoviesCount = 0;
-          this.totalCount = 0;
-          this.sseService.disconnect();
-        }
-      });
   }
 
   // Méthode permettant de récupérer le pseudo de l'utilisateur.

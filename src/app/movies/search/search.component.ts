@@ -48,6 +48,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.tmdbService.searchMovie(this.title).subscribe({
         next: (response) => {
           this.movies = response.results || [];
+          console.log(response.results);
           this.isLoading = false;
           this.performedSearch = true;
         },
