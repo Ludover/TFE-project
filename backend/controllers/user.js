@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const joi = require("joi");
 
 const User = require("../models/user");
+const { sendEvent } = require("../middleware/sse-manager");
 
 const signUpSchema = joi.object({
   email: joi.string().email().required(),
@@ -311,6 +312,9 @@ exports.sendFriendRequest = async (req, res) => {
 
     await user.save();
     await friend.save();
+
+    // Envoyer un événement SSE à l'ami pour notifier la demande d'ami
+    sendEvent(friendId, "friendRequest", { from: userId });
 
     res.status(200).json({ message: "Demande d'ami envoyée." });
   } catch (error) {
@@ -724,6 +728,9 @@ exports.shareMovie = async (req, res) => {
     // Ajouter le film recommandé à la liste de l'ami
     friend.movies.push(recommendedMovie);
     await friend.save();
+
+    // Envoyer un événement SSE à l'ami pour notifier le partage de film
+    sendEvent(friendId, "movieShared", { movie: recommendedMovie });
 
     res.status(200).json({ message: "Film partagé avec succès." });
   } catch (error) {

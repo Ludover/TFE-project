@@ -1,6 +1,5 @@
 const http = require("http");
 const debug = require("debug")("node-angular");
-const socketIo = require("socket.io");
 const app = require("./app");
 
 const normalizePort = (val) => {
@@ -46,33 +45,7 @@ const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 const server = http.createServer(app);
-const socketIoServer = socketIo(server, {
-  cors: {
-    origin: "http://www.monpopcorn.com",
-    //origin: "http://localhost:4200",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true,
-  },
-});
 
 server.on("error", onError);
 server.on("listening", onListening);
 server.listen(port);
-
-socketIoServer.on("connection", (socket) => {
-  const userId = socket.handshake.query.userId;
-  socket.join(userId);
-
-  socket.on("friendRequest", (request) => {
-    // Émettre uniquement à l'utilisateur cible de la demande d'ami
-    const targetUserId = request.targetUserId; // Exemple: l'ID de l'utilisateur à qui la demande est destinée
-    socketIoServer.to(targetUserId).emit("friendRequest", request);
-  });
-
-  socket.on("movieRecommended", (movie) => {
-    // Émettre uniquement à l'utilisateur cible de la recommandation de film
-    const targetUserId = movie.targetUserId; // Exemple: l'ID de l'utilisateur à qui le film est recommandé
-    socketIoServer.to(targetUserId).emit("movieRecommended", movie);
-  });
-});

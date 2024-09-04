@@ -16,7 +16,10 @@ export class AuthService {
   private token: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
-  constructor(private http: HttpClient, private router: Router) {}
+
+  constructor(private http: HttpClient, private router: Router) {
+    this.autoAuthUser();
+  }
 
   getToken() {
     return this.token;
@@ -77,10 +80,8 @@ export class AuthService {
               now.getTime() + expiresInDuration * 1000
             );
             this.saveAuthData(token, expirationDate);
-            const userId = response.userId;
-
-            localStorage.setItem('userId', userId);
-            this.router.navigate(['/']);
+            localStorage.setItem('userId', response.userId);
+            +this.router.navigate(['/']);
           }
         })
       );
@@ -99,7 +100,7 @@ export class AuthService {
     });
   }
 
-  // Méthode pour vérifier si l'utilisateur est authentifié
+  // Méthode pour rester connecté lors d'un rechargement de page.
   autoAuthUser() {
     const authInformation = this.getAuthData();
     if (!authInformation) {

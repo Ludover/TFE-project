@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/user");
 require("dotenv").config();
+const { eventsHandler } = require("./middleware/sse-manager");
+
 const app = express();
 
 // Connection à MongoDB
@@ -38,5 +40,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/user", userRoutes);
+
+// Configuration SSE
+app.get("/sse", eventsHandler);
 
 module.exports = app;

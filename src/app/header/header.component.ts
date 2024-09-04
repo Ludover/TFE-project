@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { FriendsService } from '../friends/friends.service';
 import { MoviesService } from '../movies/movies.service';
-// import { WebSocketService } from '../web-socket-service';
+import { SSEService } from '../sse.service';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +30,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private friendsService: FriendsService,
-    private moviesService: MoviesService //
+    private moviesService: MoviesService,
+    private sseService: SSEService
   ) {}
 
   ngOnInit(): void {
@@ -40,11 +41,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.loadUserPseudo();
       this.loadFriendRequestsCount();
       this.loadRecommendedMoviesCount();
+      this.sseService.connect(localStorage.getItem('userId'));
 
       this.friendRequestsUpdateSub = this.friendsService
         .getFriendRequestsUpdatedListener()
         .subscribe(() => {
-          this.loadFriendRequestsCount(); // Recharger le nombre de demandes d'amis
+          this.loadFriendRequestsCount();
         });
 
       this.moviesUpdateSub = this.moviesService
@@ -63,11 +65,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.loadUserPseudo();
           this.loadFriendRequestsCount();
           this.loadRecommendedMoviesCount();
+          this.sseService.connect(localStorage.getItem('userId'));
         } else {
           this.userPseudo = null;
           this.friendRequestsCount = 0;
           this.recommendedMoviesCount = 0;
           this.totalCount = 0;
+          this.sseService.disconnect();
         }
       });
   }
@@ -135,5 +139,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.moviesUpdateSub) {
       this.moviesUpdateSub.unsubscribe();
     }
+    this.sseService.disconnect();
   }
 }

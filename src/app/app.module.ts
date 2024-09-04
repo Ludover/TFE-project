@@ -31,25 +31,7 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
 import { AngularMaterialModule } from './angular-material-module';
 import { CustomMatPaginatorIntl } from './custom-paginator';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { SocketService } from './web-socket-service';
-import { environment } from 'src/environments/environment';
-import { AuthService } from './auth/auth.service';
-
-const BACKEND_URL = environment.apiForSocket;
-
-export function socketIoConfigFactory(): SocketIoConfig {
-  const userId = localStorage.getItem('userId');
-  return {
-    url: BACKEND_URL,
-    options: {
-      query: {
-        userId: userId || '',
-      },
-    },
-  };
-}
+import { SSEService } from './sse.service';
 
 registerLocaleData(localeFr);
 
@@ -80,7 +62,6 @@ registerLocaleData(localeFr);
     BrowserAnimationsModule,
     HttpClientModule,
     AngularMaterialModule,
-    SocketIoModule.forRoot({ url: BACKEND_URL, options: {} }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -88,13 +69,7 @@ registerLocaleData(localeFr);
     DatePipe,
     { provide: LOCALE_ID, useValue: 'fr-BE' },
     { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
-    SocketService,
-    AuthService,
-    {
-      provide: 'socketIoConfig',
-      useFactory: socketIoConfigFactory,
-      deps: [AuthService],
-    },
+    SSEService,
   ],
   bootstrap: [AppComponent],
 })

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { SocketService } from '../web-socket-service';
 
 import { environment } from 'src/environments/environment';
 import { Movie } from '../movies/movie.model';
+import { SSEService } from '../sse.service';
 
 const BACKEND_URL = environment.apiUrl;
 
@@ -18,8 +18,22 @@ export class MoviesService {
   }>();
   private moviesRecommendedUpdated = new Subject<void>();
 
-  constructor(private http: HttpClient, private socketService: SocketService) {
-    this.observeSocket();
+  constructor(private http: HttpClient, private sseService: SSEService) {
+    this.observeMovieRecommendations();
+  }
+
+  private observeMovieRecommendations() {
+    this.sseService.receiveMovieRecommended().subscribe(() => {
+      this.moviesRecommendedUpdated.next(); // Déclencher la mise à jour quand un événement est reçu
+    });
+  }
+
+  getMovieUpdateListener() {
+    return this.moviesUpdated.asObservable();
+  }
+
+  getMoviesRecommendedUpdatedListener() {
+    return this.moviesRecommendedUpdated.asObservable();
   }
 
   getMoviesByListType(
@@ -70,14 +84,6 @@ export class MoviesService {
         `${BACKEND_URL}/movies/list/recommended${queryParams}`
       )
       .pipe(map((responseData) => responseData.maxMovies));
-  }
-
-  getMovieUpdateListener() {
-    return this.moviesUpdated.asObservable();
-  }
-
-  getMoviesRecommendedUpdatedListener() {
-    return this.moviesRecommendedUpdated.asObservable();
   }
 
   getRandomMovie(): Observable<Movie> {
@@ -131,43 +137,19 @@ export class MoviesService {
     tmdbId: string,
     friendComment: string
   ): Observable<any> {
-    return new Observable((observer) => {
-      this.http
-        .post<{ message: string }>(`${BACKEND_URL}/share-movie`, {
-          friendId,
-          movieTitle,
-          date,
-          tmdbId,
-          friendComment,
+    return this.http
+      .post<{ message: string }>(`${BACKEND_URL}/share-movie`, {
+        friendId,
+        movieTitle,
+        date,
+        tmdbId,
+        friendComment,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Erreur lors du partage du film :', error);
+          throw error;
         })
-        .pipe(
-          catchError((error) => {
-            console.error('Erreur lors du partage du film :', error);
-            observer.error(error);
-            return of(null); // Retourne un observable avec null en cas d'erreur
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            if (response) {
-              this.socketService.emitMovieRecommended({
-                targetUserId: friendId,
-              }); // Émettre l'événement après la réussite de la requête
-              observer.next(response);
-            }
-            observer.complete();
-          },
-          error: (error) => {
-            observer.error(error);
-          },
-        });
-    });
-  }
-
-  // Méthode pour écouter les événements WebSocket
-  private observeSocket() {
-    this.socketService.receiveMovieRecommended().subscribe(() => {
-      this.moviesRecommendedUpdated.next();
-    });
+      );
   }
 }
