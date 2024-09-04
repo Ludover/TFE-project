@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { TmdbService } from 'src/app/tmdb.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { MoviesService } from '../movies/movies.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +17,17 @@ import { Subscription } from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   nowPlayingMovies: any[] = [];
-  upcomingMovies: any[] = [];
+  topRatedMovies: any[] = [];
   isLoading: boolean = true;
   private authStatusSub: Subscription;
   UserIsAuthenticated = false;
+  isScrollToTopVisible: boolean = false;
+
+  totalNowPlayingMovies = 0;
+  totalTopRatedMovies = 0;
+  moviesPerPage = 20;
+  currentNowPlayingPage = 1;
+  currentTopRatedPage = 1;
 
   constructor(
     private tmdbService: TmdbService,
@@ -39,14 +47,32 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
 
     this.getNowPlayingMovies();
-    this.getUpcomingMovies();
+    this.getTopRatedMovies();
   }
 
-  getNowPlayingMovies() {
-    this.tmdbService.getNowPlayingMovies().subscribe({
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrollToTopVisible = window.scrollY > 300;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  scrollToId(id: string): void {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  getNowPlayingMovies(page: number = this.currentNowPlayingPage) {
+    this.tmdbService.getNowPlayingMovies(page).subscribe({
       next: (data) => {
         this.nowPlayingMovies = data.results;
+        this.totalNowPlayingMovies = data.total_results;
         this.isLoading = false;
+        console.log(data);
       },
       error: () => {
         this.isLoading = false;
@@ -54,12 +80,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  getUpcomingMovies() {
-    this.tmdbService.getUpcomingMovies().subscribe({
+  getTopRatedMovies(page: number = this.currentTopRatedPage) {
+    this.tmdbService.getTopRatedMovies(page).subscribe({
       next: (data) => {
-        this.upcomingMovies = data.results;
+        this.topRatedMovies = data.results;
+        this.totalTopRatedMovies = data.total_results;
       },
     });
+  }
+
+  onNowPlayingPageChange(event: PageEvent) {
+    this.currentNowPlayingPage = event.pageIndex + 1;
+    this.getNowPlayingMovies(this.currentNowPlayingPage);
+    this.scrollToId('now-playing-movies');
+  }
+
+  onTopRatedPageChange(event: PageEvent) {
+    this.currentTopRatedPage = event.pageIndex + 1;
+    this.getTopRatedMovies(this.currentTopRatedPage);
+    this.scrollToId('top-rated-movies');
   }
 
   searchMovieById(id: string) {

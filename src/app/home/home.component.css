@@ -61,6 +61,13 @@ mat-card-content {
   font-size: 14px;
 }
 
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
 @media (max-width: 1024px) {
   mat-card {
     width: calc(33.33% - 20px);

@@ -19,13 +19,13 @@ export class TmdbService {
     });
   }
 
-  getNowPlayingMovies(): Observable<any> {
-    const url = `${this.apiUrl}movie/now_playing?api_key=${this.apiKey}&language=fr-FR`;
+  getNowPlayingMovies(page: number): Observable<any> {
+    const url = `${this.apiUrl}movie/now_playing?api_key=${this.apiKey}&language=fr-FR&page=${page}`;
     return this.http.get<any>(url, { headers: this.getHeaders() });
   }
 
-  getUpcomingMovies(): Observable<any> {
-    const url = `${this.apiUrl}movie/upcoming?api_key=${this.apiKey}&language=fr-FR`;
+  getTopRatedMovies(page: number): Observable<any> {
+    const url = `${this.apiUrl}movie/top_rated?api_key=${this.apiKey}&language=fr-FR&page=${page}`;
     return this.http.get<any>(url, { headers: this.getHeaders() });
   }
 
