@@ -2,14 +2,21 @@ const express = require("express");
 const checkAuth = require("../middleware/check-auth");
 const userController = require("../controllers/user");
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 
 //#region Authentification
 
 // Route pour créer un nouvel utilisateur.
 router.post("/signup", userController.signUp);
 
+const loginLimiter = rateLimit({
+  windowMS: 15 * 60 * 1000,
+  max: 5,
+  message: ("Trop de tentatives de connexion depuis cette IP, veuillez réessayer plus tard.")
+});
+
 // Route pour se connecter
-router.post("/login", userController.login);
+router.post("/login", loginLimiter, userController.login);
 
 // Route lorsqu'on a oublié son mot de passe.
 router.post("/forgot-password", userController.forgotPassword);
