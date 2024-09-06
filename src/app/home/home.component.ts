@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { NotifierService } from '../notifier.service';
 
 @Component({
   selector: 'app-home',
@@ -36,7 +37,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private moviesService: MoviesService,
     private snackBar: MatSnackBar,
-    private authService: AuthService
+    private authService: AuthService,
+    private notifierService: NotifierService
   ) {}
 
   ngOnInit(): void {
@@ -90,6 +92,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onNowPlayingPageChange(event: PageEvent) {
+    console.log(event);
     this.currentNowPlayingPage = event.pageIndex + 1;
     this.getNowPlayingMovies(this.currentNowPlayingPage);
     this.scrollToId('now-playing-movies');
@@ -122,36 +125,31 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onSelectMovie(movie: any) {
     if (!this.UserIsAuthenticated) {
-      this.snackBar.open(
+      this.notifierService.showNotification(
         'Vous devez être connecté pour ajouter un film à votre liste.',
         'Fermer',
-        {
-          duration: 3000,
-          verticalPosition: 'top',
-        }
+        'info'
       );
       return;
     }
 
     this.moviesService.addMovie(movie).subscribe({
       next: () => {
-        this.snackBar.open('Film ajouté avec succès', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
+        this.notifierService.showNotification(
+          'Film ajouté avec succès',
+          'Fermer',
+          'success'
+        );
       },
     });
   }
 
   onShare(movie: any) {
     if (!this.UserIsAuthenticated) {
-      this.snackBar.open(
+      this.notifierService.showNotification(
         'Vous devez être connecté pour partager un film.',
         'Fermer',
-        {
-          duration: 3000,
-          verticalPosition: 'top',
-        }
+        'info'
       );
       return;
     }

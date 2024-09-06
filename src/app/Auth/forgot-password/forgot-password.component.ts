@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,7 +13,7 @@ export class ForgotPasswordComponent {
 
   constructor(
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private notifierService: NotifierService
   ) {}
 
   onForgotPassword(form: NgForm) {
@@ -24,17 +24,19 @@ export class ForgotPasswordComponent {
     this.authService.forgotPassword(form.value.email).subscribe({
       next: () => {
         this.isLoading = false;
-        this.snackBar.open('Lien de réinitialisation envoyé', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
+        this.notifierService.showNotification(
+          'Lien de réinitialisation envoyé',
+          'Fermer',
+          'success'
+        );
       },
       error: () => {
         this.isLoading = false;
-        this.snackBar.open("Erreur lors de l'envoi du lien", 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
+        this.notifierService.showNotification(
+          "Erreur lors de l'envoi du lien",
+          'Fermer',
+          'error'
+        );
       },
     });
   }

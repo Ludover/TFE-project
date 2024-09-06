@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-signin',
@@ -14,8 +14,8 @@ export class SigninComponent {
 
   constructor(
     public authService: AuthService,
-    private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private notifierService: NotifierService
   ) {}
 
   onLogin(form: NgForm) {
@@ -28,20 +28,18 @@ export class SigninComponent {
       .subscribe({
         next: () => {
           this.isLoading = false;
-          this.snackBar.open('Connexion réussie', 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-          });
+          this.notifierService.showNotification(
+            'Connexion réussie',
+            'Fermer',
+            'success'
+          );
         },
-        error: (error) => {
+        error: () => {
           this.isLoading = false;
-          this.snackBar.open(
+          this.notifierService.showNotification(
             'Identifiant ou mot de passe incorrect',
             'Fermer',
-            {
-              duration: 3000,
-              verticalPosition: 'top',
-            }
+            'info'
           );
         },
       });

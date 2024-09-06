@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
@@ -9,6 +8,7 @@ import { Movie } from '../movie.model';
 import { TmdbService } from 'src/app/tmdb.service';
 import { MoviesService } from '../movies.service';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-movie-list-recommended',
@@ -26,7 +26,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
 
   constructor(
     public moviesService: MoviesService,
-    private snackBar: MatSnackBar,
+    private notifierService: NotifierService,
     private dialog: MatDialog,
     private tmdbService: TmdbService,
     private breakpointObserver: BreakpointObserver
@@ -62,13 +62,10 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
 
   // Méthode pour supprimer un film.
   onDelete(movieId: string) {
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.notifierService.showNotification(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Supprimer',
-      {
-        duration: 10000,
-        verticalPosition: 'top',
-      }
+      'info'
     );
 
     snackBarRef.onAction().subscribe(() => {
@@ -84,13 +81,10 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
 
   // Méthode pour mettre à jour le film avec la liste à "vu".
   updateAsToSee(movie: Movie) {
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.notifierService.showNotification(
       `Êtes-vous sûr de vouloir mettre ${movie.title} dans la liste à voir ?`,
       'Oui',
-      {
-        duration: 5000,
-        verticalPosition: 'top',
-      }
+      'info'
     );
 
     snackBarRef.onAction().subscribe(() => {
@@ -101,10 +95,11 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
           this.currentPage
         );
 
-        this.snackBar.open('Film marqué comme à voir', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
+        this.notifierService.showNotification(
+          'Film marqué comme à voir',
+          'Fermer',
+          'success'
+        );
       });
     });
   }

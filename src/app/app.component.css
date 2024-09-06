@@ -1,17 +1,17 @@
 main {
   /* margin: 30px; */
-  /* width: 90%; */
+  width: 95%;
   margin: auto;
 }
 
 @media (min-width: 1025px) {
   main {
-    width: 90%;
+    width: 85%;
   }
 }
 
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
   main {
     width: 100%;
   }
-}
+} */

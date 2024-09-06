@@ -4,12 +4,12 @@ import { Subscription } from 'rxjs';
 
 import { Movie } from '../movie.model';
 import { MoviesService } from '../movies.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
 import { TmdbService } from 'src/app/tmdb.service';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-movie-list-done',
@@ -27,7 +27,7 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
 
   constructor(
     public moviesService: MoviesService,
-    private snackBar: MatSnackBar,
+    private notifierService: NotifierService,
     private dialog: MatDialog,
     private tmdbService: TmdbService,
     private breakpointObserver: BreakpointObserver
@@ -63,13 +63,10 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
 
   // Méthode pour supprimer un film.
   onDelete(movieId: string) {
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.notifierService.showNotification(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
-      'Supprimer',
-      {
-        duration: 10000,
-        verticalPosition: 'top',
-      }
+      'Fermer',
+      'info'
     );
 
     snackBarRef.onAction().subscribe(() => {
@@ -80,10 +77,11 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
           this.currentPage
         );
       });
-      this.snackBar.open('Film supprimé avec succès', 'Fermer', {
-        duration: 3000,
-        verticalPosition: 'top',
-      });
+      this.notifierService.showNotification(
+        'Film supprimé avec succès',
+        'Fermer',
+        'success'
+      );
     });
   }
 

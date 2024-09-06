@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FriendsService } from '../friends.service';
 import { Router } from '@angular/router';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-add-friend',
@@ -17,7 +17,7 @@ export class AddFriendComponent {
 
   constructor(
     private friendsService: FriendsService,
-    private snackBar: MatSnackBar,
+    private notifierService: NotifierService,
     private router: Router
   ) {}
 
@@ -28,13 +28,10 @@ export class AddFriendComponent {
       // Récupérer le pseudo de l'utilisateur connecté
 
       if (this.pseudo.trim().length < 3) {
-        this.snackBar.open(
+        this.notifierService.showNotification(
           'Le pseudo doit contenir au moins 3 caractères',
           'Fermer',
-          {
-            duration: 5000,
-            verticalPosition: 'top',
-          }
+          'info'
         );
         this.isLoading = false;
         return;
@@ -58,13 +55,10 @@ export class AddFriendComponent {
   onAddFriend(friendId: string) {
     this.friendsService.isFriend(friendId).subscribe((isFriend: boolean) => {
       if (isFriend) {
-        this.snackBar.open(
+        this.notifierService.showNotification(
           "Cet utilisateur est déjà dans votre liste d'amis.",
           'Fermer',
-          {
-            duration: 3000,
-            verticalPosition: 'top',
-          }
+          'info'
         );
         this.router.navigate(['/addfriend']).then(() => {
           window.location.reload();
@@ -72,21 +66,19 @@ export class AddFriendComponent {
         return;
       }
 
-      const snackBarRef = this.snackBar.open(
+      const snackBarRef = this.notifierService.showNotification(
         'Voulez-vous ajouter cet ami ?',
         'Oui',
-        {
-          duration: 10000,
-          verticalPosition: 'top',
-        }
+        'info'
       );
 
       snackBarRef.onAction().subscribe(() => {
         this.friendsService.sendFriendRequest(friendId).subscribe(() => {
-          this.snackBar.open("Demande d'ami envoyée avec succès", 'Fermer', {
-            duration: 3000,
-            verticalPosition: 'top',
-          });
+          this.notifierService.showNotification(
+            "Demande d'ami envoyée avec succès",
+            'Fermer',
+            'success'
+          );
         });
       });
     });

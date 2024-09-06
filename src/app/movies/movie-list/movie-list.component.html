@@ -1,14 +1,16 @@
-<h1>Ma Liste de Films à voir</h1>
+<h1>Ma liste de films à voir</h1>
 
-<button
-  mat-flat-button
-  color="primary"
-  (click)="onFindRandomMovie()"
-  matTooltip="Lance une recherche aléatoire sur ta liste de films à voir"
-  class="what-to-see"
->
-  Que regarder aujourd'hui?
-</button>
+<div class="button-class">
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onFindRandomMovie()"
+    matTooltip="Lance une recherche aléatoire sur ta liste de films à voir"
+    class="what-to-see"
+  >
+    Que regarder aujourd'hui?
+  </button>
+</div>
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 <mat-accordion multi="false" *ngIf="movies.length > 0 && !isLoading">

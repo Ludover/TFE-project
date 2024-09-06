@@ -92,6 +92,10 @@ body {
   color: #666;
 }
 
+.paginator {
+  padding-bottom: 50px;
+}
+
 @media (min-width: 1401px) {
   .movie-card {
     flex: 1 1 calc(20% - 20px);

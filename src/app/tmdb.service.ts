@@ -29,10 +29,10 @@ export class TmdbService {
     return this.http.get<any>(url, { headers: this.getHeaders() });
   }
 
-  searchMovie(title: string): Observable<any> {
+  searchMovie(title: string, page: number): Observable<any> {
     const url = `${this.apiUrl}search/movie?api_key=${
       this.apiKey
-    }&query=${encodeURIComponent(title)}&language=fr-FR`;
+    }&query=${encodeURIComponent(title)}&language=fr-FR&page=${page}`;
     return this.http.get<any>(url, { headers: this.getHeaders() });
   }
 

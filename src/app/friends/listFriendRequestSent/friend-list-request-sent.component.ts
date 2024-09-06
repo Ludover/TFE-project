@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FriendsService } from '../friends.service';
 import { User } from '../user.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-friend-list-request-sent',
@@ -14,7 +14,7 @@ export class FriendListRequestSentComponent implements OnInit {
 
   constructor(
     private friendsService: FriendsService,
-    private snackBar: MatSnackBar
+    private notifierService: NotifierService
   ) {}
 
   ngOnInit() {
@@ -32,21 +32,19 @@ export class FriendListRequestSentComponent implements OnInit {
 
   // Méthode pour annuler une demande d'ami
   cancelFriendRequest(friendId: string) {
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.notifierService.showNotification(
       "Êtes-vous sûr de vouloir annuler cette demande d'ami ?",
-      'Oui',
-      {
-        duration: 10000,
-        verticalPosition: 'top',
-      }
+      'Fermer',
+      'info'
     );
 
     snackBarRef.onAction().subscribe(() => {
       this.friendsService.cancelFriendRequest(friendId).subscribe(() => {
-        this.snackBar.open("Demande d'ami annulée", 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
+        this.notifierService.showNotification(
+          "Demande d'ami annulée",
+          'Fermer',
+          'success'
+        );
         this.removeFriendFromList(friendId);
       });
     });

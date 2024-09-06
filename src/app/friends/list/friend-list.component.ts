@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FriendsService } from '../friends.service';
-import { User } from '../user.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Friend } from '../friend.model';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-friend-list',
@@ -15,7 +14,7 @@ export class FriendListComponent implements OnInit {
 
   constructor(
     private friendsService: FriendsService,
-    private snackBar: MatSnackBar
+    private notifierService: NotifierService
   ) {}
 
   ngOnInit() {
@@ -34,13 +33,10 @@ export class FriendListComponent implements OnInit {
 
   // Méthode pour supprimer un ami.
   removeFriend(friendId: string) {
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.notifierService.showNotification(
       'Voulez-vous vraiment supprimer cet ami ?',
       'Supprimer',
-      {
-        duration: 10000,
-        verticalPosition: 'top',
-      }
+      'info'
     );
 
     snackBarRef.onAction().subscribe(() => {
@@ -48,10 +44,11 @@ export class FriendListComponent implements OnInit {
         this.friends = this.friends.filter(
           (friend) => friend.friendId._id !== friendId
         );
-        this.snackBar.open('Ami supprimé avec succès', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
+        this.notifierService.showNotification(
+          'Ami supprimé avec succès',
+          'Fermer',
+          'success'
+        );
       });
     });
   }

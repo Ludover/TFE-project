@@ -8,3 +8,30 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.mat-mdc-snack-bar-container {
+  &.success {
+    margin-top: calc(30% - 10px);
+    --mdc-snackbar-container-color: rgb(13, 136, 13);
+    --mat-mdc-snack-bar-button-color: white;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
+
+.mat-mdc-snack-bar-container {
+  &.error {
+    margin-top: calc(30% - 10px);
+    --mdc-snackbar-container-color: rgb(173, 27, 27);
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
+
+.mat-mdc-snack-bar-container {
+  &.info {
+    margin-top: calc(30% - 10px);
+    --mdc-snackbar-container-color: blueviolet;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}

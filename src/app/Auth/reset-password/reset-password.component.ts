@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -16,8 +16,8 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private notifierService: NotifierService
   ) {}
 
   ngOnInit(): void {
@@ -34,21 +34,19 @@ export class ResetPasswordComponent implements OnInit {
     this.authService.resetPassword(this.token, form.value.password).subscribe({
       next: () => {
         this.isLoading = false;
-        this.snackBar.open('Mot de passe réinitialisé avec succès', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
+        this.notifierService.showNotification(
+          'Mot de passe réinitialisé avec succès',
+          'Fermer',
+          'success'
+        );
         this.router.navigate(['/signin']);
       },
       error: () => {
         this.isLoading = false;
-        this.snackBar.open(
+        this.notifierService.showNotification(
           'La réinitialisation du mot de passe a échoué',
           'Fermer',
-          {
-            duration: 3000,
-            verticalPosition: 'top',
-          }
+          'error'
         );
       },
     });

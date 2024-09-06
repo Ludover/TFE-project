@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
@@ -10,6 +9,7 @@ import { TmdbService } from 'src/app/tmdb.service';
 import { Movie } from '../movie.model';
 import { ShareMovieDialogComponent } from '../share-movie-dialog/share-movie-dialog.component';
 import { MovieDetailsDialogComponent } from '../movie-details-dialog/movie-details-dialog.component';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-movie-list',
@@ -27,7 +27,7 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   constructor(
     public moviesService: MoviesService,
-    private snackBar: MatSnackBar,
+    private notifierService: NotifierService,
     private dialog: MatDialog,
     private tmdbService: TmdbService,
     private breakpointObserver: BreakpointObserver
@@ -63,13 +63,10 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   // Méthode pour supprimer un film.
   onDelete(movieId: string) {
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.notifierService.showNotification(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Supprimer',
-      {
-        duration: 10000,
-        verticalPosition: 'top',
-      }
+      'info'
     );
 
     snackBarRef.onAction().subscribe(() => {
@@ -85,14 +82,10 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   // Méthode pour mettre à jour le film avec la liste à "vu".
   updateAsSeen(movie: Movie) {
-    const snackBarRef = this.snackBar.open(
+    const snackBarRef = this.notifierService.showNotification(
       `Êtes-vous sûr de vouloir marquer "${movie.title}" comme vu ?`,
       'Oui',
-      {
-        duration: 5000,
-        verticalPosition: 'top',
-        panelClass: ['mat-toolbar', 'mat-primary'],
-      }
+      'info'
     );
 
     snackBarRef.onAction().subscribe(() => {

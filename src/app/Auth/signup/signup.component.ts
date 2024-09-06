@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,19 +11,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class SignupComponent {
   isLoading = false;
 
-  constructor(public authService: AuthService, private snackBar: MatSnackBar) {}
+  constructor(
+    public authService: AuthService,
+    private notifierService: NotifierService
+  ) {}
 
   onSignup(form: NgForm) {
     // Vérifier si le formulaire est invalide
     if (form.invalid) {
       if (form.controls['password']?.errors?.['minlength']) {
-        this.snackBar.open(
+        this.notifierService.showNotification(
           'Le mot de passe doit comporter au moins 6 caractères.',
           'Fermer',
-          {
-            duration: 3000,
-            verticalPosition: 'top',
-          }
+          'info'
         );
       }
       return;
@@ -32,30 +32,28 @@ export class SignupComponent {
     // Vérifier si le pseudo contient des espaces
     const pseudo = form.value.pseudo;
     if (/\s/.test(pseudo)) {
-      this.snackBar.open(
+      this.notifierService.showNotification(
         "Le pseudo ne doit pas contenir d'espaces.",
         'Fermer',
-        {
-          duration: 3000,
-          verticalPosition: 'top',
-        }
+        'info'
       );
       return;
     }
 
     this.isLoading = true;
     this.authService
-      .createUser(form.value.email.toLowerCase(), form.value.password, form.value.pseudo)
+      .createUser(
+        form.value.email.toLowerCase(),
+        form.value.password,
+        form.value.pseudo
+      )
       .subscribe({
         next: () => {
           this.isLoading = false;
-          this.snackBar.open(
+          this.notifierService.showNotification(
             "Votre inscription s'est bien effectuée.",
             'Fermer',
-            {
-              duration: 3000,
-              verticalPosition: 'top',
-            }
+            'success'
           );
         },
         error: (err) => {

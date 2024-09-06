@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FriendsService } from '../friends.service';
 import { User } from '../user.model';
 import { Subscription } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
   selector: 'app-friend-list-request-received',
@@ -17,7 +17,7 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
 
   constructor(
     private friendsService: FriendsService,
-    private snackBar: MatSnackBar
+    private notifierService: NotifierService
   ) {}
 
   ngOnInit() {
@@ -49,10 +49,11 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   // Méthode pour accepter une demande d'ami.
   acceptFriendRequest(friendId: string) {
     this.friendsService.acceptFriendRequest(friendId).subscribe(() => {
-      this.snackBar.open("Demande d'ami acceptée", 'Fermer', {
-        duration: 3000,
-        verticalPosition: 'top',
-      });
+      this.notifierService.showNotification(
+        "Demande d'ami acceptée",
+        'Fermer',
+        'success'
+      );
       this.removeFriendFromList(friendId);
     });
   }
@@ -60,10 +61,11 @@ export class FriendListRequestReceivedComponent implements OnInit, OnDestroy {
   // Méthode pour rejeter une demande d'ami.
   rejectFriendRequest(friendId: string) {
     this.friendsService.rejectFriendRequest(friendId).subscribe(() => {
-      this.snackBar.open("Demande d'ami rejetée", 'Fermer', {
-        duration: 3000,
-        verticalPosition: 'top',
-      });
+      this.notifierService.showNotification(
+        "Demande d'ami rejetée",
+        'Fermer',
+        'info'
+      );
       this.removeFriendFromList(friendId);
     });
   }
