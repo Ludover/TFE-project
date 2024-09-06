@@ -24,7 +24,9 @@ exports.signUp = async (req, res) => {
 
   // Vérification supplémentaire pour l'email et le pseudo
   if (!validator.isEmail(req.body.email)) {
-    return res.status(400).json({ message: "L'adresse email n'est pas valide." });
+    return res
+      .status(400)
+      .json({ message: "L'adresse email n'est pas valide." });
   }
   if (/\s/.test(req.body.pseudo)) {
     return res
@@ -43,16 +45,20 @@ exports.signUp = async (req, res) => {
 
     if (existingUser) {
       if (existingUser.pseudo === req.body.pseudo.trim()) {
-        return res.status(400).json({ message: "Ce pseudo est déjà associé à un utilisateur." });
+        return res
+          .status(400)
+          .json({ message: "Ce pseudo est déjà associé à un utilisateur." });
       }
       if (existingUser.email === req.body.email.toLowerCase().trim()) {
-        return res.status(400).json({ message: "Cette adresse email est déjà utilisée." });
+        return res
+          .status(400)
+          .json({ message: "Cette adresse email est déjà utilisée." });
       }
     }
 
     // Hacher le mot de passe
     const hash = await bcrypt.hash(req.body.password, 10);
-    
+
     // Créer un nouvel utilisateur
     const user = new User({
       email: req.body.email.toLowerCase().trim(),
@@ -65,7 +71,6 @@ exports.signUp = async (req, res) => {
       message: "Utilisateur créé!",
       result: result,
     });
-
   } catch (err) {
     console.error("Erreur serveur lors de la création de l'utilisateur:", err);
     res.status(500).json({ message: "Erreur serveur, veuillez réessayer." });
@@ -131,7 +136,7 @@ exports.login = async (req, res) => {
 
 // Schéma de validation pour l'email
 const emailSchema = Joi.object({
-  email: Joi.string().email().required()
+  email: Joi.string().email().required(),
 });
 
 exports.forgotPassword = async (req, res) => {
@@ -147,7 +152,7 @@ exports.forgotPassword = async (req, res) => {
 
     const genericResponse = {
       message:
-        "Si un compte avec cet email existe, un email a été envoyé pour réinitialiser le mot de passe."
+        "Si un compte avec cet email existe, un email a été envoyé pour réinitialiser le mot de passe.",
     };
 
     if (!user) {
@@ -161,7 +166,8 @@ exports.forgotPassword = async (req, res) => {
       user.resetTokenExpiration > Date.now()
     ) {
       return res.status(429).json({
-        message: "Une demande de réinitialisation a déjà été faite récemment. Veuillez réessayer plus tard."
+        message:
+          "Une demande de réinitialisation a déjà été faite récemment. Veuillez réessayer plus tard.",
       });
     }
 
@@ -212,13 +218,15 @@ exports.forgotPassword = async (req, res) => {
 // Schéma de validation pour le mot de passe
 const resetPasswordSchema = Joi.object({
   token: Joi.string().required(),
-  password: Joi.string().min(6).required() 
+  password: Joi.string().min(6).required(),
 });
 
 exports.resetPassword = async (req, res) => {
   const { error } = resetPasswordSchema.validate(req.body);
   if (error) {
-    return res.status(400).json({ message: "Les données fournies sont invalides." });
+    return res
+      .status(400)
+      .json({ message: "Les données fournies sont invalides." });
   }
 
   const { token, password } = req.body;
@@ -230,7 +238,9 @@ exports.resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Le lien de réinitialisation est invalide ou a expiré." });
+      return res.status(400).json({
+        message: "Le lien de réinitialisation est invalide ou a expiré.",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -243,7 +253,10 @@ exports.resetPassword = async (req, res) => {
     await user.save();
     res.status(200).json({ message: "Mot de passe réinitialisé avec succès" });
   } catch (error) {
-    console.error("Erreur lors de la réinitialisation du mot de passe :", error);
+    console.error(
+      "Erreur lors de la réinitialisation du mot de passe :",
+      error
+    );
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
@@ -263,7 +276,10 @@ exports.getId = async (req, res) => {
       res.status(404).json({ message: "Utilisateur non trouvé." });
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération de l'ID utilisateur :", error);
+    console.error(
+      "Erreur lors de la récupération de l'ID utilisateur :",
+      error
+    );
     res
       .status(500)
       .json({ message: "Erreur lors de la récupération du pseudo." });
@@ -281,7 +297,10 @@ exports.getPseudo = async (req, res) => {
       res.status(404).json({ message: "Utilisateur non trouvé." });
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération du pseudo utilisateur :", error);
+    console.error(
+      "Erreur lors de la récupération du pseudo utilisateur :",
+      error
+    );
     res
       .status(500)
       .json({ message: "Erreur lors de la récupération du pseudo." });
@@ -294,13 +313,17 @@ exports.getFriend = async (req, res, next) => {
     const searchPseudo = req.params.pseudo.trim();
 
     if (searchPseudo.length < 3) {
-      return res.status(400).json({ message: "Le pseudo doit contenir au moins 3 caractères." });
+      return res
+        .status(400)
+        .json({ message: "Le pseudo doit contenir au moins 3 caractères." });
     }
 
     // Utilisation d'une expression régulière pour une recherche partielle et insensible à la casse
     const users = await User.find({
       pseudo: { $regex: new RegExp(searchPseudo, "i") }, // 'i' pour insensibilité à la casse
-    }).select("pseudo").limit(10);
+    })
+      .select("pseudo")
+      .limit(10);
 
     if (users.length > 0) {
       // Filtrer les résultats pour exclure l'utilisateur authentifié
@@ -321,7 +344,10 @@ exports.getFriend = async (req, res, next) => {
         .json({ message: "Aucun utilisateur trouvé avec ce pseudo." });
     }
   } catch (error) {
-    console.error("Erreur lors de la recherche d'utilisateur par pseudo :", error);
+    console.error(
+      "Erreur lors de la recherche d'utilisateur par pseudo :",
+      error
+    );
     res
       .status(500)
       .json({ message: "Erreur lors de la récupération de l'utilisateur." });
@@ -333,19 +359,16 @@ exports.sendFriendRequest = async (req, res) => {
     const userId = req.userData.userId;
     const friendId = req.params.friendId;
 
-    // Vérifie que l'identifiant friendId est un ObjectId valide.
-    if (!mongoose.Types.ObjectId.isValid(friendId)) {
-      return res.status(400).json({ message: "Identifiant ami invalide." });
-    }
-
     if (userId === friendId) {
       return res.status(400).json({
         message: "Vous ne pouvez pas vous envoyer une demande d'ami.",
       });
     }
 
-    const user = await User.findById(userId).select('friendRequestsSent');
-    const friend = await User.findById(friendId).select('friendRequestsReceived');
+    const user = await User.findById(userId).select("friendRequestsSent");
+    const friend = await User.findById(friendId).select(
+      "friendRequestsReceived"
+    );
 
     if (!user || !friend) {
       return res.status(404).json({ message: "Utilisateur non trouvé." });
@@ -376,10 +399,6 @@ exports.acceptFriendRequest = async (req, res) => {
     const userId = req.userData.userId;
     const userIdToAccept = req.params.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userIdToAccept)) {
-      return res.status(400).json({ message: "Identifiant d'utilisateur invalide." });
-    }
-
     if (userId === userIdToAccept) {
       return res.status(400).json({
         message: "Vous ne pouvez pas accepter une demande d'ami de vous-même.",
@@ -397,13 +416,15 @@ exports.acceptFriendRequest = async (req, res) => {
       return res.status(400).json({ message: "Aucune demande d'ami reçue." });
     }
 
-    user.friends.push(userIdToAccept);
-    userToAccept.friends.push(userId);
+    user.friends.push({
+      friendId: userIdToAccept,
+      friendPseudo: userToAccept.pseudo,
+    });
+    userToAccept.friends.push({ friendId: userId, friendPseudo: user.pseudo });
 
-    user.friendRequestsReceived =
-      user.friendRequestsReceived.filter(
-        (id) => id.toString() !== userIdToAccept.toString()
-      );
+    user.friendRequestsReceived = user.friendRequestsReceived.filter(
+      (id) => id.toString() !== userIdToAccept.toString()
+    );
     userToAccept.friendRequestsSent = userToAccept.friendRequestsSent.filter(
       (id) => id.toString() !== userId.toString()
     );
@@ -423,10 +444,6 @@ exports.rejectFriendRequest = async (req, res) => {
     const userId = req.userData.userId;
     const userIdToReject = req.params.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userIdToReject)) {
-      return res.status(400).json({ message: "Identifiant d'utilisateur invalide." });
-    }
-
     if (userId === userIdToReject) {
       return res.status(400).json({
         message: "Vous ne pouvez pas rejeter une demande d'ami de vous-même.",
@@ -444,10 +461,9 @@ exports.rejectFriendRequest = async (req, res) => {
       return res.status(400).json({ message: "Aucune demande d'ami reçue." });
     }
 
-    user.friendRequestsReceived =
-      user.friendRequestsReceived.filter(
-        (id) => id.toString() !== userIdToReject.toString()
-      );
+    user.friendRequestsReceived = user.friendRequestsReceived.filter(
+      (id) => id.toString() !== userIdToReject.toString()
+    );
     userToReject.friendRequestsSent = userToReject.friendRequestsSent.filter(
       (id) => id.toString() !== userId.toString()
     );
@@ -466,10 +482,6 @@ exports.cancelFriendRequest = async (req, res, next) => {
   try {
     const userId = req.userData.userId;
     const friendId = req.params.friendId;
-
-    if (!mongoose.Types.ObjectId.isValid(friendId)) {
-      return res.status(400).json({ message: "Identifiant d'utilisateur invalide." });
-    }
 
     // Trouver l'utilisateur actuel
     const user = await User.findById(userId);
@@ -514,7 +526,10 @@ exports.cancelFriendRequest = async (req, res, next) => {
 
 exports.getFriends = async (req, res) => {
   try {
-    const user = await User.findById(req.userData.userId).populate("friends");
+    const user = await User.findById(req.userData.userId)
+      .populate("friends.friendId", "pseudo")
+      .select("friends");
+
     res.status(200).json(user.friends);
   } catch (error) {
     console.error("Erreur lors de la récupération des amis:", error);
@@ -532,9 +547,9 @@ exports.friendRequestsSent = async (req, res) => {
     res.status(200).json(user.friendRequestsSent);
   } catch (error) {
     console.error("Erreur lors de la récupération des amis:", error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la récupération des demande d'amis envoyées." });
+    res.status(500).json({
+      message: "Erreur lors de la récupération des demande d'amis envoyées.",
+    });
   }
 };
 
@@ -546,9 +561,9 @@ exports.friendRequestsReceived = async (req, res) => {
     res.status(200).json(user.friendRequestsReceived);
   } catch (error) {
     console.error("Erreur lors de la récupération des amis:", error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la récupération des des demande d'amis reçues." });
+    res.status(500).json({
+      message: "Erreur lors de la récupération des des demande d'amis reçues.",
+    });
   }
 };
 
@@ -558,7 +573,9 @@ exports.removeFriend = async (req, res) => {
     const friendId = req.params.friendId;
 
     if (!mongoose.Types.ObjectId.isValid(friendId)) {
-      return res.status(400).json({ message: "Identifiant utilisateur invalide." });
+      return res
+        .status(400)
+        .json({ message: "Identifiant utilisateur invalide." });
     }
 
     // Trouver l'utilisateur et l'ami

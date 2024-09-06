@@ -1,5 +1,17 @@
 main {
-  margin: 30px;
-  width: 80%;
-  margin: 1rem auto;
+  /* margin: 30px; */
+  /* width: 90%; */
+  margin: auto;
+}
+
+@media (min-width: 1025px) {
+  main {
+    width: 90%;
+  }
+}
+
+@media (max-width: 1024px) {
+  main {
+    width: 100%;
+  }
 }

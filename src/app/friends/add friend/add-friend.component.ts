@@ -27,6 +27,19 @@ export class AddFriendComponent {
       this.isLoading = true;
       // Récupérer le pseudo de l'utilisateur connecté
 
+      if (this.pseudo.trim().length < 3) {
+        this.snackBar.open(
+          'Le pseudo doit contenir au moins 3 caractères',
+          'Fermer',
+          {
+            duration: 5000,
+            verticalPosition: 'top',
+          }
+        );
+        this.isLoading = false;
+        return;
+      }
+
       this.friendsService.searchUserByPseudo(this.pseudo).subscribe({
         next: (response) => {
           this.friends = response;
@@ -63,7 +76,7 @@ export class AddFriendComponent {
         'Voulez-vous ajouter cet ami ?',
         'Oui',
         {
-          duration: 5000,
+          duration: 10000,
           verticalPosition: 'top',
         }
       );

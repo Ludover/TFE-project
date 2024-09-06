@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from './user.model';
 import { SSEService } from '../sse.service';
+import { Friend } from './friend.model';
 
 const BACKEND_URL = environment.apiUrl;
 
@@ -84,8 +85,8 @@ export class FriendsService {
   }
 
   // Récupère les amis.
-  getFriends(): Observable<User[]> {
-    return this.http.get<User[]>(`${BACKEND_URL}/friends`);
+  getFriends(): Observable<Friend[]> {
+    return this.http.get<Friend[]>(`${BACKEND_URL}/friends`);
   }
 
   // Récupère les demandes d'amis envoyées.

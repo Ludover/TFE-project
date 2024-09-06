@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   moviesPerPage = 20;
   currentNowPlayingPage = 1;
   currentTopRatedPage = 1;
+  selectedTab = 'nowPlaying';
 
   constructor(
     private tmdbService: TmdbService,
@@ -188,6 +189,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.error('Erreur lors de la fermeture du dialog:', err);
       },
     });
+  }
+
+  onTabChange(event: any) {
+    this.selectedTab = event.value;
   }
 
   ngOnDestroy() {

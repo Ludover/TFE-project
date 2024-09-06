@@ -23,22 +23,28 @@ export class SigninComponent {
       return;
     }
     this.isLoading = true;
-    this.authService.login(form.value.email.toLowerCase(), form.value.password).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.snackBar.open('Connexion réussie', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.snackBar.open('Identifiant ou mot de passe incorrect', 'Fermer', {
-          duration: 3000,
-          verticalPosition: 'top',
-        });
-      },
-    });
+    this.authService
+      .login(form.value.email.toLowerCase(), form.value.password)
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.snackBar.open('Connexion réussie', 'Fermer', {
+            duration: 3000,
+            verticalPosition: 'top',
+          });
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(
+            'Identifiant ou mot de passe incorrect',
+            'Fermer',
+            {
+              duration: 3000,
+              verticalPosition: 'top',
+            }
+          );
+        },
+      });
   }
 
   onForgotPassword() {

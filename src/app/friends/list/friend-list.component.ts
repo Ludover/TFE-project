@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FriendsService } from '../friends.service';
 import { User } from '../user.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Friend } from '../friend.model';
 
 @Component({
   selector: 'app-friend-list',
@@ -9,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./friend-list.component.css'],
 })
 export class FriendListComponent implements OnInit {
-  friends: User[] = [];
+  friends: Friend[] = [];
   isLoading = false;
 
   constructor(
@@ -21,6 +22,7 @@ export class FriendListComponent implements OnInit {
     this.isLoading = true;
     this.friendsService.getFriends().subscribe({
       next: (friends) => {
+        console.log(friends);
         this.friends = friends;
         this.isLoading = false;
       },
@@ -43,7 +45,9 @@ export class FriendListComponent implements OnInit {
 
     snackBarRef.onAction().subscribe(() => {
       this.friendsService.removeFriend(friendId).subscribe(() => {
-        this.friends = this.friends.filter((friend) => friend._id !== friendId);
+        this.friends = this.friends.filter(
+          (friend) => friend.friendId._id !== friendId
+        );
         this.snackBar.open('Ami supprimé avec succès', 'Fermer', {
           duration: 3000,
           verticalPosition: 'top',

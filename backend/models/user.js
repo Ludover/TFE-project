@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
+const friendSchema = mongoose.Schema({
+  friendId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  dateAdded: { type: Date, default: Date.now() },
+});
+
 const movieSchema = mongoose.Schema({
   title: { type: String, required: true },
   date: { type: String, required: true },
@@ -15,7 +20,7 @@ const userSchema = mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   pseudo: { type: String, required: true, unique: true },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  friends: [friendSchema],
   friendRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   friendRequestsReceived: [
     { type: mongoose.Schema.Types.ObjectId, ref: "User" },

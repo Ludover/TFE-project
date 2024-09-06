@@ -1,16 +1,28 @@
 <div class="home-container">
-  <h1>Bienvenue sur Mon Popcorn</h1>
+  <div class="welcome-card">
+    <h1>Bienvenue sur Mon Popcorn</h1>
 
-  <h3>
-    Vous pouvez rechercher des films, les ajouter à votre liste de films à voir,
-    les marquer comme vus, et partager vos découvertes avec vos amis. Vous
-    trouverez également les derniers films à l'affiche, les sorties en Blu-ray
-    ou streaming, et toutes les actualités du cinéma.
-  </h3>
+    <h3>
+      Vous pouvez rechercher des films, les ajouter à votre liste de films à
+      voir, les marquer comme vus, et partager vos découvertes avec vos amis.
+      Vous trouverez également les derniers films à l'affiche et les mieux notés
+      de tous les temps.
+    </h3>
+  </div>
+
+  <mat-button-toggle-group
+    [value]="selectedTab"
+    (change)="onTabChange($event)"
+    class="movie-toggle-group"
+    aria-label="Choisissez la catégorie des films"
+  >
+    <mat-button-toggle value="nowPlaying">A l'affiche</mat-button-toggle>
+    <mat-button-toggle value="topRated">Mieux notés</mat-button-toggle>
+  </mat-button-toggle-group>
 
   <div
     class="movies-section"
-    *ngIf="nowPlayingMovies.length > 0"
+    *ngIf="selectedTab === 'nowPlaying' && nowPlayingMovies.length > 0"
     id="now-playing-movies"
   >
     <h1>Films à l'affiche</h1>
@@ -61,7 +73,7 @@
 
   <div
     class="movies-section"
-    *ngIf="topRatedMovies.length > 0"
+    *ngIf="selectedTab === 'topRated' && topRatedMovies.length > 0"
     id="top-rated-movies"
   >
     <h1>Les mieux notés</h1>

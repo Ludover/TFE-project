@@ -43,37 +43,26 @@ body {
   text-transform: uppercase;
 }
 
+.results-card {
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
 .movie-list {
-  margin-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .movie-card {
-  flex: 1 1 calc(25% - 20px);
   box-sizing: border-box;
   margin-bottom: 20px;
   min-width: 200px;
-}
-
-.movie-card img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.movie:hover {
-  transform: translateY(-5px);
-}
-
-.movie img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  border-bottom: 1px solid #e0e0e0;
+  max-width: 300px;
 }
 
 .movie mat-card-header {
@@ -103,9 +92,21 @@ body {
   color: #666;
 }
 
+@media (min-width: 1401px) {
+  .movie-card {
+    flex: 1 1 calc(20% - 20px);
+  }
+}
+
+@media (max-width: 1400px) {
+  .movie-card {
+    flex: 1 1 calc(25% - 20px);
+  }
+}
+
 @media (max-width: 1024px) {
-  movie-card {
-    width: calc(33.33% - 20px);
+  .movie-card {
+    flex: 1 1 calc(33.33% - 20px);
   }
 }
 
@@ -115,8 +116,8 @@ body {
     padding: 1rem;
   }
 
-  movie-card {
-    width: calc(50% - 20px);
+  .movie-card {
+    flex: 1 1 calc(50% - 20px);
   }
 
   .movie-actions {
@@ -145,7 +146,7 @@ body {
     margin: 5px 0;
   }
 
-  movie-card {
+  .movie-card {
     width: 100%;
   }
 

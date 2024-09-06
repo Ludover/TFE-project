@@ -81,9 +81,9 @@ export class AuthService {
             );
             this.saveAuthData(token, expirationDate);
             localStorage.setItem('userId', response.userId);
-            this.router.navigate(['/']);
-
-            window.location.reload();
+            this.router.navigate(['/']).then(() => {
+              window.location.reload();
+            });
           }
         })
       );

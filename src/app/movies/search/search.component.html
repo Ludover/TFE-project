@@ -23,40 +23,37 @@
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
-<div *ngIf="movies.length > 0 && !isLoading" class="movie-list">
-  <mat-card class="movie-card" *ngFor="let movie of movies">
-    <img
-      *ngIf="movie.poster_path"
-      mat-card-image
-      [src]="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
-      alt="{{ movie.title }}"
-    />
-    <img
-      *ngIf="!movie.poster_path"
-      mat-card-image
-      [src]="'../../../assets/images/monPopcornAffiche.png'"
-      alt="image par défaut"
-    />
-    <mat-card-actions class="movie-actions">
-      <button
-        mat-stroked-button
-        color="primary"
-        (click)="searchMovieById(movie.id)"
-      >
-        Info
-      </button>
-      <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
-        Ajouter
-      </button>
-      <button mat-flat-button color="primary" (click)="onShare(movie)">
-        Partager
-      </button>
-    </mat-card-actions>
-  </mat-card>
-</div>
-<div
-  *ngIf="movies.length === 0 && this.performedSearch"
-  class="info-text mat-body-1"
->
-  aucun résultat trouvé
-</div>
+<mat-card *ngIf="!isLoading && performedSearch" class="results-card">
+  <div *ngIf="movies.length > 0 && !isLoading" class="movie-list">
+    <mat-card class="movie-card" *ngFor="let movie of movies">
+      <img
+        *ngIf="movie.poster_path"
+        mat-card-image
+        [src]="'https://image.tmdb.org/t/p/w500/' + movie.poster_path"
+        alt="{{ movie.title }}"
+      />
+      <img
+        *ngIf="!movie.poster_path"
+        mat-card-image
+        [src]="'../../../assets/images/monPopcornAffiche.png'"
+        alt="image par défaut"
+      />
+      <mat-card-actions class="movie-actions">
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="searchMovieById(movie.id)"
+        >
+          Info
+        </button>
+        <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
+          Ajouter
+        </button>
+        <button mat-flat-button color="primary" (click)="onShare(movie)">
+          Partager
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div *ngIf="movies.length === 0">aucun résultat trouvé</div>
+</mat-card>

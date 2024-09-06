@@ -4,14 +4,19 @@
 <mat-accordion multi="false" *ngIf="friends.length > 0">
   <mat-expansion-panel *ngFor="let friend of friends">
     <mat-expansion-panel-header>
-      {{ friend.pseudo }}
+      {{ friend.friendId.pseudo }}
     </mat-expansion-panel-header>
+    <div class="movie-details">
+      <p>
+        Ami depuis le <b>{{ friend.dateAdded | date : " d MMMM y" }}</b>
+      </p>
+    </div>
     <mat-action-row>
       <button
         mat-flat-button
         color="warn"
-        (click)="removeFriend(friend._id)"
-        matTooltip="Supprimer {{ friend.pseudo }} de vos amis"
+        (click)="removeFriend(friend.friendId._id)"
+        matTooltip="Supprimer {{ friend.friendId.pseudo }} de vos amis"
       >
         Supprimer
       </button>
