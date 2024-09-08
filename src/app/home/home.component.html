@@ -35,30 +35,26 @@
           alt="{{ movie.title }}"
         />
         <mat-card-actions class="movie-actions">
-          <button
-            mat-stroked-button
+          <mat-icon
             color="primary"
             (click)="searchMovieById(movie.id)"
             matTooltip="Voir plus d'infos sur {{ movie.title }}"
+            >info</mat-icon
           >
-            Info
-          </button>
-          <button
-            mat-flat-button
-            color="accent"
+
+          <mat-icon
+            color="primary"
             matTooltip="Ajouter {{ movie.title }} à votre liste de films à voir"
             (click)="onSelectMovie(movie)"
+            >add</mat-icon
           >
-            Ajouter
-          </button>
-          <button
-            mat-flat-button
+
+          <mat-icon
             color="primary"
             matTooltip="Partager {{ movie.title }}"
             (click)="onShare(movie)"
+            >ios_share</mat-icon
           >
-            Partager
-          </button>
         </mat-card-actions>
       </mat-card>
     </div>
@@ -85,20 +81,18 @@
           alt="{{ movie.title }}"
         />
         <mat-card-actions class="movie-actions">
-          <button
-            mat-stroked-button
+          <mat-icon
             color="primary"
             (click)="searchMovieById(movie.id)"
             matTooltip="Voir plus d'infos sur {{ movie.title }}"
+            >info</mat-icon
           >
-            Info
-          </button>
-          <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
-            Ajouter
-          </button>
-          <button mat-flat-button color="primary" (click)="onShare(movie)">
-            Partager
-          </button>
+          <mat-icon color="primary" (click)="onSelectMovie(movie)"
+            >add</mat-icon
+          >
+          <mat-icon color="primary" (click)="onShare(movie)"
+            >ios_share</mat-icon
+          >
         </mat-card-actions>
       </mat-card>
     </div>

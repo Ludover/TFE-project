@@ -23,7 +23,7 @@
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
-<div *ngIf="!isLoading && performedSearch">
+<div *ngIf="!isLoading && performedSearch" id="top-movie">
   <div *ngIf="movies.length > 0 && !isLoading" class="movie-list">
     <mat-card class="movie-card" *ngFor="let movie of movies">
       <img
@@ -39,19 +39,24 @@
         alt="image par défaut"
       />
       <mat-card-actions class="movie-actions">
-        <button
-          mat-stroked-button
+        <mat-icon
           color="primary"
           (click)="searchMovieById(movie.id)"
+          matTooltip="Voir plus d'infos sur {{ movie.title }}"
+          >info</mat-icon
         >
-          Info
-        </button>
-        <button mat-flat-button color="accent" (click)="onSelectMovie(movie)">
-          Ajouter
-        </button>
-        <button mat-flat-button color="primary" (click)="onShare(movie)">
-          Partager
-        </button>
+        <mat-icon
+          color="primary"
+          (click)="onSelectMovie(movie)"
+          matTooltip="Ajouter {{ movie.title }} à votre liste de films à voir"
+          >add</mat-icon
+        >
+        <mat-icon
+          color="primary"
+          (click)="onShare(movie)"
+          matTooltip="Partager {{ movie.title }}"
+          >ios_share</mat-icon
+        >
       </mat-card-actions>
     </mat-card>
   </div>

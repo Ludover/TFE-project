@@ -14,33 +14,27 @@
       </p>
       <p *ngIf="movie.friendComment">
         Commentaire de votre ami(e): <b>{{ movie.friendComment }}</b>
-      </p> 
+      </p>
     </div>
     <mat-action-row>
-      <button
-        mat-stroked-button
+      <mat-icon
         color="primary"
         (click)="searchMovieById(movie.tmdbId)"
         matTooltip="Voir plus d'infos sur {{ movie.title }}"
+        >info</mat-icon
       >
-        Info
-      </button>
-      <button
-        mat-flat-button
+      <mat-icon
         color="primary"
         (click)="updateAsToSee(movie)"
         matTooltip="Ajouter {{ movie.title }} à ma liste à voir"
+        >add</mat-icon
       >
-        Ajouter
-      </button>
-      <button
-        mat-flat-button
+      <mat-icon
         color="warn"
         (click)="onDelete(movie.id)"
         matTooltip="Supprimer {{ movie.title }}"
+        >delete</mat-icon
       >
-        Supprimer
-      </button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

@@ -30,8 +30,6 @@ h1 {
 .movie-card {
   box-sizing: border-box;
   margin-bottom: 20px;
-  min-width: 200px;
-  max-width: 300px;
 }
 
 mat-card {
@@ -43,16 +41,8 @@ mat-card-title {
   margin-top: 10px;
 }
 
-.movie-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 5px;
-  flex-wrap: wrap;
-}
-
-.movie-actions button {
-  flex: 1;
-  margin: 0 5px;
+.movie-actions mat-icon {
+  margin: auto;
 }
 
 mat-card-content {
@@ -86,49 +76,39 @@ mat-button-toggle {
 @media (min-width: 1401px) {
   .movie-card {
     flex: 1 1 calc(20% - 20px);
+    min-width: 200px;
+    max-width: 300px;
   }
 }
 
 @media (max-width: 1400px) {
   .movie-card {
     flex: 1 1 calc(25% - 20px);
+    min-width: 200px;
+    max-width: 300px;
   }
 }
 
 @media (max-width: 1024px) {
   .movie-card {
     flex: 1 1 calc(33.33% - 20px);
+    min-width: 200px;
+    max-width: 300px;
   }
 }
 
 @media (max-width: 768px) {
   .movie-card {
-    flex: 1 1 calc(50% - 20px);
-  }
-
-  .movie-actions {
-    gap: 10px;
-  }
-
-  .movie-actions button {
-    margin: 0.5rem 0;
+    flex: 1 1 calc(33.33% - 20px);
+    min-width: 100px;
+    max-width: 200px;
   }
 }
 
 @media (max-width: 480px) {
   .movie-card {
-    width: 100%;
-  }
-
-  .movie-actions {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .movie-actions button {
-    flex: 1 1 calc(50% - 10px);
-    max-width: calc(50% - 10px);
-    margin: 5px 0;
+    flex: 1 1 calc(50% - 20px);
+    min-width: 100px;
+    max-width: 200px;
   }
 }

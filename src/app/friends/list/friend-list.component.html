@@ -12,14 +12,12 @@
       </p>
     </div>
     <mat-action-row>
-      <button
-        mat-flat-button
+      <mat-icon
         color="warn"
         (click)="removeFriend(friend.friendId._id)"
         matTooltip="Supprimer {{ friend.friendId.pseudo }} de vos amis"
+        >delete</mat-icon
       >
-        Supprimer
-      </button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>

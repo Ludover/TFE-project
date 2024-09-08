@@ -42,18 +42,12 @@ mat-expansion-panel-header {
 .movie-details {
   padding: 16px;
 }
-
 mat-action-row {
-  display: flex;
-  justify-content: flex-end;
-  gap: 5px;
-  flex-wrap: wrap;
+  text-align: center;
 }
-
-mat-action-row button {
-  flex: 1;
-  margin: 0 5px;
-  max-width: 200px;
+mat-action-row mat-icon {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 mat-paginator {
@@ -71,40 +65,13 @@ mat-paginator {
     font-size: 1.5rem;
   }
 
-  mat-action-row {
-    justify-content: flex-start;
-    gap: 10px;
-  }
-
   mat-action-row button {
     flex: 1 1 calc(50% - 10px);
     max-width: calc(50% - 10px);
-    margin: 0.5rem 0;
+    max-width: 200px;
   }
 
   mat-expansion-panel {
     margin: 8px 0;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.25rem;
-  }
-
-  mat-action-row {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  mat-action-row button {
-    flex: 1 1 calc(50% - 10px);
-    max-width: calc(50% - 10px);
-    margin: 5px 0;
-  }
-
-  .info-text {
-    font-size: 0.875rem;
   }
 }

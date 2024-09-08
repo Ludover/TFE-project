@@ -46,6 +46,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
   }
 
+  scrollTo(): void {
+    const element = document.getElementById('top-movie');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   // Méthode pour rechercher les films avec un titre via l'API TMDB.
   searchMovies(page: number = this.currentPage) {
     if (this.title) {
@@ -65,9 +72,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(event: PageEvent) {
-    console.log(event);
     this.currentPage = event.pageIndex + 1;
     this.searchMovies(this.currentPage);
+    this.scrollTo();
   }
 
   // Méthode pour afficher via un dialog les détails d'un film.

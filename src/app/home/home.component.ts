@@ -92,7 +92,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onNowPlayingPageChange(event: PageEvent) {
-    console.log(event);
     this.currentNowPlayingPage = event.pageIndex + 1;
     this.getNowPlayingMovies(this.currentNowPlayingPage);
     this.scrollToId('now-playing-movies');

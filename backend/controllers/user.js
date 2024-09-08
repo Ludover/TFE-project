@@ -336,7 +336,7 @@ exports.getFriend = async (req, res, next) => {
       } else {
         res
           .status(400)
-          .json({ message: "Vous ne pouvez pas vous ajouter comme ami." });
+          .json({ message: "Aucun utilisateur trouvé avec ce pseudo." });
       }
     } else {
       res
@@ -572,12 +572,6 @@ exports.removeFriend = async (req, res) => {
     const userId = req.userData.userId;
     const friendId = req.params.friendId;
 
-    if (!mongoose.Types.ObjectId.isValid(friendId)) {
-      return res
-        .status(400)
-        .json({ message: "Identifiant utilisateur invalide." });
-    }
-
     // Trouver l'utilisateur et l'ami
     const user = await User.findById(userId);
     const friend = await User.findById(friendId);
@@ -587,10 +581,14 @@ exports.removeFriend = async (req, res) => {
     }
 
     // Supprimer l'ami de la liste des amis de l'utilisateur
-    user.friends = user.friends.filter((id) => id.toString() !== friendId);
+    user.friends = user.friends.filter(
+      (friend) => friend.friendId.toString() !== friendId
+    );
 
     // Supprimer l'utilisateur de la liste des amis de l'ami
-    friend.friends = friend.friends.filter((id) => id.toString() !== userId);
+    friend.friends = friend.friends.filter(
+      (friend) => friend.friendId.toString() !== userId
+    );
 
     // Sauvegarder les modifications
     await user.save();

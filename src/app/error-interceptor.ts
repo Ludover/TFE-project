@@ -18,24 +18,21 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       tap((event) => {
         if (event instanceof HttpResponse && event.body.message) {
-          this.notifierService.showNotification(
-            event.body.message,
-            'Fermer',
-            'info'
-          );
+          if (event.status === 200 || event.status === 201) {
+            this.notifierService.showNotification(
+              event.body.message,
+              'Fermer',
+              'success'
+            );
+          }
         }
       }),
       catchError((error: HttpErrorResponse) => {
         let errorMessage = "Une erreur inattendue s'est produite!";
         if (error.error.message) {
-          console.log(error);
           errorMessage = error.error.message;
         }
-        if (
-          error.status === 400 ||
-          error.status === 200 ||
-          error.status === 201
-        ) {
+        if (error.status === 400 || error.status === 404) {
           this.notifierService.showNotification(errorMessage, 'Fermer', 'info');
         } else {
           this.notifierService.showNotification(

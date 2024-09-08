@@ -3,7 +3,7 @@ const uniqueValidator = require("mongoose-unique-validator");
 
 const friendSchema = mongoose.Schema({
   friendId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  dateAdded: { type: Date, default: Date.now() },
+  dateAdded: { type: Date, default: new Date() },
 });
 
 const movieSchema = mongoose.Schema({

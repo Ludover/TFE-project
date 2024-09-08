@@ -21,7 +21,6 @@ export class FriendListComponent implements OnInit {
     this.isLoading = true;
     this.friendsService.getFriends().subscribe({
       next: (friends) => {
-        console.log(friends);
         this.friends = friends;
         this.isLoading = false;
       },
