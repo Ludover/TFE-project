@@ -73,6 +73,10 @@ mat-button-toggle {
   margin: auto;
 }
 
+mat-icon {
+  cursor: pointer;
+}
+
 @media (min-width: 1401px) {
   .movie-card {
     flex: 1 1 calc(20% - 20px);

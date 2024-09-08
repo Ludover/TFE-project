@@ -60,6 +60,10 @@ mat-paginator {
   color: #666;
 }
 
+mat-icon {
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   h1 {
     font-size: 1.5rem;

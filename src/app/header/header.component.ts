@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { FriendsService } from '../friends/friends.service';
 import { MoviesService } from '../movies/movies.service';
 import { SSEService } from '../sse.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-header',
@@ -32,8 +31,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private friendsService: FriendsService,
     private moviesService: MoviesService,
-    private sseService: SSEService,
-    private snackBar: MatSnackBar
+    private sseService: SSEService
   ) {}
 
   ngOnInit(): void {

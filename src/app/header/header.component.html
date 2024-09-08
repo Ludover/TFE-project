@@ -2,6 +2,9 @@
   <span class="toolbar-title">
     <a routerLink="/" class="logo-link">Mon Popcorn</a>
   </span>
+  <button mat-icon-button class="search-button" routerLink="/search">
+    <mat-icon>search</mat-icon>
+  </button>
   <button mat-icon-button class="menu-icon" (click)="toggleMenu()">
     <mat-icon>menu</mat-icon
     ><span
@@ -15,7 +18,7 @@
     <li *ngIf="userIsAuthenticated" class="welcome-message">
       Bonjour, {{ userPseudo }}
     </li>
-    <li>
+    <li class="search-text">
       <a
         mat-button
         routerLink="/search"

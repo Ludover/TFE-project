@@ -1,6 +1,6 @@
 .toolbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
   padding: 0 1rem;
   background-color: blueviolet;
@@ -8,6 +8,7 @@
 
 .toolbar-title {
   font-size: 1.75rem;
+  flex: auto;
 }
 
 .logo-link {
@@ -91,6 +92,10 @@ mat-icon {
   .menu-icon {
     display: none;
   }
+
+  .search-button {
+    display: none;
+  }
 }
 
 @media (max-width: 949px) {
@@ -121,5 +126,9 @@ mat-icon {
 
   .welcome-message {
     color: blueviolet;
+  }
+
+  .search-text {
+    display: none;
   }
 }

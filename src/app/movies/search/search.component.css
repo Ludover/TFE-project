@@ -63,6 +63,10 @@ body {
   margin-bottom: 20px;
 }
 
+mat-icon {
+  cursor: pointer;
+}
+
 .movie mat-card-header {
   text-align: center;
 }
