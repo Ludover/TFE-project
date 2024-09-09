@@ -1,14 +1,18 @@
 .toolbar {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
   padding: 0 1rem;
   background-color: blueviolet;
 }
 
 .toolbar-title {
-  font-size: 1.75rem;
+  margin-top: 10px;
   flex: auto;
+}
+
+.toolbar-title img {
+  width: 180px;
 }
 
 .logo-link {

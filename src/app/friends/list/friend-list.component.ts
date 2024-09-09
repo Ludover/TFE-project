@@ -35,7 +35,7 @@ export class FriendListComponent implements OnInit {
     const snackBarRef = this.notifierService.showNotification(
       'Voulez-vous vraiment supprimer cet ami ?',
       'Supprimer',
-      'info'
+      'error'
     );
 
     snackBarRef.onAction().subscribe(() => {

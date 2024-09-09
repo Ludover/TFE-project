@@ -12,26 +12,32 @@ body {
 .mat-mdc-snack-bar-container {
   &.success {
     margin-top: calc(30% - 10px);
-    --mdc-snackbar-container-color: rgb(13, 136, 13);
-    --mat-mdc-snack-bar-button-color: white;
+    --mdc-snackbar-container-color: rgb(119, 221, 119);
     --mdc-snackbar-supporting-text-color: #fff;
+    .mat-mdc-snack-bar-action {
+      color: white !important;
+    }
   }
 }
 
 .mat-mdc-snack-bar-container {
   &.error {
     margin-top: calc(30% - 10px);
-    --mdc-snackbar-container-color: rgb(173, 27, 27);
-    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-container-color: rgb(255, 105, 97);
     --mdc-snackbar-supporting-text-color: #fff;
+    .mat-mdc-snack-bar-action {
+      color: white !important;
+    }
   }
 }
 
 .mat-mdc-snack-bar-container {
   &.info {
     margin-top: calc(30% - 10px);
-    --mdc-snackbar-container-color: blueviolet;
-    --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: #fff;
+    --mdc-snackbar-container-color: rgb(144, 143, 194);
+    --mdc-snackbar-supporting-text-color: white;
+    .mat-mdc-snack-bar-action {
+      color: white !important;
+    }
   }
 }

@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MovieDetailsDialogComponent } from '../movies/movie-details-dialog/movie-details-dialog.component';
 import { ShareMovieDialogComponent } from '../movies/share-movie-dialog/share-movie-dialog.component';
 import { MoviesService } from '../movies/movies.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
@@ -36,7 +35,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
     private moviesService: MoviesService,
-    private snackBar: MatSnackBar,
     private authService: AuthService,
     private notifierService: NotifierService
   ) {}
@@ -62,8 +60,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  scrollToId(id: string): void {
-    const element = document.getElementById(id);
+  scrollToId(): void {
+    const element = document.getElementById('target-change-page');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -94,13 +92,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   onNowPlayingPageChange(event: PageEvent) {
     this.currentNowPlayingPage = event.pageIndex + 1;
     this.getNowPlayingMovies(this.currentNowPlayingPage);
-    this.scrollToId('now-playing-movies');
+    this.scrollToId();
   }
 
   onTopRatedPageChange(event: PageEvent) {
     this.currentTopRatedPage = event.pageIndex + 1;
     this.getTopRatedMovies(this.currentTopRatedPage);
-    this.scrollToId('top-rated-movies');
+    this.scrollToId();
   }
 
   searchMovieById(id: string) {

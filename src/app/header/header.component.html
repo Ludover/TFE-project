@@ -1,8 +1,15 @@
 <mat-toolbar color="primary" class="toolbar">
   <span class="toolbar-title">
-    <a routerLink="/" class="logo-link">Mon Popcorn</a>
+    <a routerLink="/" class="logo-link" matTooltip="Accueil"
+      ><img src="../../assets/images/Logo 1.png"
+    /></a>
   </span>
-  <button mat-icon-button class="search-button" routerLink="/search">
+  <button
+    mat-icon-button
+    class="search-button"
+    routerLink="/search"
+    (click)="closeMenu()"
+  >
     <mat-icon>search</mat-icon>
   </button>
   <button mat-icon-button class="menu-icon" (click)="toggleMenu()">

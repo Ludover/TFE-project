@@ -65,7 +65,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
     const snackBarRef = this.notifierService.showNotification(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
       'Supprimer',
-      'info'
+      'error'
     );
 
     snackBarRef.onAction().subscribe(() => {

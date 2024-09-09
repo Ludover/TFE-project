@@ -365,13 +365,22 @@ exports.sendFriendRequest = async (req, res) => {
       });
     }
 
-    const user = await User.findById(userId).select("friendRequestsSent");
+    const user = await User.findById(userId);
     const friend = await User.findById(friendId).select(
       "friendRequestsReceived"
     );
 
     if (!user || !friend) {
       return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Vérifier si l'utilisateur est déjà ami
+    const isAlreadyFriend = user.friends.some(
+      (friendObj) => friendObj.friendId.toString() === friendId
+    );
+
+    if (isAlreadyFriend) {
+      return res.status(400).json({ message: "Vous êtes déjà ami." });
     }
 
     if (user.friendRequestsSent.includes(friendId)) {
@@ -597,26 +606,6 @@ exports.removeFriend = async (req, res) => {
     res.status(200).json({ message: "Ami supprimé avec succès" });
   } catch (error) {
     console.error("Erreur lors de la suppression d'ami:", error);
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-};
-
-exports.getIsFriend = async (req, res) => {
-  try {
-    const userId = req.userData.userId;
-    const friendId = req.params.userId;
-
-    // Trouver l'utilisateur actuel
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-
-    // Vérifier si friendId est dans la liste des amis de l'utilisateur
-    const isFriend = user.friends.includes(friendId);
-    res.status(200).json(isFriend);
-  } catch (error) {
-    console.error("Erreur lors de la vérification de l'ami :", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };

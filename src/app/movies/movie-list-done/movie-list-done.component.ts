@@ -65,8 +65,8 @@ export class MovieListDoneComponent implements OnInit, OnDestroy {
   onDelete(movieId: string) {
     const snackBarRef = this.notifierService.showNotification(
       'Êtes-vous sûr de vouloir supprimer ce film ?',
-      'Fermer',
-      'info'
+      'Supprimer',
+      'error'
     );
 
     snackBarRef.onAction().subscribe(() => {

@@ -47,7 +47,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   scrollTo(): void {
-    const element = document.getElementById('top-movie');
+    const element = document.getElementById('target-change-page');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }

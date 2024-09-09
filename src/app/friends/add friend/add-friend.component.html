@@ -19,7 +19,7 @@
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
-<mat-card *ngIf="!isLoading && searchPerformed" class="results-card">
+<div *ngIf="!isLoading && searchPerformed" class="results-card">
   <div *ngIf="friends.length > 0" class="friends-list">
     <mat-card class="friend-card" *ngFor="let friend of friends">
       <mat-card-header>
@@ -39,8 +39,4 @@
       </mat-card-actions>
     </mat-card>
   </div>
-
-  <div *ngIf="friends.length === 0">
-    <p>Aucun utilisateur trouvé avec ce pseudo.</p>
-  </div>
-</mat-card>
+</div>

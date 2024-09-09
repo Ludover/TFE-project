@@ -42,15 +42,6 @@ body {
   text-transform: uppercase;
 }
 
-.results-card {
-  margin: 2rem auto;
-  max-width: 600px;
-  padding: 2rem;
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-}
-
 .friends-list {
   display: flex;
   flex-wrap: wrap;

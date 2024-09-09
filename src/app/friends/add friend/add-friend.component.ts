@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
 import { FriendsService } from '../friends.service';
-import { Router } from '@angular/router';
 import { NotifierService } from 'src/app/notifier.service';
 
 @Component({
@@ -17,8 +16,7 @@ export class AddFriendComponent {
 
   constructor(
     private friendsService: FriendsService,
-    private notifierService: NotifierService,
-    private router: Router
+    private notifierService: NotifierService
   ) {}
 
   // Méthode pour rechercher un ami.
@@ -41,11 +39,12 @@ export class AddFriendComponent {
         next: (response) => {
           this.friends = response;
           this.isLoading = false;
+          console.log(this.friends.length);
           this.searchPerformed = true;
         },
         error: () => {
           this.isLoading = false;
-          this.searchPerformed = true;
+          this.searchPerformed = false;
         },
       });
     }
@@ -53,34 +52,14 @@ export class AddFriendComponent {
 
   // Méthode pour ajouter un ami.
   onAddFriend(friendId: string) {
-    this.friendsService.isFriend(friendId).subscribe((isFriend: boolean) => {
-      if (isFriend) {
-        this.notifierService.showNotification(
-          "Cet utilisateur est déjà dans votre liste d'amis.",
-          'Fermer',
-          'info'
-        );
-        this.router.navigate(['/addfriend']).then(() => {
-          window.location.reload();
-        });
-        return;
-      }
+    const snackBarRef = this.notifierService.showNotification(
+      'Voulez-vous ajouter cet ami ?',
+      'Oui',
+      'info'
+    );
 
-      const snackBarRef = this.notifierService.showNotification(
-        'Voulez-vous ajouter cet ami ?',
-        'Oui',
-        'info'
-      );
-
-      snackBarRef.onAction().subscribe(() => {
-        this.friendsService.sendFriendRequest(friendId).subscribe(() => {
-          this.notifierService.showNotification(
-            "Demande d'ami envoyée avec succès",
-            'Fermer',
-            'success'
-          );
-        });
-      });
+    snackBarRef.onAction().subscribe(() => {
+      this.friendsService.sendFriendRequest(friendId).subscribe(() => {});
     });
   }
 }

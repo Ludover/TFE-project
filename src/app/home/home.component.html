@@ -11,6 +11,7 @@
   </div>
 
   <mat-button-toggle-group
+    id="target-change-page"
     [value]="selectedTab"
     (change)="onTabChange($event)"
     class="movie-toggle-group"
@@ -23,7 +24,6 @@
   <div
     class="movies-section"
     *ngIf="selectedTab === 'nowPlaying' && nowPlayingMovies.length > 0"
-    id="now-playing-movies"
   >
     <h1>Films à l'affiche</h1>
     <mat-spinner *ngIf="isLoading"></mat-spinner>
@@ -41,14 +41,12 @@
             matTooltip="Voir plus d'infos sur {{ movie.title }}"
             >info</mat-icon
           >
-
           <mat-icon
             color="primary"
             matTooltip="Ajouter {{ movie.title }} à votre liste de films à voir"
             (click)="onSelectMovie(movie)"
             >add</mat-icon
           >
-
           <mat-icon
             color="primary"
             matTooltip="Partager {{ movie.title }}"
@@ -70,7 +68,6 @@
   <div
     class="movies-section"
     *ngIf="selectedTab === 'topRated' && topRatedMovies.length > 0"
-    id="top-rated-movies"
   >
     <h1>Les mieux notés</h1>
     <div class="movie-list">

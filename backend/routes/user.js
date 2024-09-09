@@ -2,7 +2,7 @@ const express = require("express");
 const checkAuth = require("../middleware/check-auth");
 const userController = require("../controllers/user");
 const router = express.Router();
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 
 //#region Authentification
 
@@ -12,7 +12,8 @@ router.post("/signup", userController.signUp);
 const loginLimiter = rateLimit({
   windowMS: 15 * 60 * 1000,
   max: 5,
-  message: ("Trop de tentatives de connexion depuis cette IP, veuillez réessayer plus tard.")
+  message:
+    "Trop de tentatives de connexion depuis cette IP, veuillez réessayer plus tard.",
 });
 
 // Route pour se connecter
@@ -83,9 +84,6 @@ router.delete(
   checkAuth,
   userController.removeFriend
 );
-
-// Vérifie si un utilisateur est déjà dans la liste des amis
-router.get("/is-friend/:userId", checkAuth, userController.getIsFriend);
 
 //#endregion
 

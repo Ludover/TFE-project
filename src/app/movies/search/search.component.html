@@ -23,7 +23,7 @@
 
 <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
 
-<div *ngIf="!isLoading && performedSearch" id="top-movie">
+<div *ngIf="!isLoading && performedSearch" id="target-change-page">
   <div *ngIf="movies.length > 0 && !isLoading" class="movie-list">
     <mat-card class="movie-card" *ngFor="let movie of movies">
       <img
@@ -62,15 +62,14 @@
   </div>
   <div *ngIf="movies.length === 0" class="info-text">aucun résultat trouvé</div>
 </div>
-<div>
-  <div class="paginator" [hidden]="movies.length === 0">
-    <mat-paginator
-      [length]="totalMovies"
-      [pageSize]="moviesPerPage"
-      [pageSizeOptions]="[moviesPerPage]"
-      [hidePageSize]="false"
-      (page)="onPageChange($event)"
-    >
-    </mat-paginator>
-  </div>
+
+<div class="paginator" [hidden]="movies.length === 0">
+  <mat-paginator
+    [length]="totalMovies"
+    [pageSize]="moviesPerPage"
+    [pageSizeOptions]="[moviesPerPage]"
+    [hidePageSize]="false"
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
 </div>
