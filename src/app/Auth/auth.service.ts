@@ -79,8 +79,8 @@ export class AuthService {
             const expirationDate = new Date(
               now.getTime() + expiresInDuration * 1000
             );
-            this.saveAuthData(token, expirationDate);
-            localStorage.setItem('userId', response.userId);
+            this.saveAuthData(token, expirationDate, response.userId);
+
             this.router.navigate(['/']).then(() => {
               window.location.reload();
             });
@@ -148,15 +148,17 @@ export class AuthService {
   }
 
   // Ca enregistre les infos d'authentification dans le stockage local du navigateur.
-  private saveAuthData(token: string, expirationDate: Date) {
+  private saveAuthData(token: string, expirationDate: Date, userId: string) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
+    localStorage.setItem('userId', userId);
   }
 
   // Ca supprime les informations d'authentification du stockage local du navigateur.
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
+    localStorage.removeItem('userId');
   }
 
   // Récupère les informations d'authentification depuis le stockage local du navigateur.

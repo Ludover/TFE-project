@@ -47,7 +47,8 @@ export class MoviesService {
   getMoviesByListType(
     listType: string,
     moviesPerPage: number,
-    currentPage: number
+    currentPage: number,
+    isDelete: string = null
   ) {
     const queryParams = `?pagesize=${moviesPerPage}&page=${currentPage}`;
     this.http
@@ -79,7 +80,8 @@ export class MoviesService {
           movies: [...this.movies],
           movieCount: mappedMoviesData.maxMovie,
         });
-        if (listType === 'recommended') {
+        // Mettre à jour le badge lorsqu'on supprime ou met à jour un film de la liste des films conseillés.
+        if (listType === 'recommended' && isDelete === 'delete') {
           this.moviesRecommendedUpdated.next();
         }
       });

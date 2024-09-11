@@ -19,6 +19,7 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
   movies: Movie[] = [];
   isLoading = false;
   private moviesSub?: Subscription;
+  private moviesUpdateSub: Subscription;
   totalMovies = 0;
   moviesPerPage = 10;
   currentPage = 1;
@@ -39,12 +40,23 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
       this.moviesPerPage,
       this.currentPage
     );
+
     this.moviesSub = this.moviesService
       .getMovieUpdateListener()
       .subscribe((movieData: { movies: Movie[]; movieCount: number }) => {
         this.isLoading = false;
         this.totalMovies = movieData.movieCount;
         this.movies = movieData.movies;
+      });
+
+    this.moviesUpdateSub = this.moviesService
+      .getMoviesRecommendedUpdatedListener()
+      .subscribe(() => {
+        this.moviesService.getMoviesByListType(
+          'recommended',
+          this.moviesPerPage,
+          this.currentPage
+        );
       });
   }
 
@@ -73,7 +85,8 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
         this.moviesService.getMoviesByListType(
           'recommended',
           this.moviesPerPage,
-          this.currentPage
+          this.currentPage,
+          'delete'
         );
       });
     });
@@ -126,5 +139,8 @@ export class MovieListRecommendedComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.moviesSub?.unsubscribe();
+    if (this.moviesUpdateSub) {
+      this.moviesUpdateSub.unsubscribe();
+    }
   }
 }
